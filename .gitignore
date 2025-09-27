@@ -28,3 +28,5 @@ input-cache/schemas/
 translations/
 
 input-cache/*
+
+local-template/*
