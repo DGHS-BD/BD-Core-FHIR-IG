@@ -11,7 +11,7 @@ Description: "All patient information of BD"
 * identifier 1..*
 
 * identifier ^slicing.discriminator.type = #value
-* identifier ^slicing.discriminator.path = ""
+* identifier ^slicing.discriminator.path = "system"
 * identifier ^slicing.rules = #open
 * identifier ^slicing.description = "Identifier"
 * identifier ^slicing.ordered = false
@@ -57,7 +57,7 @@ Description: "All patient information of BD"
 
 * link 2..*
 * link ^slicing.discriminator.type = #value
-* link ^slicing.discriminator.path = ""
+* link ^slicing.discriminator.path = "system"
 * link ^slicing.rules = #open
 * link ^slicing.description = ""
 * link ^slicing.ordered = false
@@ -108,3 +108,8 @@ Description: "Profile for RelatedPerson representing the father"
 
 // TODO
 // * includes codes from system  BdIdentifierTypeVs# (required)
+
+
+//Address
+* address 1..* MS
+* address only BDAddress 
