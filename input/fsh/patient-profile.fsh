@@ -102,3 +102,6 @@ Description: "Profile of Patient Bangladesh Standard"
 * extension[religion] ^short = "ধর্ম (Religion)"
 * extension[religion] ^definition = "The patient's religious affiliation."
 * extension[religion].valueCodeableConcept from http://hl7.org/fhir/ValueSet/religious-affiliation
+
+* address 1..* MS
+* address only BDAddress 
