@@ -54,18 +54,27 @@ Description: "Profile of Patient Bangladesh Standard"
 * identifier[NID].system = "http://dghs.gov.bd/identifier/nid"
 * identifier[NID].type.coding.code = #NID
 * identifier[NID].type.coding.system = "http://terminology.hl7.org/CodeSystem/v2-0203"
+* identifier[NID].type from BangladeshIdentifierTypeVS (extensible)
 * identifier[NID].type.text = "Organization identifier"
+* identifier[NID].value = "Personal identifier National ID"
+
+// Then in your profile:
+// * identifier.type from BangladeshIdentifierTypeVS (extensible)
  
 * identifier[BRN].system = "http://dghs.gov.bd/identifier/brn"
 * identifier[BRN].type.coding.code = #BRN
 * identifier[BRN].type.coding.system = "http://terminology.hl7.org/CodeSystem/v2-0203"
+* identifier[BRN].type from BangladeshIdentifierTypeVS (extensible)
 * identifier[BRN].type.text = "Organization identifier"
+* identifier[BRN].value = "Personal identifier Birth Registration"
 
 
 * identifier[UID].system = "http://dghs.gov.bd/identifier/uid"
 * identifier[UID].type.coding.code = #UID
 * identifier[UID].type.coding.system = "http://terminology.hl7.org/CodeSystem/v2-0203"
+* identifier[UID].type from BangladeshIdentifierTypeVS (extensible)
 * identifier[UID].type.text = "Organization identifier"
+* identifier[UID].value = "Personal identifier"
 
 
 // Mark elements as MustSupport
@@ -79,6 +88,8 @@ Description: "Profile of Patient Bangladesh Standard"
 
 // Do not allow gender to be included.
 * gender 1..1
+// * include codes from system http://hl7.org/fhir/ValueSet/administrative-gender
+
 
 // Require a value from a specific value set be used for an element
 * maritalStatus from http://hl7.org/fhir/ValueSet/marital-status
