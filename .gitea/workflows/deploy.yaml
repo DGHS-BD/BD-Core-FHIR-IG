@@ -13,7 +13,7 @@ jobs:
         with:
           host: ${{ secrets.PRODUCTION_SSH_HOST }}
           username: ${{ secrets.PRODUCTION_SSH_USERNAME }}
-          key: ${{ secrets.PRODUCTION_SSH_KEY }}
+          password: ${{ secrets.PRODUCTION_SSH_PASSWORD }}
           port: ${{ secrets.PRODUCTION_SSH_PORT }}
           script: |
             cd /home/mishealth/BD-Core-FHIR-IG
