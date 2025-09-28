@@ -1,0 +1,8 @@
+{
+     "name": "bd.national.template",
+     "version": "1.0.0",
+     "description": "Bangladesh National FHIR IG Template",
+     "author": "Ministry of Health and Family Welfare, Bangladesh",
+     "license": "Apache-2.0",
+     "type": "fhir.template"
+   }
