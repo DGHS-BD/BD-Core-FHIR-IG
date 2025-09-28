@@ -1,9 +1,9 @@
 name: Deploy on production
-
 on:
   push:
     branches:
       - main
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -18,4 +18,6 @@ jobs:
           script: |
             cd /home/mishealth/BD-Core-FHIR-IG
             git pull origin main
-            bash _genonce.sh
+            docker run --rm -v $(pwd):/home/publisher/ig hl7fhir/ig-publisher-base:latest /home/publisher/ig/_genonce.sh
+            cp -r output/* /var/www/html/
+            sudo systemctl restart nginx
