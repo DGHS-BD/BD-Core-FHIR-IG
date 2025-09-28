@@ -1,4 +1,4 @@
-CodeSystem: bd-country-list
+CodeSystem: BDCountryListCS 
 Id: bd-country-list-cs
 Title: "Nationality List"
 * ^url =  "https://fhir.dghs.gov.bd/core/CodeSystem/bd-country-list"
@@ -193,7 +193,7 @@ Title: "Nationality List"
 * #716 "Zimbabwean"
 
 
-ValueSet: bd-country-list
+ValueSet: BDCountryListVS 
 Id: bd-country-list-vs
 Title: "Nationality ValueSet"
 Description: "Nationality value set"
