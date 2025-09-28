@@ -1,7 +1,7 @@
 // ---------------------------
 // Extension Definition
 // ---------------------------
-Extension: bdbloodgroup
+Extension: BDBloodGroup 
 Id: bd-blood-group
 Title: "Patient Blood Group"
 Description: "Blood group of the patient according to CCDS guideline"

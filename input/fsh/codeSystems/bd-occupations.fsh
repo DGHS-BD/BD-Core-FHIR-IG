@@ -1,4 +1,4 @@
-CodeSystem: bd-occupations
+CodeSystem: BDOccupationsCS
 Id: bangladesh-occupations-cs
 Title: "Bangladesh Occupations"
 * ^url =  "https://fhir.dghs.gov.bd/core/CodeSystem/bd-occupations"
@@ -75,7 +75,7 @@ Title: "Bangladesh Occupations"
 * #91 "Paper and Paperboard Products Workers" "কাগজ ও কাগজের বোর্ড প্রস্তুতকারী "
 * #92 "Printers and Related Workers" "মুদ্রণকাজ"
 
-ValueSet: bd-occupations
+ValueSet: BDOccupationsVS 
 Id: bd-occupations-vs
 Title: "Bangladesh Occupations ValueSet"
 Description: "Occupations value set according to CCDS guideline"

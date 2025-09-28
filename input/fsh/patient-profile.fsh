@@ -105,6 +105,6 @@ Description: "Profile of Patient Bangladesh Standard"
 * address 1..* MS
 * address only BDAddress 
 
-* extension contains occupation named occupation 0..1
+* extension contains Occupation named occupation 0..1
 
 * extension contains nationality named nationality 1..1
