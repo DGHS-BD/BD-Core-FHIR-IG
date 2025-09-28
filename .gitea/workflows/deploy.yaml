@@ -19,5 +19,4 @@ jobs:
             cd /home/mishealth/BD-Core-FHIR-IG
             git pull origin main
             docker run --rm -v $(pwd):/home/publisher/ig hl7fhir/ig-publisher-base:latest /home/publisher/ig/_genonce.sh
-            cp -r output/* /var/www/html/
             sudo systemctl restart nginx
