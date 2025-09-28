@@ -1,8 +1,8 @@
 // @Name: Profile
 // @Description: Example of a profile of the Patient resource. This example includes a few of the most commonly used constraints and documentation features of FHIR profiles.
 
-Profile:     PatientProfile
-Id:          patient-profile
+Profile:     BDPatientProfile
+Id:          bd-patient
 Parent:      Patient
 Title:       "Patient Profile for Bangladesh"
 Description: "Profile of Patient Bangladesh Standard"

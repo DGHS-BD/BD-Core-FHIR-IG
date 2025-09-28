@@ -1,10 +1,10 @@
 // @Name: Profile
 // @Description: Example of a profile of the Address resource for Bangladesh.
 
-Profile:     BDAddress
-Id:             bd-address
-Parent:      Address
-Title:         "Address for Bangladesh"
+Profile: BDAddress
+Id: bd-address
+Parent: Address
+Title: "Address for Bangladesh"
 Description: "Address for Bangladesh Standard"
 
 

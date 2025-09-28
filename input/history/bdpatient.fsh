@@ -1,7 +1,7 @@
 
 Profile:     BDPatientProfile
 
-Id:          BDPatientProfile-01
+Id:          bd-patient
 Parent:      Patient
 Title:       "Bangladesh Patient Profile"
 Description: "All patient information of BD"
@@ -104,7 +104,7 @@ Parent: RelatedPerson
 Title: "RelatedPerson Father Profile"
 Description: "Profile for RelatedPerson representing the father"
 * relationship.coding.code = #FTH
-* identifier 1..1
+* identifier 1..1
 
 // TODO
 // * includes codes from system  BdIdentifierTypeVs# (required)
@@ -112,4 +112,4 @@ Description: "Profile for RelatedPerson representing the father"
 
 //Address
 * address 1..* MS
-* address only BDAddress 
+* address only BDAddress
