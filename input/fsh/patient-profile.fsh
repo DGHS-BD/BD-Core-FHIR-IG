@@ -106,3 +106,5 @@ Description: "Profile of Patient Bangladesh Standard"
 * address only BDAddress 
 
 * extension contains occupation named occupation 0..1
+
+* extension contains nationality named nationality 1..1
