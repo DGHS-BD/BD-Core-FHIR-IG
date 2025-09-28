@@ -99,9 +99,9 @@ Description: "Profile of Patient Bangladesh Standard"
 
 // Religion using standard HL7 extension
 * extension contains http://hl7.org/fhir/StructureDefinition/patient-religion named religion 0..1
-* extension[religion] ^short = "ধর্ম (Religion)"
-* extension[religion] ^definition = "The patient's religious affiliation."
-* extension[religion].valueCodeableConcept from http://hl7.org/fhir/ValueSet/religious-affiliation
+* extension[religion].valueCodeableConcept from https://fhir.dghs.gov.bd/core/ValueSet/bd-religions
 
 * address 1..* MS
 * address only BDAddress 
+
+* extension contains occupation named occupation 0..1
