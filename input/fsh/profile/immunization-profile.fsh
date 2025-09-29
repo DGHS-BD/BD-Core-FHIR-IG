@@ -1,3 +1,5 @@
+
+
 // @Name: Profile
 // @Description: Immunization Profile of the Bangladeshi Patient. 
 Profile:     BDImmunizationProfile
@@ -11,22 +13,20 @@ Description: "Bangladesh Immunization Profile"
 * identifier 1..*
 * identifier ^short = "Unique identifier"
 * identifier ^definition = "Unique identifier for the vaccination event"
-
 * ^url = "https://fhir.dghs.gov.bd/core/identifier/bd-immunization"
 
 * reasonReference 0..*
-
+* reasonReference only Reference(Condition or Observation or DiagnosticReport)
 
 * vaccineCode 1..1
-//* vaccineCode from BDVaccineValueSet (required)
+* vaccineCode from BDVaccineValueSet (required)
 
-* ^url = "https://fhir.dghs.gov.bd/core/StructureDefinition/bd-medication"
+//* ^url = "https://fhir.dghs.gov.bd/core/StructureDefinition/bd-medication"
 
 * manufacturer 0..1
 * manufacturer ^short = "Manufacturer"
 * manufacturer ^definition = "Vaccine manufacturer"
 * ^url = "https://fhir.dghs.gov.bd/core/StructureDefinition/bd-organization"
-
 
 * lotNumber 0..1 
 * lotNumber ^short = "Vaccine Lot Number"
@@ -36,9 +36,9 @@ Description: "Bangladesh Immunization Profile"
 * expirationDate ^short = "Expiration Date"
 * expirationDate ^definition = "Expiration date of vaccine lot"
 
-* patient 1..1
-* patient ^definition = "The patient receiving the vaccine"
-//* patient from BD Patient Profile
+// * patient 1..1
+// * patient ^definition = "The patient receiving the vaccine"
+// * patient from BDPatientProfile
 
 * encounter 1..1
 * encounter ^definition = "Encounter during which vaccine was administered"
@@ -46,18 +46,17 @@ Description: "Bangladesh Immunization Profile"
 
 * occurrence[x] 1..1 
 
-* location 0..1
-* location ^definition = "Location where vaccine was administered"
-//* location from Location Profile
-* ^url = "https://fhir.dghs.gov.bd/core/StructureDefinition/bd-location"
+// * location 0..1
+// * location ^definition = "Location where vaccine was administered"
+// * location only BDAddress
 
 * site 0..1
 * site ^definition = "Body site of administration"
-//* site from BD Immunization Site
+* site from BDImmunizationSiteValueSet
 
 * route 0..1
 * route ^definition = "Route of administration"
-//* route from BD Immunization Route
+* route from BDImmunizationRouteValueSet
 
 * doseQuantity 0..1
 * doseQuantity ^definition = "Amount of vaccine administered"
@@ -71,7 +70,4 @@ Description: "Bangladesh Immunization Profile"
 
 * reaction 0..*
 * reaction ^definition = "Adverse reaction following immunization"
-//* reaction from BD Immunization Reaction
-* ^url = "https://fhir.dghs.gov.bd/core/ValueSet/bd-immunization-reaction"
-
-
+* reaction.detail only Reference(Observation)
