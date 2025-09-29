@@ -9,6 +9,7 @@ Description: "Profile of Encounter Bangladesh Standard"
 
 * status 1..1 MS
 * status from BDEncounterStatusSubsetVS
+* reaction ^definition = "Adverse reaction following immunization"
 
 * class 1..1 MS
 * class from BDEncounterClassSubsetVS
@@ -29,4 +30,4 @@ Description: "Profile of Encounter Bangladesh Standard"
 
 //* admission 0..* MS
 //* admission.dischargeDisposition 0..1 MS
-* encounter.admission.dischargeDisposition 0..1
+
