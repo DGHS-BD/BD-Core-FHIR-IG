@@ -1,38 +1,37 @@
 // @Name: Profile
 // @Description: Example of a profile of the Patient resource. This example includes a few of the most commonly used constraints and documentation features of FHIR profiles.
-
-Profile:     PatientProfileV2
-Id:          patient-profile-v2
+Profile:     BDPatientProfile
+Id:          bd-patient
 Parent:      Patient
 Title:       "Patient Profile for Bangladesh-V2"
 Description: "Profile of Patient Bangladesh Standard V2"
 
 // ----- Begin rules:
 
-// Require at least one value inside the name element
+// Require two names total
 * name 2..*
-// === 1. Declare slicing on name by 'use' ===
+
+// Declare slicing on name by use
 * name ^slicing.discriminator.type = #value
 * name ^slicing.discriminator.path = "use"
 * name ^slicing.rules = #open
 * name ^slicing.ordered = false
 * name ^slicing.description = "Slice name by use (official for English, usual for Bangla)"
 
-// === 2. Define slices ===
+// Define slices
 * name contains
-    nameEnglish 1..1 MS and   // slice alias for English name
-    nameBangla 1..1 MS        // slice alias for Bangla name
+    nameEnglish 1..1 MS and
+    nameBangla 1..1 MS
 
-// === 3. Constrain English (official) name ===
-* name[nameEnglish].use = #en (exactly)
+// English (official)
+* name[nameEnglish].use = #official
 * name[nameEnglish].given 0..*
 * name[nameEnglish].family 0..1
 * name[nameEnglish] ^short = "Legal name (English/Romanized)"
 * name[nameEnglish] ^definition = "Official name as registered in government documents."
 
-
-// === 4. Constrain Bangla name ===
-* name[nameBangla].use = #bn (exactly)
+// Bangla (usual)
+* name[nameBangla].use = #usual
 * name[nameBangla].given 0..*
 * name[nameBangla].family 0..1
 * name[nameBangla] ^short = "নাম (বাংলা)"
@@ -58,7 +57,7 @@ Description: "Profile of Patient Bangladesh Standard V2"
 * identifier[NID].type.coding.system = "https://fhir.dghs.gov.bd/core/ValueSet/bd-identifier-type"
 * identifier[NID].type from BangladeshIdentifierTypeVS (extensible)
 * identifier[NID].type.text = "Organization identifier"
-* identifier[NID].value = "Personal identifier National ID"
+// * identifier[NID].value = "Personal identifier National ID"
 
 // Then in your profile:
 // * identifier.type from BangladeshIdentifierTypeVS (extensible)
@@ -68,7 +67,7 @@ Description: "Profile of Patient Bangladesh Standard V2"
 * identifier[BRN].type.coding.system = "https://fhir.dghs.gov.bd/core/ValueSet/bd-identifier-type"
 * identifier[BRN].type from BangladeshIdentifierTypeVS (extensible)
 * identifier[BRN].type.text = "Organization identifier"
-* identifier[BRN].value = "Personal identifier Birth Registration"
+// * identifier[BRN].value = "Personal identifier Birth Registration"
 
 
 * identifier[UID].system = "http://dghs.gov.bd/identifier/uid"
@@ -76,7 +75,7 @@ Description: "Profile of Patient Bangladesh Standard V2"
 * identifier[UID].type.coding.system = "https://fhir.dghs.gov.bd/core/ValueSet/bd-identifier-type"
 * identifier[UID].type from BangladeshIdentifierTypeVS (extensible)
 * identifier[UID].type.text = "Organization identifier"
-* identifier[UID].value = "Personal identifier"
+// * identifier[UID].value = "Personal identifier"
 
 
 // Mark elements as MustSupport
@@ -101,9 +100,7 @@ Description: "Profile of Patient Bangladesh Standard V2"
 
 // Religion using standard HL7 extension
 * extension contains http://hl7.org/fhir/StructureDefinition/patient-religion named religion 0..1
-* extension[religion] ^short = "ধর্ম (Religion)"
-* extension[religion] ^definition = "The patient's religious affiliation."
-* extension[religion].valueCodeableConcept from http://hl7.org/fhir/ValueSet/religious-affiliation
+* extension[religion].valueCodeableConcept from https://fhir.dghs.gov.bd/core/ValueSet/bd-religions
 
 * address 1..* MS
 * address only BDAddress
@@ -119,3 +116,6 @@ Description: "Profile to represent human names in Bangladesh"
 * extension contains http://hl7.org/fhir/StructureDefinition/language named language
     0..1
 * extension[language].valueCode from http://hl7.org/fhir/ValueSet/languages (preferred)
+
+* extension contains Occupation named occupation 0..1
+* extension contains nationality named nationality 1..1
