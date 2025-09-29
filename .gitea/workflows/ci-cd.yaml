@@ -1,0 +1,283 @@
+name: FHIR IG CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  REGISTRY: git.dghs.gov.bd  # Replace with your Gitea instance
+  IMAGE_NAME: gitadmin/bd-core-fhir-ig    # Replace with your image name
+
+jobs:
+  build-ig:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0  # Full history for proper IG building
+    
+    - name: Install Docker CLI
+      run: |
+        apt-get update
+        apt-get install -y docker.io
+        docker --version
+    
+    - name: Setup Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      with:
+        install: true
+
+    
+    - name: Build FHIR IG (Copy In/Out)
+      run: |
+        echo "Building FHIR IG using copy approach..."
+        
+        # Create a container (don't start yet)
+        CONTAINER_ID=$(docker create \
+          hl7fhir/ig-publisher-base:latest \
+          /bin/bash -c "cp -r /home/publisher/ig /tmp/build && cd /tmp/build && _updatePublisher.sh -y && _genonce.sh")
+        
+        echo "Container ID: $CONTAINER_ID"
+        
+        # Copy all source files into the container
+        docker cp $(pwd)/. $CONTAINER_ID:/home/publisher/ig/
+        
+        # Start and wait for completion
+        docker start -a $CONTAINER_ID
+        EXIT_CODE=$?
+        
+        # Copy outputs back
+        echo "Copying outputs from container..."
+        docker cp $CONTAINER_ID:/tmp/build/output ./output || echo "Warning: No output directory"
+        docker cp $CONTAINER_ID:/tmp/build/fsh-generated ./fsh-generated || echo "No FSH generated files"
+        docker cp $CONTAINER_ID:/tmp/build/input-cache ./input-cache || echo "No input-cache"
+        docker cp $CONTAINER_ID:/tmp/build/temp ./temp || echo "No temp directory"
+        
+        # Show container logs if failed
+        if [ $EXIT_CODE -ne 0 ]; then
+          echo "Build failed, showing container logs:"
+          docker logs $CONTAINER_ID
+        fi
+        
+        # Cleanup
+        docker rm $CONTAINER_ID
+        
+        # Verify
+        if [ ! -f "output/index.html" ]; then
+          echo "ERROR: Build failed - no index.html"
+          exit 1
+        fi
+        
+        echo "✅ Build successful!"
+        
+    - name: Verify IG Output
+      run: |
+        ls -la output/
+        if [ ! -f "output/index.html" ]; then
+          echo "ERROR: IG build failed - no index.html found"
+          exit 1
+        fi
+        echo "IG build successful!"
+    
+    - name: Login to Gitea Container Registry
+      if: github.ref == 'refs/heads/main'
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ gitea.actor }}
+        password: ${{ secrets.ACCESS_TOKEN_GITEA  }}
+    
+    - name: Extract metadata
+      if: github.ref == 'refs/heads/main'
+      id: meta
+      uses: docker/metadata-action@v4
+      with:
+        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=sha,prefix={{branch}}-
+          type=raw,value=latest,enable={{is_default_branch}}
+    
+    - name: Build and push Docker image
+      if: github.ref == 'refs/heads/main'
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        file: ./Dockerfile.serve
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        # cache-from: type=gha
+        # cache-to: type=gha,mode=max
+
+  deploy:
+    needs: build-ig
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    
+    - name: Deploy to server
+      uses: appleboy/ssh-action@v1.0.3
+      env:
+        REGISTRY: ${{ env.REGISTRY }}
+        IMAGE_NAME: ${{ env.IMAGE_NAME }}
+        IMAGE_TAG: latest
+      with:
+        host: ${{ secrets.DEPLOY_HOST }}
+        username: ${{ secrets.DEPLOY_USER }}
+        password: ${{ secrets.DEPLOY_PASSWORD }}
+        port: ${{ secrets.DEPLOY_PORT || 22 }}
+        envs: REGISTRY,IMAGE_NAME,IMAGE_TAG
+        script: |
+          # Create deployment directory if it doesn't exist
+          mkdir -p /opt/fhir-ig
+          cd /opt/fhir-ig
+          
+          # Create docker-compose.prod.yml
+          cat > docker-compose.prod.yml << EOF
+          
+          services:
+            fhir-ig:
+              image: \${REGISTRY}/\${IMAGE_NAME}:\${IMAGE_TAG:-latest}
+              container_name: fhir-ig-app
+              restart: unless-stopped
+              ports:
+                - "80:80"
+              environment:
+                - NODE_ENV=production
+              networks:
+                - fhir-ig-network
+              healthcheck:
+                test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1/health"]
+                interval: 30s
+                timeout: 10s
+                retries: 3
+                start_period: 40s
+              logging:
+                driver: "json-file"
+                options:
+                  max-size: "10m"
+                  max-file: "3"
+              volumes:
+                - fhir-ig-logs:/var/log/nginx
+          
+          networks:
+            fhir-ig-network:
+              driver: bridge
+          
+          volumes:
+            fhir-ig-logs:
+              driver: local
+          EOF
+          
+          # Create deployment script
+          cat > deploy.sh << 'DEPLOY_SCRIPT'
+          #!/bin/bash
+          set -e
+          
+          # Configuration
+          COMPOSE_FILE="docker-compose.prod.yml"
+          SERVICE_NAME="fhir-ig"
+          BACKUP_DIR="/opt/backups/fhir-ig"
+          LOG_FILE="/var/log/fhir-ig-deploy.log"
+          
+          # Create directories
+          mkdir -p "$BACKUP_DIR"
+          mkdir -p "$(dirname "$LOG_FILE")"
+          
+          # Logging function
+          log() {
+              echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" | tee -a "$LOG_FILE"
+          }
+          
+          log "Starting deployment of BD Core FHIR IG..."
+          log "Registry: $REGISTRY"
+          log "Image: $IMAGE_NAME"
+          log "Tag: $IMAGE_TAG"
+          
+          # Login to registry
+          echo "$GITEA_PASSWORD" | docker login $REGISTRY -u "$GITEA_USERNAME" --password-stdin
+          
+          # Backup current container if it exists
+          if docker compose -f "$COMPOSE_FILE" ps --services --filter "status=running" | grep -q "$SERVICE_NAME"; then
+              log "Creating backup of current deployment..."
+              BACKUP_FILE="$BACKUP_DIR/backup-$(date +%Y%m%d-%H%M%S).tar.gz"
+              docker compose -f "$COMPOSE_FILE" exec -T "$SERVICE_NAME" tar -czf - -C /usr/share/nginx/html . > "$BACKUP_FILE" 2>/dev/null || log "Backup failed, continuing..."
+          fi
+          
+          # Set environment variables for docker compose
+          export REGISTRY="$REGISTRY"
+          export IMAGE_NAME="$IMAGE_NAME" 
+          export IMAGE_TAG="$IMAGE_TAG"
+          
+          # Pull the latest image
+          log "Pulling latest image: $REGISTRY/$IMAGE_NAME:$IMAGE_TAG..."
+          docker pull "$REGISTRY/$IMAGE_NAME:$IMAGE_TAG"
+
+          # docker pull "\${REGISTRY}/\${IMAGE_NAME}:\${IMAGE_TAG}"
+          
+          # Stop and remove old container
+          log "Stopping old container..."
+          docker compose -f "$COMPOSE_FILE" down || log "No existing container to stop"
+          
+          # Start new container
+          log "Starting new container..."
+          docker compose -f "$COMPOSE_FILE" up -d
+          
+          # Wait for container to be healthy
+          # log "Waiting for container to become healthy..."
+          # timeout=120
+          # elapsed=0
+          # healthy=false
+          
+          # while [ $elapsed -lt $timeout ]; do
+          #     if docker compose -f "$COMPOSE_FILE" ps --format json | grep -q '"Health":"healthy"'; then
+          #         log "Container is healthy!"
+          #         healthy=true
+          #         break
+          #     fi
+          #     sleep 5
+          #     elapsed=$((elapsed + 5))
+          #     log "Waiting... ($elapsed/$timeout seconds)"
+          # done
+          
+          # if [ "$healthy" = false ]; then
+          #     log "ERROR: Container failed to become healthy within $timeout seconds"
+          #     docker compose -f "$COMPOSE_FILE" logs --tail=50
+          #     log "Rolling back..."
+          #     docker compose -f "$COMPOSE_FILE" down
+          #     exit 1
+          # fi
+          
+          # Cleanup old images (keep last 3 versions)
+          log "Cleaning up old images..."
+          docker images "\${REGISTRY}/\${IMAGE_NAME}" --format "table {{.Repository}}:{{.Tag}}\t{{.CreatedAt}}" | tail -n +2 | sort -k2 -r | tail -n +4 | awk '{print $1}' | xargs -r docker rmi || log "No old images to clean"
+          
+          # Cleanup old backups (keep only last 5)
+          log "Cleaning up old backups..."
+          ls -t "$BACKUP_DIR"/backup-*.tar.gz 2>/dev/null | tail -n +6 | xargs -r rm || log "No old backups to clean"
+          
+          log "Deployment completed successfully!"
+          log "🌐 Service available at: http://$(hostname -I | awk '{print $1}')"
+          
+          # Display final status
+          docker compose -f "$COMPOSE_FILE" ps
+          DEPLOY_SCRIPT
+          
+          # Make deploy script executable
+          chmod +x deploy.sh
+          
+          # Set registry credentials
+          export GITEA_USERNAME="${{ gitea.actor }}"
+          export GITEA_PASSWORD="${{ secrets.ACCESS_TOKEN_GITEA  }}"
+          
+          # Execute deployment
+          ./deploy.sh
