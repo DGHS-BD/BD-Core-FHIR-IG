@@ -1,4 +1,4 @@
-Extension: occupation
+Extension: Occupation 
 Description: "Occupation"
 Id: occupation-bd 
 Title: "Bangladesh Occupations"
