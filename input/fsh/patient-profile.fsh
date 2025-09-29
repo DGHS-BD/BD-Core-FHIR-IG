@@ -1,11 +1,11 @@
 // @Name: Profile
 // @Description: Example of a profile of the Patient resource. This example includes a few of the most commonly used constraints and documentation features of FHIR profiles.
 
-Profile:     PatientProfile
-Id:          patient-profile
+Profile:     PatientProfileV2
+Id:          patient-profile-v2
 Parent:      Patient
-Title:       "Patient Profile for Bangladesh"
-Description: "Profile of Patient Bangladesh Standard"
+Title:       "Patient Profile for Bangladesh-V2"
+Description: "Profile of Patient Bangladesh Standard V2"
 
 // ----- Begin rules:
 
@@ -13,8 +13,9 @@ Description: "Profile of Patient Bangladesh Standard"
 * name 2..*
 // === 1. Declare slicing on name by 'use' ===
 * name ^slicing.discriminator.type = #value
-* name ^slicing.discriminator.path = "system"
+* name ^slicing.discriminator.path = "use"
 * name ^slicing.rules = #open
+* name ^slicing.ordered = false
 * name ^slicing.description = "Slice name by use (official for English, usual for Bangla)"
 
 // === 2. Define slices ===
@@ -53,7 +54,8 @@ Description: "Profile of Patient Bangladesh Standard"
 
 * identifier[NID].system = "http://dghs.gov.bd/identifier/nid"
 * identifier[NID].type.coding.code = #NID
-* identifier[NID].type.coding.system = "http://terminology.hl7.org/CodeSystem/v2-0203"
+// * identifier[NID].type.coding.system = "http://terminology.hl7.org/CodeSystem/v2-0203"
+* identifier[NID].type.coding.system = "https://fhir.dghs.gov.bd/core/ValueSet/bd-identifier-type"
 * identifier[NID].type from BangladeshIdentifierTypeVS (extensible)
 * identifier[NID].type.text = "Organization identifier"
 * identifier[NID].value = "Personal identifier National ID"
@@ -63,7 +65,7 @@ Description: "Profile of Patient Bangladesh Standard"
  
 * identifier[BRN].system = "http://dghs.gov.bd/identifier/brn"
 * identifier[BRN].type.coding.code = #BRN
-* identifier[BRN].type.coding.system = "http://terminology.hl7.org/CodeSystem/v2-0203"
+* identifier[BRN].type.coding.system = "https://fhir.dghs.gov.bd/core/ValueSet/bd-identifier-type"
 * identifier[BRN].type from BangladeshIdentifierTypeVS (extensible)
 * identifier[BRN].type.text = "Organization identifier"
 * identifier[BRN].value = "Personal identifier Birth Registration"
@@ -71,7 +73,7 @@ Description: "Profile of Patient Bangladesh Standard"
 
 * identifier[UID].system = "http://dghs.gov.bd/identifier/uid"
 * identifier[UID].type.coding.code = #UID
-* identifier[UID].type.coding.system = "http://terminology.hl7.org/CodeSystem/v2-0203"
+* identifier[UID].type.coding.system = "https://fhir.dghs.gov.bd/core/ValueSet/bd-identifier-type"
 * identifier[UID].type from BangladeshIdentifierTypeVS (extensible)
 * identifier[UID].type.text = "Organization identifier"
 * identifier[UID].value = "Personal identifier"
@@ -104,4 +106,16 @@ Description: "Profile of Patient Bangladesh Standard"
 * extension[religion].valueCodeableConcept from http://hl7.org/fhir/ValueSet/religious-affiliation
 
 * address 1..* MS
-* address only BDAddress 
+* address only BDAddress
+
+* name only BDHumanName
+
+Profile: BDHumanName
+Id: bd-human-name
+Parent: HumanName
+Title: "BD Human Name"
+Description: "Profile to represent human names in Bangladesh"
+
+* extension contains http://hl7.org/fhir/StructureDefinition/language named language
+    0..1
+* extension[language].valueCode from http://hl7.org/fhir/ValueSet/languages (preferred)

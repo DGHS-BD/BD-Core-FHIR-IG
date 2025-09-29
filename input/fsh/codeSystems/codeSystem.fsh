@@ -5,9 +5,9 @@ Id: bangladesh-identifier-type-cs
 Title: "Bangladesh Identifier Types"
 * ^url =  "https://fhir.dghs.gov.bd/core/ValueSet/bd-identifier-type"
 
-* #TYPE_NID "National ID"
-* #TYPE_BRN "Birth Registration Number"
-* #TYPE_UID "Unique ID"
+* #NID "National ID"
+* #BRN "Birth Registration Number"
+* #UID "Unique ID"
 
 
 ValueSet: BangladeshIdentifierTypeVS
