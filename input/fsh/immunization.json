@@ -1,0 +1,39 @@
+{
+  "resourceType": "StructureDefinition",
+<<<<<<< HEAD
+  "id": "bd-Immunization",
+  "url": "http://example.org/StructureDefinition/bd-Immunization",
+  "version": "1.0.0",
+  "name": "BDImmunizationProfile",
+  "title": "Immunization Profile for Bangladesh",
+  "description": "Bangladesh Immunization Profile",
+=======
+  "id": "bd-immunization",
+  "url": "https://fhir.dghs.gov.bd/core/identifier/bd-immunization",
+  "version": "1.0.0",
+  "name": "BDImmunizationProfile",
+  "title": "Patient Immunization Profile for Bangladesh",
+  "description": "Patients Immunization Bangladesh Standard",
+>>>>>>> 1c45affa520e64b3b9efc307d9116ff138171fa5
+  "fhirVersion": "4.0.1",
+  "kind": "resource",
+  "abstract": false,
+  "type": "Immunization",
+  "baseDefinition": "http://hl7.org/fhir/StructureDefinition/Immunization",
+  "derivation": "constraint",
+  "differential": {
+    "element": [
+      {
+        "id": "Immunization.identifier",
+        "path": "Immunization.identifier",
+<<<<<<< HEAD
+        "short": "Unique identifier",
+=======
+        "short": "Identifier",
+>>>>>>> 1c45affa520e64b3b9efc307d9116ff138171fa5
+        "definition": "Unique identifier for the vaccination event",
+        "min": 1
+      }
+    ]
+  }
+}
