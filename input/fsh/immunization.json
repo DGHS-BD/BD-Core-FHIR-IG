@@ -1,0 +1,26 @@
+{
+  "resourceType": "StructureDefinition",
+  "id": "bd-immunization",
+  "url": "https://fhir.dghs.gov.bd/core/identifier/bd-immunization",
+  "version": "1.0.0",
+  "name": "BDImmunizationProfile",
+  "title": "Patient Immunization Profile for Bangladesh",
+  "description": "Patients Immunization Bangladesh Standard",
+  "fhirVersion": "4.0.1",
+  "kind": "resource",
+  "abstract": false,
+  "type": "Immunization",
+  "baseDefinition": "http://hl7.org/fhir/StructureDefinition/Immunization",
+  "derivation": "constraint",
+  "differential": {
+    "element": [
+      {
+        "id": "Immunization.identifier",
+        "path": "Immunization.identifier",
+        "short": "Identifier",
+        "definition": "Unique identifier for the vaccination event",
+        "min": 1
+      }
+    ]
+  }
+}
