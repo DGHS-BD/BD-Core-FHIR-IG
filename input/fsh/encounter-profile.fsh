@@ -29,4 +29,4 @@ Description: "Profile of Encounter Bangladesh Standard"
 
 //* admission 0..* MS
 //* admission.dischargeDisposition 0..1 MS
-* encounter.admission.dischargeDisposition 0..1
+//* encounter.admission.dischargeDisposition 0..1

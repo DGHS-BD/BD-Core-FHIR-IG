@@ -36,19 +36,19 @@ Description: "Bangladesh Immunization Profile"
 * expirationDate ^short = "Expiration Date"
 * expirationDate ^definition = "Expiration date of vaccine lot"
 
-// * patient 1..1
-// * patient ^definition = "The patient receiving the vaccine"
-// * patient from BDPatientProfile
+* patient 1..1
+* patient ^definition = "The patient receiving the vaccine"
+* patient only Reference(BDPatientProfile) 
 
 * encounter 1..1
 * encounter ^definition = "Encounter during which vaccine was administered"
-//* encounter from BD Encounter Profile
+* encounter only Reference(BDEncounterProfile)
 
 * occurrence[x] 1..1 
 
-// * location 0..1
-// * location ^definition = "Location where vaccine was administered"
-// * location only BDAddress
+* location 0..1
+* location ^definition = "Location where vaccine was administered"
+* location only Reference(Location)
 
 * site 0..1
 * site ^definition = "Body site of administration"
