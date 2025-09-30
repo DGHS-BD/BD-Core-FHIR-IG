@@ -40,7 +40,7 @@ jobs:
         CONTAINER_ID=$(docker create \
           hl7fhir/ig-publisher-base:latest \
           /bin/bash -c "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash" \
-          /bin/bash -c "\. "$HOME/.nvm/nvm.sh"" \
+          /bin/bash -c "\. '$HOME/.nvm/nvm.sh'" \
           /bin/bash -c "nvm install 22" \
           /bin/bash -c "npm install -g fsh-sushi" \
           /bin/bash -c "cp -r /home/publisher/ig /tmp/build && cd /tmp/build && _updatePublisher.sh -y && _genonce.sh")
