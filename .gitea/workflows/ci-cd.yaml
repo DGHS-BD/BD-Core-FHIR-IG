@@ -48,10 +48,14 @@ jobs:
         CONTAINER_ID=$(docker create \
           hl7fhir/ig-publisher-base:latest \
           /bin/bash -c "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash && \
+          rm -f \$HOME/.nvmrc && \
           . \$HOME/.nvm/nvm.sh && \
-          nvm install 22 --delete-prefix && \
+          nvm install 22 && \
+          nvm alias default 22 && \
+          nvm use --delete-prefix 22 && \
           npm install -g fsh-sushi && \
           cp -r /home/publisher/ig /tmp/build && cd /tmp/build && _updatePublisher.sh -y && _genonce.sh")
+
 
 
         echo "Container ID: $CONTAINER_ID"
