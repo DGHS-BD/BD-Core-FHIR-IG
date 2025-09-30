@@ -1,5 +1,5 @@
 ValueSet: BDLanguageVS
-Id: language-valueset
+Id: bd-language-vs
 Title: "Allowed Languages"
 Description: "Only English and Bengali are allowed"
 * http://hl7.org/fhir/ValueSet/languages#en "English"
