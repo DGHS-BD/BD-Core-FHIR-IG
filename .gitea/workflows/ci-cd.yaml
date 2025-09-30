@@ -39,7 +39,7 @@ jobs:
         # Create a container (don't start yet)
         CONTAINER_ID=$(docker create \
           hl7fhir/ig-publisher-base:latest \
-          /bin/bash -c "cp -r /home/publisher/ig /tmp/build && cd /tmp/build && _updatePublisher.sh -y && _genonce.sh")
+          /bin/bash -c "npm install -g fsh-sushi && cp -r /home/publisher/ig /tmp/build && cd /tmp/build && _updatePublisher.sh -y && _genonce.sh")
         
         echo "Container ID: $CONTAINER_ID"
         
