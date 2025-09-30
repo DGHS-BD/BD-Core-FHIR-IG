@@ -1,0 +1,41 @@
+# Multi-stage build for serving FHIR IG output
+FROM nginx:alpine
+
+# Copy the built IG output to nginx html directory
+# (Uncomment and adjust the path if needed)
+COPY output/ /usr/share/nginx/html/
+
+# Copy custom nginx configuration
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Create a non-root user for security
+RUN addgroup -g 1001 -S nginx-user && \
+    adduser -S -D -H -u 1001 -h /var/cache/nginx -s /sbin/nologin -G nginx-user -g nginx-user nginx-user
+
+# Set proper permissions for Nginx directories
+RUN chown -R nginx-user:nginx-user /usr/share/nginx/html && \
+    chown -R nginx-user:nginx-user /var/cache/nginx && \
+    chown -R nginx-user:nginx-user /var/log/nginx && \
+    chown -R nginx-user:nginx-user /etc/nginx/conf.d
+
+# Fix Nginx PID permission issue
+RUN mkdir -p /var/cache/nginx/run && \
+    chown -R nginx-user:nginx-user /var/cache/nginx/run
+
+# Update nginx.conf to point PID to writable location
+# Ensure your nginx.conf has:
+# pid /var/cache/nginx/run/nginx.pid;
+
+# Switch to non-root user
+USER nginx-user
+
+# Health check
+# HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+#   CMD curl -f http://localhost/ || exit 1
+
+EXPOSE 80
+
+# Start Nginx in foreground
+# CMD ["nginx", "-g", "daemon off;"]
+
+CMD ["nginx", "-g", "daemon off;", "-c", "/etc/nginx/nginx.conf"]

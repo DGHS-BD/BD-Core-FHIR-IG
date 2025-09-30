@@ -10,7 +10,7 @@ version: 0.2.0
 fhirVersion: 4.0.1
 copyrightYear: 2025+
 releaseLabel: CI Build
-FSHOnly: true
+FSHOnly: false
 publisher:
   name: Directorate General of Health Services (DGHS), Bangladesh
   url: https://dghs.gov.bd
