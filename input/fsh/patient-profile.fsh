@@ -3,8 +3,8 @@
 Profile:     BDPatientProfile
 Id:          bd-patient
 Parent:      Patient
-Title:       "Patient Profile for Bangladesh-V2"
-Description: "Profile of Patient Bangladesh Standard V2"
+Title:       "Patient Profile for Bangladesh"
+Description: "Profile of Patient Bangladesh Standard"
 
 // ----- Begin rules:
 
@@ -61,7 +61,7 @@ Description: "Profile of Patient Bangladesh Standard V2"
 
 // Then in your profile:
 // * identifier.type from BangladeshIdentifierTypeVS (extensible)
- 
+
 * identifier[BRN].system = "http://dghs.gov.bd/identifier/brn"
 * identifier[BRN].type.coding.code = #BRN
 * identifier[BRN].type.coding.system = "https://fhir.dghs.gov.bd/core/ValueSet/bd-identifier-type"
@@ -106,6 +106,8 @@ Description: "Profile of Patient Bangladesh Standard V2"
 * address only BDAddress
 
 * name only BDHumanName
+* extension contains Occupation named occupation 0..1
+* extension contains nationality named nationality 1..1
 
 Profile: BDHumanName
 Id: bd-human-name
@@ -117,5 +119,3 @@ Description: "Profile to represent human names in Bangladesh"
     0..1
 * extension[language].valueCode from http://hl7.org/fhir/ValueSet/languages (preferred)
 
-* extension contains Occupation named occupation 0..1
-* extension contains nationality named nationality 1..1
