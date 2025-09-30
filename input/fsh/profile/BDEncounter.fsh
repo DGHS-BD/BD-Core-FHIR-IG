@@ -26,6 +26,8 @@ Description: "Profile of Encounter Bangladesh Standard"
 * participant.period 1..1 MS
 
 * diagnosis 0..* MS
+* diagnosis.condition only Reference(BDConditionProfile)
+
 
 //* admission 0..* MS
 //* admission.dischargeDisposition 0..1 MS
