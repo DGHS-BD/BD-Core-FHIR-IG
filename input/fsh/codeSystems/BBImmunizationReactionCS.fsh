@@ -1,4 +1,4 @@
-CodeSystem: BDImmunizationReactionCodeSystem
+CodeSystem: BDImmunizationReactionCS
 Id: bd-immunization-reaction
 Title: "Bangladesh Immunization Reaction Code System"
 Description: "Codes for adverse reactions after vaccination in Bangladesh."
