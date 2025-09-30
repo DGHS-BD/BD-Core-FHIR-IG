@@ -1,4 +1,4 @@
-CodeSystem: BDImmunizationRouteCodeSystem
+CodeSystem: BDImmunizationRouteCS
 Id: bd-immunization-route
 Title: "Bangladesh Immunization Route Code System"
 Description: "Codes for routes of vaccine administration in Bangladesh."

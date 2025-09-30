@@ -1,4 +1,4 @@
-CodeSystem: BDVaccineCodeSystem
+CodeSystem: BDVaccineCS
 Id: bd-vaccine-code
 Title: "Bangladesh Vaccine Code System"
 Description: "Vaccine codes used in Bangladesh EPI and immunization program."
