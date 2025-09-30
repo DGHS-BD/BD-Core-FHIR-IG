@@ -48,7 +48,7 @@ Description: "Bangladesh Immunization Profile"
 
 * location 0..1
 * location ^definition = "Location where vaccine was administered"
-* location only Reference(Location)
+//* location only Reference(Location)
 
 * site 0..1
 * site ^definition = "Body site of administration"
@@ -60,13 +60,11 @@ Description: "Bangladesh Immunization Profile"
 
 * doseQuantity 0..1
 * doseQuantity ^definition = "Amount of vaccine administered"
-//* doseQuantity from UCUM Units
-* ^url = "http://unitsofmeasure.org"
+* doseQuantity.system = "http://unitsofmeasure.org"
 
 * performer 0..* 
 * performer ^definition = "Individual who performed the immunization"
-//* performer from BD Practitioner Profile
-* ^url = "https://fhir.dghs.gov.bd/core/StructureDefinition/bd-practitioner"
+* performer.actor only Reference(BDPractitioner)
 
 * reaction 0..*
 * reaction ^definition = "Adverse reaction following immunization"
