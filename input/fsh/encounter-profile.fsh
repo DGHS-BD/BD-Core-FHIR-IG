@@ -9,7 +9,7 @@ Description: "Profile of Encounter Bangladesh Standard"
 
 * status 1..1 MS
 * status from BDEncounterStatusSubsetVS
-* reaction ^definition = "Adverse reaction following immunization"
+* status ^definition = "planned, in-progress, finished, cancelled"
 
 * class 1..1 MS
 * class from BDEncounterClassSubsetVS
@@ -18,6 +18,7 @@ Description: "Profile of Encounter Bangladesh Standard"
 //* subject from https://fhir.dghs.gov.bd/core/StructureDefinition/bd-patient
 
 * basedOn 0..1 MS
+//* basedOn only Reference (CarePlan or DeviceRequest or MedicationRequest or ServiceRequest)
 
 * partOf 0..1 MS
 
@@ -31,3 +32,4 @@ Description: "Profile of Encounter Bangladesh Standard"
 //* admission 0..* MS
 //* admission.dischargeDisposition 0..1 MS
 
+* hospitalization.dischargeDisposition 0..1 MS
