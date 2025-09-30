@@ -1,7 +1,7 @@
 
 
 // @Name: Profile
-// @Description: Immunization Profile of the Bangladeshi Patient. 
+// @Description: Immunization Profile of the Bangladeshi Patient.
 Profile:     BDImmunizationProfile
 Id:          bd-immunization
 Parent:      Immunization
@@ -28,7 +28,7 @@ Description: "Bangladesh Immunization Profile"
 * manufacturer ^definition = "Vaccine manufacturer"
 * ^url = "https://fhir.dghs.gov.bd/core/StructureDefinition/bd-organization"
 
-* lotNumber 0..1 
+* lotNumber 0..1
 * lotNumber ^short = "Vaccine Lot Number"
 * lotNumber ^definition = "Vaccine lot or batch number"
 
@@ -38,17 +38,17 @@ Description: "Bangladesh Immunization Profile"
 
 * patient 1..1
 * patient ^definition = "The patient receiving the vaccine"
-* patient only Reference(BDPatientProfile) 
+* patient only Reference(BDPatientProfile)
 
 * encounter 1..1
 * encounter ^definition = "Encounter during which vaccine was administered"
 * encounter only Reference(BDEncounterProfile)
 
-* occurrence[x] 1..1 
+* occurrence[x] 1..1
 
 * location 0..1
 * location ^definition = "Location where vaccine was administered"
-//* location only Reference(Location)
+* location only Reference(BDLocation)
 
 * site 0..1
 * site ^definition = "Body site of administration"
@@ -62,10 +62,13 @@ Description: "Bangladesh Immunization Profile"
 * doseQuantity ^definition = "Amount of vaccine administered"
 * doseQuantity.system = "http://unitsofmeasure.org"
 
-* performer 0..* 
+* performer 0..*
 * performer ^definition = "Individual who performed the immunization"
 * performer.actor only Reference(BDPractitioner)
 
 * reaction 0..*
 * reaction ^definition = "Adverse reaction following immunization"
+//TODO: change to BDObservation after creating the profile
 * reaction.detail only Reference(Observation)
+//TODO change to BDObservation after creating the profile
+* reasonReference only Reference(Condition or Observation or DiagnosticReport)
