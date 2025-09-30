@@ -14,10 +14,9 @@ Description: "Profile of MedicationRequest Bangladesh Standard V2"
 
 // TODO: BDEncounter referencing
 * authoredOn 1..1
-* reported[x] 1..1
 * requester 1..1
 
-* reported[x] only Reference(BDOrganization) or boolean
+* reportedReference only Reference(BDPractitioner or BDOrganization or BDPatientProfile)
 * requester only Reference(BDPractitioner or BDOrganization)
 * priorPrescription only Reference(BDMedicationRequest)
 * basedOn only Reference(BDMedicationRequest or ServiceRequest or CarePlan or ImmunizationRecommendation)
