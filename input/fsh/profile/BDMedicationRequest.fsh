@@ -7,8 +7,6 @@ Parent: MedicationRequest
 Title: "Medication Request Profile for Bangladesh-V2"
 Description: "Profile of MedicationRequest Bangladesh Standard V2"
 
-
-
 * identifier 1..*
 * medication[x] 1..1 MS
 * medication[x] only Reference(BDMedication) or CodeableConcept
@@ -16,8 +14,10 @@ Description: "Profile of MedicationRequest Bangladesh Standard V2"
 
 // TODO: BDEncounter referencing
 * authoredOn 1..1
-* requester 1..1
 * reported[x] 1..1
+* requester 1..1
 
-* requester only Reference(BDPractitioner)
-* reported[x] only Reference(BDOrganization)
+* reported[x] only Reference(BDOrganization) or boolean
+* requester only Reference(BDPractitioner or BDOrganization)
+* priorPrescription only Reference(BDMedicationRequest)
+* basedOn only Reference(BDMedicationRequest or ServiceRequest or CarePlan or ImmunizationRecommendation)
