@@ -1,4 +1,4 @@
-ValueSet: BDImmunizationSiteValueSet
+ValueSet: BDImmunizationSiteVS
 Id: bd-immunization-site-valueset
 Title: "Bangladesh Immunization Site Value Set"
 Description: "Allowed administration sites for vaccines in Bangladesh."

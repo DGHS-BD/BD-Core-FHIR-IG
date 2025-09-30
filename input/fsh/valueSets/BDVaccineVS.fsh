@@ -1,4 +1,4 @@
-ValueSet: BDVaccineValueSet
+ValueSet: BDVaccineVS
 Id: bd-vaccine-valueset
 Title: "Bangladesh Vaccine Value Set"
 Description: "Allowed vaccines for immunization in Bangladesh."

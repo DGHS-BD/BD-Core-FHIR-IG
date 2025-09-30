@@ -1,4 +1,4 @@
-ValueSet: BDImmunizationRouteValueSet
+ValueSet: BDImmunizationRouteVS
 Id: bd-immunization-route-valueset
 Title: "Bangladesh Immunization Route Value Set"
 Description: "Allowed administration routes for vaccines in Bangladesh."

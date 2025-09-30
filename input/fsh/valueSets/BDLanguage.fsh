@@ -1,4 +1,4 @@
-ValueSet: LanguageValueSet
+ValueSet: BDLanguageVS
 Id: language-valueset
 Title: "Allowed Languages"
 Description: "Only English and Bengali are allowed"
