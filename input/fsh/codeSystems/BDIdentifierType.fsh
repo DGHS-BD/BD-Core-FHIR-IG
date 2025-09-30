@@ -7,7 +7,7 @@ Title: "Bangladesh Identifier Types"
 
 * #NID "National ID"
 * #BRN "Birth Registration Number"
-* #UID "Unique ID"
+* #UHID "Unique Health ID"
 
 
 ValueSet: BangladeshIdentifierTypeVS
