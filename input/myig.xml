@@ -3,10 +3,10 @@
 <ImplementationGuide xmlns="http://hl7.org/fhir" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://hl7.org/fhir ../input-cache/schemas/R4/fhir-single.xsd">
   <id value="bd.fhir.core"/>
   <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status">
-    <valueCode value="informative"/> 
-  </extension> 
+    <valueCode value="informative"/>
+  </extension>
   <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-fmm">
-    <valueInteger value="1"/> 
+    <valueInteger value="1"/>
   </extension>
 <!--  <extension url="http://hl7.org/fhir/tools/StructureDefinition/igpublisher-spreadsheet">
     <valueString value="resources-spreadsheet.xml"/>
@@ -57,91 +57,8 @@
       <reference>
         <reference value="StructureDefinition/bd-patient"/>
       </reference>
-      <description value="Overriding description because we can"/>
+      <description value="Banlgladesh Patient Profile"/>
     </resource>
-    <resource>
-      <reference>
-        <reference value="StructureDefinition/bd-logical"/>
-      </reference>
-      <description value="Logical Model"/>
-    </resource>
-    <resource>
-      <reference>
-        <reference value="Library/example-sql"/>
-      </reference>
-      <description value="A test example"/>
-    </resource>
-    <resource>
-      <reference>
-        <reference value="Library/example-image"/>
-      </reference>
-      <description value="A test image example"/>
-    </resource>
-<!--<resource>
-<reference>
-<reference value="bd-logicalModel/AS"/>
-</reference>
-</resource> -->
-    <resource>
-      <extension url="http://hl7.org/fhir/tools/StructureDefinition/ig-example-actor">
-        <valueCanonical value="https://fhir.dghs.gov.bd/core/ActorDefinition/example"/>
-      </extension>
-      <reference>
-        <reference value="Patient/example"/>
-      </reference>
-      <name value="Simple patient example"/>
-      <description value="A simple example showing how examples are defined and referenced"/>
-      <exampleCanonical value="https://fhir.dghs.gov.bd/core/StructureDefinition/bd-patient"/>
-    </resource>
-    <resource>
-      <reference>
-        <reference value="Observation/example"/>
-      </reference>
-      <name value="Observation patient example"/>
-      <description value="Example showing slicing"/>
-      <exampleCanonical value="https://fhir.dghs.gov.bd/core/StructureDefinition/bd-observation"/>
-    </resource>
-    <resource>
-      <reference>
-        <reference value="Binary/example"/>
-      </reference>
-      <name value="Example binary"/>
-      <description value="Example showing binary content"/>
-    </resource>
-    <resource>
-      <extension url="http://hl7.org/fhir/StructureDefinition/implementationguide-resource-format">
-        <valueCode value="application/xml"/>
-      </extension>
-      <reference>
-        <reference value="Binary/logical-example"/>
-      </reference>
-      <name value="Example of Logical Model"/>
-      <description value="Example showing example content for a logical model"/>
-      <exampleCanonical value="https://fhir.dghs.gov.bd/core/StructureDefinition/bd-logical"/>
-    </resource>    
-    <resource>
-      <extension url="http://hl7.org/fhir/StructureDefinition/implementationguide-resource-format">
-        <valueCode value="image/jpeg"/>
-      </extension>
-      <reference>
-        <reference value="Binary/image-example"/>
-      </reference>
-      <name value="Example of Binary Image"/>
-      <description value="Example showing example content for an image"/>
-    </resource>    
-    <resource>
-      <reference>
-        <reference value="ValueSet/valueset-no-codesystem"/>
-      </reference>
-      <name value="Value set for no code system"/>
-    </resource>
-<!--    <resource>
-      <reference>
-        <reference value="Library/example"/>
-      </reference>
-      <name value="Simple library example"/>
-      <description value="A simple example showing how library is pre-loaded"/>
-    </resource> -->
     <page>
       <!-- The root will always be toc.html - the template will force it if you don't do it -->
       <nameUrl value="toc.html"/>
@@ -159,10 +76,10 @@
       </page>
       <page>
         <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status">
-          <valueCode value="trial-use"/> 
-        </extension> 
+          <valueCode value="trial-use"/>
+        </extension>
         <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-fmm">
-          <valueInteger value="3"/> 
+          <valueInteger value="3"/>
         </extension>
         <nameUrl value="spec.html"/>
         <title value="Detailed BD-Core-FHIR Specification"/>
