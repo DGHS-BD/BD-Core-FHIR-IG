@@ -1,19 +1,19 @@
-# id: bd.fhir.core
-# canonical: https://fhir.dghs.gov.bd/core
-# name: BangladeshCoreFHIRIG
-# title: Bangladesh Core FHIR Implementation Guide
-# description: >
-#   This Implementation Guide defines the Bangladesh Core FHIR profiles,
-#   value sets, code systems, and implementation rules for national digital health systems.
-# status: draft
-# version: 0.2.0
-# fhirVersion: 4.0.1
-# copyrightYear: 2025+
-# releaseLabel: CI Build
+id: bd.fhir.core
+canonical: https://fhir.dghs.gov.bd/core
+name: BangladeshCoreFHIRIG
+title: Bangladesh Core FHIR Implementation Guide
+description: >
+  This Implementation Guide defines the Bangladesh Core FHIR profiles,
+  value sets, code systems, and implementation rules for national digital health systems.
+status: draft
+version: 0.2.0
+fhirVersion: 4.0.1
+copyrightYear: 2025+
+releaseLabel: CI Build
 FSHOnly: true
-# publisher:
-#   name: Directorate General of Health Services (DGHS), Bangladesh
-#   url: https://dghs.gov.bd
-# parameters:
-#   logo: assets/images/001.svg
-#   show-in-header: true
+publisher:
+  name: Directorate General of Health Services (DGHS), Bangladesh
+  url: https://dghs.gov.bd
+parameters:
+  logo: assets/images/001.svg
+  show-in-header: true
