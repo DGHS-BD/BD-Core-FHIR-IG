@@ -12,7 +12,9 @@ Description: "Profile of MedicationRequest Bangladesh Standard V2"
 * medication[x] only Reference(BDMedication) or CodeableConcept
 * subject only Reference(BDPatientProfile)
 
-// TODO: BDEncounter referencing
+* encounter 0..1 MS
+* encounter only Reference(BDEncounterProfile)
+* encounter ^definition = "The encounter during which this prescription was created."
 * authoredOn 1..1
 * requester 1..1
 

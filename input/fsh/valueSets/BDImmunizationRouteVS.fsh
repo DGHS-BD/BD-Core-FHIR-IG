@@ -1,5 +1,5 @@
-ValueSet: BDImmunizationRouteValueSet
-Id: bd-immunization-route-valueset
+ValueSet: BDImmunizationRouteVS
+Id: bd-immunization-route-vs
 Title: "Bangladesh Immunization Route Value Set"
 Description: "Allowed administration routes for vaccines in Bangladesh."
 * ^url = "https://fhir.dghs.gov.bd/core/ValueSet/bd-immunization-route-valueset"

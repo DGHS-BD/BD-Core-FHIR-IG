@@ -1,5 +1,5 @@
-ValueSet: BDVaccineValueSet
-Id: bd-vaccine-valueset
+ValueSet: BDVaccineVS
+Id: bd-vaccine-vs
 Title: "Bangladesh Vaccine Value Set"
 Description: "Allowed vaccines for immunization in Bangladesh."
 * ^url = "https://fhir.dghs.gov.bd/core/ValueSet/bd-vaccine-valueset"
