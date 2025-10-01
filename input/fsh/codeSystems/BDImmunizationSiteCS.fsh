@@ -1,4 +1,4 @@
-CodeSystem: BDImmunizationSiteCodeSystem
+CodeSystem: BDImmunizationSiteCS
 Id: bd-immunization-site
 Title: "Bangladesh Immunization Site Code System"
 Description: "Codes for anatomical site of vaccine administration in Bangladesh."

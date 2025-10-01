@@ -1,42 +1,39 @@
+Alias: $translation = http://hl7.org/fhir/StructureDefinition/translation
 // @Name: Profile
 // @Description: Example of a profile of the Patient resource. This example includes a few of the most commonly used constraints and documentation features of FHIR profiles.
 Profile:     BDPatientProfile
 Id:          bd-patient
 Parent:      Patient
-Title:       "Patient Profile for Bangladesh-V2"
-Description: "Profile of Patient Bangladesh Standard V2"
+Title:       "Patient Profile for Bangladesh"
+Description: """
+Patient profile for Bangladesh.  
+- Identifiers: NID, BRN, UHID  
+- Name must be provided in both Bangla and English.  
+- SHALL have at least one RelatedPerson with relationship = father or mother, and that RelatedPerson SHALL include both a name and an identifier.
+"""
 
 // ----- Begin rules:
+// Require exactly one HumanName
+* name 1..1 MS
+* name.use 1..1
+* name.use = #official (exactly)
 
-// Require two names total
-* name 2..*
+// Require a text element
+* name.text 1..1 MS
 
-// Declare slicing on name by use
-* name ^slicing.discriminator.type = #value
-* name ^slicing.discriminator.path = "use"
-* name ^slicing.rules = #open
-* name ^slicing.ordered = false
-* name ^slicing.description = "Slice name by use (official for English, usual for Bangla)"
+// Require translation extensions on text
+* name.text.extension 2..* MS
+* name.text.extension contains
+    $translation named nameEn 1..1 MS and
+    $translation named nameBn 1..1 MS
 
-// Define slices
-* name contains
-    nameEnglish 1..1 MS and
-    nameBangla 1..1 MS
+// Constraints on English name
+* name.text.extension[nameEn].extension[lang].valueCode = #en (exactly)
+* name.text.extension[nameEn].extension[content] 1..1 MS
 
-// English (official)
-* name[nameEnglish].use = #official
-* name[nameEnglish].given 0..*
-* name[nameEnglish].family 0..1
-* name[nameEnglish] ^short = "Legal name (English/Romanized)"
-* name[nameEnglish] ^definition = "Official name as registered in government documents."
-
-// Bangla (usual)
-* name[nameBangla].use = #usual
-* name[nameBangla].given 0..*
-* name[nameBangla].family 0..1
-* name[nameBangla] ^short = "নাম (বাংলা)"
-* name[nameBangla] ^definition = "Patient's name written in Bengali script."
-
+// Constraints on Bangla name
+* name.text.extension[nameBn].extension[lang].valueCode = #bn (exactly)
+* name.text.extension[nameBn].extension[content] 1..1 MS
 
 //////////////////////
 
@@ -49,7 +46,7 @@ Description: "Profile of Patient Bangladesh Standard V2"
 * identifier contains
     NID 0..1 and
     BRN 0..1 and
-    UID 0..1
+    UHID 0..1
 
 * identifier[NID].system = "http://dghs.gov.bd/identifier/nid"
 * identifier[NID].type.coding.code = #NID
@@ -61,7 +58,7 @@ Description: "Profile of Patient Bangladesh Standard V2"
 
 // Then in your profile:
 // * identifier.type from BangladeshIdentifierTypeVS (extensible)
- 
+
 * identifier[BRN].system = "http://dghs.gov.bd/identifier/brn"
 * identifier[BRN].type.coding.code = #BRN
 * identifier[BRN].type.coding.system = "https://fhir.dghs.gov.bd/core/ValueSet/bd-identifier-type"
@@ -70,12 +67,11 @@ Description: "Profile of Patient Bangladesh Standard V2"
 // * identifier[BRN].value = "Personal identifier Birth Registration"
 
 
-* identifier[UID].system = "http://dghs.gov.bd/identifier/uid"
-* identifier[UID].type.coding.code = #UID
-* identifier[UID].type.coding.system = "https://fhir.dghs.gov.bd/core/ValueSet/bd-identifier-type"
-* identifier[UID].type from BangladeshIdentifierTypeVS (extensible)
-* identifier[UID].type.text = "Organization identifier"
-// * identifier[UID].value = "Personal identifier"
+* identifier[UHID].system = "http://dghs.gov.bd/identifier/uhid"
+* identifier[UHID].type.coding.code = #UHID
+* identifier[UHID].type.coding.system = "https://fhir.dghs.gov.bd/core/ValueSet/bd-identifier-type"
+* identifier[UHID].type from BangladeshIdentifierTypeVS (extensible)
+* identifier[UHID].type.text = "Organization identifier"
 
 
 // Mark elements as MustSupport
@@ -104,18 +100,3 @@ Description: "Profile of Patient Bangladesh Standard V2"
 
 * address 1..* MS
 * address only BDAddress
-
-* name only BDHumanName
-
-Profile: BDHumanName
-Id: bd-human-name
-Parent: HumanName
-Title: "BD Human Name"
-Description: "Profile to represent human names in Bangladesh"
-
-* extension contains http://hl7.org/fhir/StructureDefinition/language named language
-    0..1
-* extension[language].valueCode from http://hl7.org/fhir/ValueSet/languages (preferred)
-
-* extension contains Occupation named occupation 0..1
-* extension contains nationality named nationality 1..1

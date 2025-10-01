@@ -1,7 +1,7 @@
 CodeSystem: BDGeoCodesCS
 Id: bd-geocodes-cs
-Title: "Bangladesh Address Codes"
-Description: "Bangladesh Address Codes"
+Title: "Bangladesh GeoCodes CodeSystem"
+Description: "Bangladesh GeoCodes"
 * ^url = "https://fhir.dghs.gov.bd/core/CodeSystem/bd-geocodes"
 // DIvisions
 * #30 "Dhaka"

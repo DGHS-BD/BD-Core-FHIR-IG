@@ -19,7 +19,7 @@ Description: "Bangladesh Immunization Profile"
 * reasonReference only Reference(Condition or Observation or DiagnosticReport)
 
 * vaccineCode 1..1
-* vaccineCode from BDVaccineValueSet (required)
+* vaccineCode from BDVaccineVS (required)
 
 //* ^url = "https://fhir.dghs.gov.bd/core/StructureDefinition/bd-medication"
 
@@ -52,11 +52,11 @@ Description: "Bangladesh Immunization Profile"
 
 * site 0..1
 * site ^definition = "Body site of administration"
-* site from BDImmunizationSiteValueSet
+* site from BDImmunizationSiteVS
 
 * route 0..1
 * route ^definition = "Route of administration"
-* route from BDImmunizationRouteValueSet
+* route from BDImmunizationRouteVS
 
 * doseQuantity 0..1
 * doseQuantity ^definition = "Amount of vaccine administered"

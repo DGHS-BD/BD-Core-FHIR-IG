@@ -1,7 +1,7 @@
 CodeSystem: BDCountryListCS 
 Id: bd-country-list-cs
 Title: "Nationality List"
-* ^url =  "https://fhir.dghs.gov.bd/core/CodeSystem/bd-country-list"
+* ^url = "https://fhir.dghs.gov.bd/core/CodeSystem/bd-country-list"
 
 * #4 "Afghan"
 * #8 "Albanian"
@@ -197,5 +197,5 @@ ValueSet: BDCountryListVS
 Id: bd-country-list-vs
 Title: "Nationality ValueSet"
 Description: "Nationality value set"
-* ^url =  "https://fhir.dghs.gov.bd/core/ValueSet/bd-country-list"
+* ^url = "https://fhir.dghs.gov.bd/core/ValueSet/bd-country-list"
 * include codes from system https://fhir.dghs.gov.bd/core/CodeSystem/bd-country-list

@@ -7,5 +7,4 @@ Parent: Practitioner
 Title: "Practitioner for Bangladesh"
 Description: "Practitioner for Bangladesh Standard"
 
-
 * identifier 1..* MS
