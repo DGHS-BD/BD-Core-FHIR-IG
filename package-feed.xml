@@ -23,7 +23,7 @@
       <fhir:version>4.0.1</fhir:version>
       <fhir:kind>IG</fhir:kind>
       <pubDate>Thu, 02 Oct 2025 12:00:00 +0000</pubDate>
-      <fhir:details>Publication run at 02/10/2025 by DGHS Bangladesh using IG Publisher v1.8.x. Source: BD-Core-FHIR-IG repo</fhir:details>
+      <fhir:details>Publication run at 02/10/2025 by DGHS Bangladesh using IG Publisher. Source: BD-Core-FHIR-IG repo</fhir:details>
     </item>
 
   </channel>
