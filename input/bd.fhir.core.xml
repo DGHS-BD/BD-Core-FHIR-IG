@@ -13,7 +13,7 @@
   </extension>-->
   <url value="https://fhir.dghs.gov.bd/core/ImplementationGuide/bd.fhir.core"/>
   <!-- This version will propagate to all artifacts unless the "propagate-version" extension is overridden -->
-  <version value="v0.2.0"/>
+  <version value="0.2.0"/>
   <name value="BangladeshCoreFHIRIG"/>
   <title value="Bangladesh Core FHIR Implementation Guide"/>
   <status value="active"/>
@@ -115,6 +115,10 @@
     <parameter>
       <code value="releaselabel"/>
       <value value="Published by MoHFW"/>
+    </parameter>
+    <parameter>
+      <code value="path-history"/>
+      <value value="https://fhir.dghs.gov.bd/core/history.html"/>
     </parameter>
     <parameter>
       <code value="find-other-resources"/>
