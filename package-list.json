@@ -1,13 +1,13 @@
 {
   "package-id": "bd.fhir.core",
   "title": "Bangladesh Core FHIR Implementation Guide",
-  "canonical": "https://fhir.dghs.gov.bd/core/ImplementationGuide/bd.fhir.core",
+  "canonical": "https://fhir.dghs.gov.bd/ImplementationGuide/bd.fhir.core",
   "introduction": "The Bangladesh Core FHIR IG defines national base profiles, value sets, and extensions for health data interoperability.",
   "list": [
     {
       "version": "current",
       "desc": "Continuous Integration Build (latest development version)",
-      "path": "https://fhir.dghs.gov.bd/core/build",
+      "path": "https://fhir.dghs.gov.bd/build",
       "status": "ci-build",
       "current": true
     },
@@ -15,7 +15,7 @@
       "version": "v0.2.0",
       "date": "2025-10-02",
       "desc": "First draft release of the Bangladesh Core FHIR IG.",
-      "path": "https://fhir.dghs.gov.bd/core/v0.2.0",
+      "path": "https://fhir.dghs.gov.bd/v0.2.0",
       "status": "trial-use",
       "sequence": "STU 1"
     }

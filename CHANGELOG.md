@@ -13,7 +13,7 @@
   - Unique Health ID (UHID)   
 - **Bangladesh Address profile** with Division, District, Upazila, and Union levels.  
 - Initial **examples** for Patient and Practitioner resources.  
-- Configured **myig.xml** with canonical URL `https://fhir.dghs.gov.bd/core`.  
+- Configured **bd.fhir.core.xml** with canonical URL `https://fhir.dghs.gov.bd`.  
 
 ### Notes
 - This is a **pre-release draft** (`0.x.x` series).  
