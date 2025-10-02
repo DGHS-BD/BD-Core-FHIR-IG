@@ -16,7 +16,7 @@
 - Configured **bd.fhir.core.xml** with canonical URL `https://fhir.dghs.gov.bd`.  
 
 ### Notes
-- This is a **pre-release draft** (`0.x.x` series).  
+- This is a **pre-release draft**.  
 - Backward compatibility is **not guaranteed** until `1.0.0`.  
 - Future drafts may adjust slicing rules, bindings, and extensions.
 
