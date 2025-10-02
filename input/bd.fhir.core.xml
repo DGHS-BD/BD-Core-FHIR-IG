@@ -117,6 +117,10 @@
       <value value="Published by MoHFW"/>
     </parameter>
     <parameter>
+      <code value="path-history"/>
+      <value value="https://fhir.dghs.gov.bd/history.html"/>
+    </parameter>
+    <parameter>
       <code value="find-other-resources"/>
       <value value="true"/>
     </parameter>
