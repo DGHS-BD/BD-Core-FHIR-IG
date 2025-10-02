@@ -1,8 +1,5 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
-
----
 
 ## [0.2.0] – 2025-10-02  
 **First official draft release of BD-Core-FHIR-IG**
