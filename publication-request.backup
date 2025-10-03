@@ -1,0 +1,12 @@
+{
+  "package-id": "bd.fhir.core",
+  "title": "Bangladesh Core FHIR Implementation Guide",
+  "canonical": "https://fhir.dghs.gov.bd",
+  "version": "0.2.0",
+  "path": "https://fhir.dghs.gov.bd",
+  "status": "trial-use",
+  "sequence": "STU 1",
+  "mode": "milestone",
+  "desc": "First draft release of the Bangladesh Core FHIR IG.",
+  "first": true
+}
