@@ -6,6 +6,8 @@ Id: bd-blood-groups
 Title: "Bangladesh Blood Group CodeSystem"
 Description: "Blood group codes according to CCDS guideline"
 * ^url = "https://fhir.dghs.gov.bd/core/CodeSystem/bd-blood-groups"
+* ^caseSensitive = true
+* ^experimental = false
 * ^content = #complete
 * #1 "O Positive"
 * #2 "O Negative"
@@ -20,7 +22,7 @@ Description: "Blood group codes according to CCDS guideline"
 // ValueSet for BD Blood Groups
 // ---------------------------
 ValueSet: BDBloodGroupVS
-Id: bd-blood-group-vs
+Id: bd-blood-group-valueset
 Title: "Bangladesh Blood Group ValueSet"
 Description: "Blood group value set according to CCDS guideline"
 * include codes from system BDBloodGroupCS

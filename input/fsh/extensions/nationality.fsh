@@ -10,4 +10,4 @@ Description: "Nationality of the patient based on Bangladesh country list."
 
 // Only one value, bound to your ValueSet
 * value[x] only CodeableConcept
-* valueCodeableConcept from https://fhir.dghs.gov.bd/core/ValueSet/bd-country-list (required)
+* valueCodeableConcept from https://fhir.dghs.gov.bd/core/ValueSet/bd-country-list-valueset (required)

@@ -1,5 +1,3 @@
-
-
 // @Name: Profile
 // @Description: Immunization Profile of the Bangladeshi Patient.
 Profile:     BDImmunizationProfile
@@ -13,7 +11,6 @@ Description: "Bangladesh Immunization Profile"
 * identifier 1..*
 * identifier ^short = "Unique identifier"
 * identifier ^definition = "Unique identifier for the vaccination event"
-* ^url = "https://fhir.dghs.gov.bd/core/identifier/bd-immunization"
 
 * reasonReference 0..*
 * reasonReference only Reference(Condition or Observation or DiagnosticReport)
@@ -26,7 +23,7 @@ Description: "Bangladesh Immunization Profile"
 * manufacturer 0..1
 * manufacturer ^short = "Manufacturer"
 * manufacturer ^definition = "Vaccine manufacturer"
-* ^url = "https://fhir.dghs.gov.bd/core/StructureDefinition/bd-organization"
+* manufacturer only Reference(BDOrganization)
 
 * lotNumber 0..1
 * lotNumber ^short = "Vaccine Lot Number"

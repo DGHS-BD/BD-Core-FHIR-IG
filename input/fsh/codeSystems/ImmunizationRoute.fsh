@@ -4,6 +4,8 @@ Title: "Bangladesh Immunization Route Code System"
 Description: "Codes for routes of vaccine administration in Bangladesh."
 * ^url = "https://fhir.dghs.gov.bd/core/CodeSystem/bd-immunization-route"
 * ^status = #active
+* ^caseSensitive = true
+* ^experimental = false
 * ^content = #complete
 
 * #IM "Intramuscular"

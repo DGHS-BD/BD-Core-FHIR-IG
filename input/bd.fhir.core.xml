@@ -78,9 +78,6 @@
         <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status">
           <valueCode value="trial-use"/>
         </extension>
-        <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-fmm">
-          <valueInteger value="3"/>
-        </extension>
         <nameUrl value="spec.html"/>
         <title value="Detailed BD-Core-FHIR Specification"/>
         <generation value="markdown"/>
@@ -154,10 +151,6 @@
       <value value="true"/>
     </parameter>-->
     <parameter>
-      <code value="showsource"/>
-      <value value="true"/>
-    </parameter>
-    <parameter>
       <code value="i18n-default-lang"/>
       <value value="en"/>
     </parameter>
@@ -176,10 +169,6 @@
     <parameter>
       <code value="translation-sources"/>
       <value value="input/translations-fr"/>
-    </parameter>
-    <parameter>
-      <code value="fcp-approved-specification"/>
-      <value value="false"/>
     </parameter>
   </definition>
 </ImplementationGuide>

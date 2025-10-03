@@ -5,4 +5,4 @@ Title: "ICD 11"
 Description: "Condition coded with ICD-11"
 
 * code 1..1 MS
-* code from http://id.who.int/icd/release/11/mms (preferred)
+* code from BDConditionICD11VS (preferred)

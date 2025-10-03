@@ -4,6 +4,8 @@ Title: "Bangladesh Immunization Site Code System"
 Description: "Codes for anatomical site of vaccine administration in Bangladesh."
 * ^url = "https://fhir.dghs.gov.bd/core/CodeSystem/bd-immunization-site"
 * ^status = #active
+* ^caseSensitive = true
+* ^experimental = false
 * ^content = #complete
 
 * #LA "Left Arm"

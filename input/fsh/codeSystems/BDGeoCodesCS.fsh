@@ -1,8 +1,10 @@
 CodeSystem: BDGeoCodesCS
-Id: bd-geocodes-cs
+Id: bd-geocodes
 Title: "Bangladesh GeoCodes CodeSystem"
 Description: "Bangladesh GeoCodes"
 * ^url = "https://fhir.dghs.gov.bd/core/CodeSystem/bd-geocodes"
+* ^caseSensitive = true
+* ^experimental = false
 // DIvisions
 * #30 "Dhaka"
 * #20 "Chattogram"
@@ -1601,10 +1603,10 @@ Description: "Bangladesh GeoCodes"
 * #4589009077 "Sreebardi Pourasabha"
 
 ValueSet: BDDivisionsVS
-Id: bd-division-code-vs
+Id: bd-division-code-valueset
 Title: "Bangladesh Division ValueSet"
 Description: "Bangladesh Division Codes (only two-digit codes)"
-* ^url = "https://fhir.dghs.gov.bd/core/ValueSet/bd-divisions"
+* ^url = "https://fhir.dghs.gov.bd/core/ValueSet/bd-division-code-valueset"
 
 // include only codes that are exactly 2 digits
 * include codes from system https://fhir.dghs.gov.bd/core/CodeSystem/bd-geocodes
@@ -1612,10 +1614,10 @@ Description: "Bangladesh Division Codes (only two-digit codes)"
 
 
 ValueSet: BDDistrictsVS
-Id: bd-district-code-vs
+Id: bd-district-code-valueset
 Title: "Bangladesh district ValueSet"
 Description: "Bangladesh district Codes (only two-digit codes)"
-* ^url = "https://fhir.dghs.gov.bd/core/ValueSet/bd-districts"
+* ^url = "https://fhir.dghs.gov.bd/core/ValueSet/bd-district-code-valueset"
 
 // include only codes that are exactly 4 digits
 * include codes from system https://fhir.dghs.gov.bd/core/CodeSystem/bd-geocodes
@@ -1623,10 +1625,10 @@ Description: "Bangladesh district Codes (only two-digit codes)"
 
 
 ValueSet: BDCityCorporationsVS
-Id: bd-city-corporations-code-vs
+Id: bd-city-corporation-code-valueset
 Title: "Bangladesh City Corperation ValueSet"
 Description: "Bangladesh City Corperation Codes (only two-digit codes)"
-* ^url = "https://fhir.dghs.gov.bd/core/ValueSet/bd-city-corporations"
+* ^url = "https://fhir.dghs.gov.bd/core/ValueSet/bd-city-corporation-code-valueset"
 
 // include only codes that are exactly 6 digits
 * include codes from system https://fhir.dghs.gov.bd/core/CodeSystem/bd-geocodes
@@ -1634,20 +1636,20 @@ Description: "Bangladesh City Corperation Codes (only two-digit codes)"
 
 
 ValueSet: BDUpazillasVS
-Id: bd-upazillas-code-vs
+Id: bd-upazilla-code-valueset
 Title: "Bangladesh Upazila ValueSet"
 Description: "Bangladesh Upazila Codes (only two-digit codes)"
-* ^url = "https://fhir.dghs.gov.bd/core/ValueSet/bd-upazillas"
+* ^url = "https://fhir.dghs.gov.bd/core/ValueSet/bd-upazilla-code-valueset"
 
 // include only codes that are exactly 8 digits
 * include codes from system https://fhir.dghs.gov.bd/core/CodeSystem/bd-geocodes
     where code regex "^[0-9]{8}$"
 
 ValueSet: BDMunicipalitiesVS
-Id: bd-municipalities-code-vs
+Id: bd-municipalities-code-valueset
 Title: "Bangladesh Municipalities ValueSet"
 Description: "Bangladesh Municipalities Codes (only two-digit codes)"
-* ^url = "https://fhir.dghs.gov.bd/core/ValueSet/bd-municipalities"
+* ^url = "https://fhir.dghs.gov.bd/core/ValueSet/bd-municipalities-code-valueset"
 
 // include only codes that are exactly 10 digits
 * include codes from system https://fhir.dghs.gov.bd/core/CodeSystem/bd-geocodes

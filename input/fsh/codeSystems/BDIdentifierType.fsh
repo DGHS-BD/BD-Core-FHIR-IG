@@ -1,9 +1,12 @@
 //// this code systems for Identifier types
 
 CodeSystem: BangladeshIdentifierType
-Id: bangladesh-identifier-type-cs
+Id: bd-identifier-type
 Title: "Bangladesh Identifier Types"
+Description: "Codes identifying the type of identifiers used in Bangladesh."
 * ^url =  "https://fhir.dghs.gov.bd/core/CodeSystem/bd-identifier-type"
+* ^caseSensitive = true
+* ^experimental = false
 
 * #NID "National ID"
 * #BRN "Birth Registration Number"
@@ -11,10 +14,10 @@ Title: "Bangladesh Identifier Types"
 
 
 ValueSet: BangladeshIdentifierTypeVS
-Id: bangladesh-identifier-type-vs
+Id: bd-identifier-type-valueset
 Title: "Bangladesh Identifier Type"
 Description: "Bangladesh Standard Identifier type"
-* ^url =  "https://fhir.dghs.gov.bd/core/ValueSet/bd-identifier-type"
+* ^url =  "https://fhir.dghs.gov.bd/core/ValueSet/bd-identifier-type-valueset"
 // * include codes from valueset http://hl7.org/fhir/ValueSet/identifier-type /// use name or uri
 * include codes from system https://fhir.dghs.gov.bd/core/CodeSystem/bd-identifier-type
 

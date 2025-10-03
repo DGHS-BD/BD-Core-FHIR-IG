@@ -7,5 +7,5 @@ Context: Patient
 
 // occupation using standard HL7 extension
 * value[x] only string
-* value[x] from https://fhir.dghs.gov.bd/core/ValueSet/bd-occupations (required)
+* value[x] from https://fhir.dghs.gov.bd/core/ValueSet/bd-occupations-valueset (required)
 

@@ -1,6 +1,6 @@
 // ---------- ValueSet ----------
 ValueSet: BDEncounterStatusSubsetVS
-Id: bd-encounter-status-subset-vs
+Id: bd-encounter-status-subset
 Title: "BD Encounter Status Subset"
 Description: "Subset of EncounterStatus limited to planned, in-progress, finished, and cancelled."
 * ^url = "https://fhir.dghs.gov.bd/core/ValueSet/bd-encounter-status-subset"

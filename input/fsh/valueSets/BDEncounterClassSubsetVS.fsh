@@ -1,6 +1,6 @@
 // ---------- ValueSet ----------
 ValueSet: BDEncounterClassSubsetVS
-Id: bd-encounter-class-subset-vs
+Id: bd-encounter-class-subset
 Title: "BD Encounter Class Subset"
 Description: "Subset of EncounterClass limited to inpatient, ambulatory, and emergency."
 * ^url = "https://fhir.dghs.gov.bd/core/ValueSet/bd-encounter-class-subset"

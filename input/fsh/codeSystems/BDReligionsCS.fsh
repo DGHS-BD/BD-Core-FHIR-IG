@@ -1,6 +1,6 @@
 //codeSystems/bd-regions.fsh
 CodeSystem: BDReligionsCS
-Id: bangladesh-religions-cs
+Id: bd-religions
 Title: "Bangladesh Religions"
 * ^url =  "https://fhir.dghs.gov.bd/core/CodeSystem/bd-religions"
 
@@ -13,8 +13,8 @@ Title: "Bangladesh Religions"
 * #0 "Other (specify)" "Other religion (to be specified in free text)"
 
 ValueSet: BDReligionsVS 
-Id: bd-religions-vs
+Id: bd-religions-valueset
 Title: "Bangladesh Religions ValueSet"
 Description: "Religions value set according to CCDS guideline"
-* ^url =  "https://fhir.dghs.gov.bd/core/ValueSet/bd-religions"
+* ^url =  "https://fhir.dghs.gov.bd/core/ValueSet/bd-religions-valueset"
 * include codes from system https://fhir.dghs.gov.bd/core/CodeSystem/bd-religions

@@ -4,6 +4,8 @@ Title: "Bangladesh Immunization Reaction Code System"
 Description: "Codes for adverse reactions after vaccination in Bangladesh."
 * ^url = "https://fhir.dghs.gov.bd/core/CodeSystem/bd-immunization-reaction"
 * ^status = #active
+* ^caseSensitive = true
+* ^experimental = false
 * ^content = #complete
 
 * #NONE "No Reaction"

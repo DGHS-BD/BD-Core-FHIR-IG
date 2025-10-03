@@ -1,8 +1,10 @@
 CodeSystem: BDMedicationCodeSystem
-Id: bd-medication-cs
+Id: bd-medication-code
 Title: "Bangladesh Medication Codes"
 Description: "Bangladesh Medication Codes"
 * ^url = "https://fhir.dghs.gov.bd/core/CodeSystem/bd-medication-code"
+* ^caseSensitive = true
+* ^experimental = false
 // DGDA DAR Code "Brand Name"
 * #394-0010-030 "Tubutol" "Ethambutol"
 * #394-0011-030	"AFDCDT-2" "Isoniazid + Rifampicin"
@@ -16,7 +18,7 @@ Description: "Bangladesh Medication Codes"
 // ValueSet for BD Medication
 // ---------------------------
 ValueSet: BDMedicationVS
-Id: bd-medication-vs
+Id: bd-medication-valueset
 Title: "Bangladesh Medication ValueSet"
 Description: "Bangladesh Medication ValueSet"
 * include codes from system BDMedicationCodeSystem

@@ -4,6 +4,8 @@ Title: "Bangladesh Vaccine Code System"
 Description: "Vaccine codes used in Bangladesh EPI and immunization program."
 * ^url = "https://fhir.dghs.gov.bd/core/CodeSystem/bd-vaccine-code"
 * ^status = #active
+* ^caseSensitive = true
+* ^experimental = false
 * ^content = #complete
 
 * #BCG "BCG Vaccine"

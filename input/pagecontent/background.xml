@@ -1,10 +1,34 @@
 <div xmlns="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://hl7.org/fhir ../../input-cache/schemas/R5/fhir-single.xsd">
-  <h3>Heading 1</h3>
   <p>
-    Some text
+    The Bangladesh Core FHIR Implementation Guide defines national base
+    profiles, code systems, and value sets to ensure interoperability across
+    digital health systems under DGHS and MoHFW.
   </p>
-  <h3>Heading 2</h3>
-	<p>
-		<img height="600" src="anImage.png" alt="A sample image"/>
-	</p>
+
+  <h3>Motivation</h3>
+  <p>
+    Bangladesh has multiple health information systems developed over the
+    years, including DHIS2, multiple hospital automation systems, field automation systems, and HRIS. These systems use different data
+    standards, which makes interoperability difficult. This guide aligns
+    national systems with HL7® FHIR® R4 to ensure semantic consistency and
+    facilitate integration with global initiatives.
+  </p>
+
+  <h3>Scope</h3>
+  <ul>
+    <li>Patient identity management (UHID, NID, BRN)</li>
+    <li>Health facility and organization registry</li>
+    <li>Immunization, laboratory, and condition profiles</li>
+    <li>Terminology services (ICD-11, SNOMED subsets, local CodeSystems)</li>
+  </ul>
+
+  <h3>National Digital Health Architecture</h3>
+  <p>
+    The following diagram shows how FHIR-based services are integrated into
+    Bangladesh's national digital health architecture:
+  </p>
+  <p>
+    <img src="bd-core-architecture.png" alt="Bangladesh Digital Health Architecture" style="max-width:100%; height:auto"/>
+  </p>
 </div>
+
