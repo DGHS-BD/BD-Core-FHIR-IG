@@ -25,7 +25,7 @@
 				</td>
 {% endunless %}
 			</tr>
-			<!-- <tr>
+			<tr>
 				<th>Examples</th>
 {% unless excludexml == 'y' %}
 				<td>
@@ -42,7 +42,7 @@
 					<a href="examples.ttl.zip">Turtle</a>
 				</td>
 {% endunless %}
-			</tr> -->
+			</tr>
 		</tbody>
 	</table>
 </div>
