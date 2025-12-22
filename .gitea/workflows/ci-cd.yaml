@@ -53,6 +53,81 @@ jobs:
         echo "build_type=$BUILD_TYPE" >> $GITHUB_OUTPUT
         echo "Build type: $BUILD_TYPE"
     
+    # NEW STEP: Update package-list.json BEFORE build so IG Publisher can use it
+    - name: Pre-build package-list.json update
+      run: |
+        VERSION="${{ steps.version.outputs.version }}"
+        BUILD_TYPE="${{ steps.version.outputs.build_type }}"
+        DATE=$(date +%Y-%m-%d)
+        
+        # Only update for release builds
+        if [ "$BUILD_TYPE" != "release" ]; then
+          echo "ℹ️ Dev build - skipping package-list.json pre-build update"
+          exit 0
+        fi
+        
+        echo "📋 Updating package-list.json before build..."
+        
+        # Check if package-list.json exists
+        if [ ! -f "package-list.json" ]; then
+          echo "⚠️ package-list.json not found in repo - history.html won't be generated"
+          echo "Creating minimal package-list.json for this build..."
+          cat > package-list.json << EOF
+        {
+          "package-id": "bd.fhir.core",
+          "title": "Bangladesh Core FHIR Implementation Guide",
+          "canonical": "https://fhir.dghs.gov.bd/core",
+          "introduction": "Core FHIR profiles and extensions for Bangladesh healthcare",
+          "list": [
+            {
+              "version": "current",
+              "desc": "Continuous Integration Build (latest in version control)",
+              "path": "https://fhir.dghs.gov.bd/core/",
+              "status": "ci-build",
+              "current": true
+            }
+          ]
+        }
+        EOF
+        fi
+        
+        # Update package-list.json with new version
+        python3 << 'PYEOF'
+        import json
+        import sys
+        
+        version = "$VERSION"
+        date = "$DATE"
+        
+        with open('package-list.json', 'r') as f:
+            pkg_list = json.load(f)
+        
+        # Check if this version already exists
+        version_exists = any(e['version'] == version for e in pkg_list['list'])
+        
+        if not version_exists:
+            new_entry = {
+                "version": version,
+                "date": date,
+                "desc": f"Release {version}",
+                "path": f"https://fhir.dghs.gov.bd/core/{version}/",
+                "status": "trial-use",
+                "sequence": "STU 1"
+            }
+            # Insert after 'current' entry
+            pkg_list['list'].insert(1, new_entry)
+            
+            with open('package-list.json', 'w') as f:
+                json.dump(pkg_list, f, indent=2)
+            
+            print(f"✅ Added version {version} to package-list.json")
+        else:
+            print(f"ℹ️ Version {version} already exists in package-list.json")
+        PYEOF
+        
+        echo "📋 package-list.json is ready for IG Publisher"
+        cat package-list.json
+    
     - name: Install Docker CLI
       run: |
         apt-get update
@@ -94,91 +169,49 @@ jobs:
           exit 1
         fi
         
+        # Check if history.html was generated
+        if [ -f "output/history.html" ]; then
+          echo "✅ history.html generated successfully"
+        else
+          echo "⚠️ WARNING: history.html was not generated"
+          echo "This usually means package-list.json was missing or invalid"
+        fi
+        
         echo "✅ Build successful!"
     
-    - name: Update package-list.json and package-feed.xml for releases
+    - name: Update package-feed.xml for releases
       if: steps.version.outputs.build_type == 'release'
       run: |
         VERSION="${{ steps.version.outputs.version }}"
-        DATE=$(date +%Y-%m-%d)
         DATETIME=$(date -u +%Y-%m-%dT%H:%M:%SZ)
         
-        # Update package-list.json and package-feed.xml
-        cat > update-registry-files.py << 'EOF'
-        import json
+        cat > update-feed.py << 'EOF'
         import sys
         import xml.etree.ElementTree as ET
-        from datetime import datetime
         
         version = sys.argv[1]
-        date = sys.argv[2]
-        datetime_iso = sys.argv[3]
+        datetime_iso = sys.argv[2]
         
-        # ========== Update package-list.json ==========
-        with open('package-list.json', 'r') as f:
-            pkg_list = json.load(f)
-        
-        # Update current build path
-        for entry in pkg_list['list']:
-            if entry['version'] == 'current':
-                entry['path'] = 'https://fhir.dghs.gov.bd/core/'
-                break
-        
-        # Check if this version already exists
-        version_exists = any(e['version'] == version for e in pkg_list['list'])
-        
-        if not version_exists:
-            # Add new version entry
-            new_entry = {
-                "version": version,
-                "date": date,
-                "desc": f"Release {version}",
-                "path": f"https://fhir.dghs.gov.bd/core/{version}/",
-                "status": "trial-use",
-                "sequence": "STU 1"
-            }
-            # Insert after 'current' entry
-            pkg_list['list'].insert(1, new_entry)
-        else:
-            # Update existing entry
-            for entry in pkg_list['list']:
-                if entry['version'] == version:
-                    entry['date'] = date
-                    entry['path'] = f"https://fhir.dghs.gov.bd/core/{version}/"
-                    break
-        
-        with open('output/package-list.json', 'w') as f:
-            json.dump(pkg_list, f, indent=2)
-        
-        print(f"✅ Updated package-list.json with version {version}")
-        
-        # ========== Update package-feed.xml ==========
-        # Register namespaces
         ET.register_namespace('', 'http://www.w3.org/2005/Atom')
         
-        # Parse existing feed
         tree = ET.parse('package-feed.xml')
         root = tree.getroot()
         ns = {'atom': 'http://www.w3.org/2005/Atom'}
         
-        # Update feed updated timestamp
         updated_elem = root.find('atom:updated', ns)
         if updated_elem is not None:
             updated_elem.text = datetime_iso
         
-        # Check if entry for this version already exists
         entry_exists = False
         for entry in root.findall('atom:entry', ns):
             title = entry.find('atom:title', ns)
             if title is not None and version in title.text:
                 entry_exists = True
-                # Update existing entry timestamp
                 entry_updated = entry.find('atom:updated', ns)
                 if entry_updated is not None:
                     entry_updated.text = datetime_iso
                 break
         
-        # If entry doesn't exist, create new one
         if not entry_exists:
             new_entry = ET.Element('{http://www.w3.org/2005/Atom}entry')
             
@@ -198,8 +231,6 @@ jobs:
             summary = ET.SubElement(new_entry, '{http://www.w3.org/2005/Atom}summary')
             summary.text = f"Release {version} of Bangladesh Core FHIR Implementation Guide"
             
-            # Insert new entry at the beginning (after feed metadata)
-            # Find the position after the last feed-level element
             insert_pos = 0
             for i, child in enumerate(root):
                 if child.tag.endswith('entry'):
@@ -209,35 +240,31 @@ jobs:
             
             root.insert(insert_pos, new_entry)
         
-        # Write updated feed
         tree.write('output/package-feed.xml', encoding='utf-8', xml_declaration=True)
-        print(f"✅ Updated package-feed.xml with version {version}")
-        
+        print(f"✅ Updated package-feed.xml")
         EOF
         
-        python3 update-registry-files.py "$VERSION" "$DATE" "$DATETIME"
+        python3 update-feed.py "$VERSION" "$DATETIME"
         
-        # Copy updated files
-        cp output/package-list.json package-list.json
-        cp output/package-feed.xml package-feed.xml
+        # Also copy the updated package-list.json to output
+        cp package-list.json output/package-list.json
         
-        echo "📋 Updated registry files (package-list.json and package-feed.xml)"
+        echo "📋 Updated registry files"
     
     - name: Prepare deployment artifact
       run: |
         VERSION="${{ steps.version.outputs.version }}"
         BUILD_TYPE="${{ steps.version.outputs.build_type }}"
         
-        # Create a tarball of the output
-        if [ "$BUILD_TYPE" == "release" ]; then
-          tar -czf ig-output.tar.gz -C output .
-        else
-          tar -czf ig-output.tar.gz -C output .
-        fi
+        tar -czf ig-output.tar.gz -C output .
         
         echo "version=$VERSION" > deployment.env
         echo "build_type=$BUILD_TYPE" >> deployment.env
         echo "build_date=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> deployment.env
+        
+        # List what's in the output
+        echo "📦 Output contents:"
+        ls -lh output/ | grep -E "(history\.html|package-list\.json|package-feed\.xml|index\.html)"
         
         ls -lh ig-output.tar.gz
     
@@ -327,7 +354,13 @@ jobs:
           echo "Extracting IG output..."
           tar -xzf /tmp/fhir-ig-deploy/ig-output.tar.gz -C "$TARGET_DIR"
           
-          # Copy package-list.json to root
+          # Verify history.html was deployed
+          if [ -f "$TARGET_DIR/history.html" ]; then
+            echo "✅ history.html deployed successfully"
+          else
+            echo "⚠️ WARNING: history.html not found in deployment"
+          fi
+          
           cp /tmp/fhir-ig-deploy/package-list.json "$VERSIONS_DIR/package-list.json"
           
           # Copy package-feed.xml to root
@@ -362,6 +395,7 @@ jobs:
           echo "Version $version is now available at:"
           if [ "$build_type" == "release" ]; then
             echo "  - https://fhir.dghs.gov.bd/core/$version/"
+            echo "  - https://fhir.dghs.gov.bd/core/$version/history.html"
             echo "  - https://fhir.dghs.gov.bd/core/ (current)"
           else
             echo "  - https://fhir.dghs.gov.bd/core/dev/"
