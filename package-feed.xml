@@ -1,30 +1,33 @@
-<rss xmlns:atom="http://www.w3.org/2005/Atom" 
-     xmlns:content="http://purl.org/rss/1.0/modules/content/" 
-     xmlns:dc="http://purl.org/dc/elements/1.1/" 
-     xmlns:fhir="http://hl7.org/fhir/feed" version="2.0">
-  <channel>
-    <title>Bangladesh Core FHIR Packages</title>
-    <description>New Packages published by DGHS Bangladesh</description>
-    <link>https://git.dghs.gov.bd/gitadmin/BD-Core-FHIR-IG</link>
-    <generator>DGHS Bangladesh FHIR Publication tooling</generator>
-    <lastBuildDate>Thu, 02 Oct 2025 12:00:00 +0000</lastBuildDate>
-    <atom:link href="https://git.dghs.gov.bd/gitadmin/BD-Core-FHIR-IG/src/branch/main/package-feed.xml" 
-               rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 02 Oct 2025 12:00:00 +0000</pubDate>
-    <language>en</language>
-    <ttl>600</ttl>
-
-    <item>
-      <title>bd.fhir.core#0.2.0</title>
-      <description>The first draft release of the Bangladesh Core FHIR Implementation Guide.</description>
-      <link>https://git.dghs.gov.bd/gitadmin/BD-Core-FHIR-IG/releases/download/v0.2.0/bd.fhir.core-0.2.0.tgz</link>
-      <guid isPermaLink="true">https://git.dghs.gov.bd/gitadmin/BD-Core-FHIR-IG/releases/download/v0.2.0/bd.fhir.core-0.2.0.tgz</guid>
-      <dc:creator>DGHS Bangladesh</dc:creator>
-      <fhir:version>4.0.1</fhir:version>
-      <fhir:kind>IG</fhir:kind>
-      <pubDate>Thu, 02 Oct 2025 12:00:00 +0000</pubDate>
-      <fhir:details>Publication run at 02/10/2025 by DGHS Bangladesh using IG Publisher. Source: BD-Core-FHIR-IG repo</fhir:details>
-    </item>
-
-  </channel>
-</rss>
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <id>https://fhir.dghs.gov.bd/core/package-feed.xml</id>
+  <title>Bangladesh Core FHIR IG Package Feed</title>
+  <subtitle>FHIR Package Feed for bd.fhir.core</subtitle>
+  <link rel="self" href="https://fhir.dghs.gov.bd/core/package-feed.xml"/>
+  <link rel="alternate" href="https://fhir.dghs.gov.bd/core/"/>
+  <updated>2025-10-02T00:00:00Z</updated>
+  <author>
+    <name>MIS, Directorate General of Health Services (DGHS), Bangladesh</name>
+    <uri>https://dghs.gov.bd</uri>
+  </author>
+  
+  <!-- Entries will be automatically added by the CI/CD pipeline -->
+  <!-- Example entry structure (will be generated): -->
+  <!--
+  <entry>
+    <title>bd.fhir.core version 0.2.0</title>
+    <link rel="alternate" href="https://fhir.dghs.gov.bd/core/0.2.0/"/>
+    <id>https://fhir.dghs.gov.bd/core/0.2.0/</id>
+    <updated>2025-10-02T00:00:00Z</updated>
+    <summary>Release 0.2.0 of Bangladesh Core FHIR Implementation Guide</summary>
+  </entry>
+  -->
+  
+  <entry>
+    <title>bd.fhir.core version 0.2.0</title>
+    <link rel="alternate" href="https://fhir.dghs.gov.bd/core/0.2.0/"/>
+    <id>https://fhir.dghs.gov.bd/core/0.2.0/</id>
+    <updated>2025-10-02T00:00:00Z</updated>
+    <summary>First draft release of Bangladesh Core FHIR Implementation Guide</summary>
+  </entry>
+</feed>

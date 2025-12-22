@@ -1,14 +1,16 @@
-name: FHIR IG CI/CD Pipeline
+name: FHIR IG CI/CD Pipeline with Version Persistence
 
 on:
   push:
     branches: [ main, develop ]
+    tags:
+      - 'v*.*.*'  # Trigger on version tags like v0.3.0
   pull_request:
     branches: [ main ]
 
 env:
-  REGISTRY: git.dghs.gov.bd  # Replace with your Gitea instance
-  IMAGE_NAME: gitadmin/bd-core-fhir-ig    # Replace with your image name
+  REGISTRY: git.dghs.gov.bd
+  IMAGE_NAME: gitadmin/bd-core-fhir-ig
 
 jobs:
   build-ig:
@@ -18,7 +20,38 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
       with:
-        fetch-depth: 0  # Full history for proper IG building
+        fetch-depth: 0
+    
+    - name: Extract version from IG
+      id: version
+      run: |
+        # Extract version from ImplementationGuide resource
+        VERSION=$(grep -oP '<version value="\K[^"]+' input/bd.fhir.core.xml | head -1)
+        
+        if [ -z "$VERSION" ]; then
+          echo "ERROR: Could not extract version from ImplementationGuide XML"
+          exit 1
+        fi
+        
+        echo "Extracted version: $VERSION"
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        
+        # Determine if this is a release build (git tag) or dev build
+        if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+          BUILD_TYPE="release"
+          TAG_VERSION="${GITHUB_REF#refs/tags/v}"
+          
+          # Verify tag matches IG version
+          if [ "$TAG_VERSION" != "$VERSION" ]; then
+            echo "ERROR: Git tag version ($TAG_VERSION) doesn't match IG version ($VERSION)"
+            exit 1
+          fi
+        else
+          BUILD_TYPE="dev"
+        fi
+        
+        echo "build_type=$BUILD_TYPE" >> $GITHUB_OUTPUT
+        echo "Build type: $BUILD_TYPE"
     
     - name: Install Docker CLI
       run: |
@@ -26,258 +59,312 @@ jobs:
         apt-get install -y docker.io
         docker --version
     
-    - name: Setup Docker Buildx
-      uses: docker/setup-buildx-action@v3
-      with:
-        install: true
-
-    
-    - name: Build FHIR IG (Copy In/Out)
+    - name: Build FHIR IG
       run: |
-        echo "Building FHIR IG using copy approach..."
+        echo "Building FHIR IG version ${{ steps.version.outputs.version }}..."
         
-        # Create a container (don't start yet)
         CONTAINER_ID=$(docker create \
           hl7fhir/ig-publisher-base:latest \
           /bin/bash -c "cp -r /home/publisher/ig /tmp/build && cd /tmp/build && _updatePublisher.sh -y && _genonce.sh")
         
         echo "Container ID: $CONTAINER_ID"
         
-        # Copy all source files into the container
         docker cp $(pwd)/. $CONTAINER_ID:/home/publisher/ig/
-        
-        # Start and wait for completion
         docker start -a $CONTAINER_ID
         EXIT_CODE=$?
         
-        # Copy outputs back
+        # Copy outputs
         echo "Copying outputs from container..."
         docker cp $CONTAINER_ID:/tmp/build/output ./output || echo "Warning: No output directory"
-        docker cp $CONTAINER_ID:/tmp/build/fsh-generated ./fsh-generated || echo "No FSH generated files"
+        docker cp $CONTAINER_ID:/tmp/build/fsh-generated ./fsh-generated || echo "No FSH generated"
         docker cp $CONTAINER_ID:/tmp/build/input-cache ./input-cache || echo "No input-cache"
         docker cp $CONTAINER_ID:/tmp/build/temp ./temp || echo "No temp directory"
         
-        # Show container logs if failed
         if [ $EXIT_CODE -ne 0 ]; then
-          echo "Build failed, showing container logs:"
+          echo "Build failed, showing logs:"
           docker logs $CONTAINER_ID
+          docker rm $CONTAINER_ID
+          exit 1
         fi
         
-        # Cleanup
         docker rm $CONTAINER_ID
         
-        # Verify
         if [ ! -f "output/index.html" ]; then
           echo "ERROR: Build failed - no index.html"
           exit 1
         fi
         
         echo "✅ Build successful!"
-        
-    - name: Verify IG Output
+    
+    - name: Update package-list.json and package-feed.xml for releases
+      if: steps.version.outputs.build_type == 'release'
       run: |
-        ls -la output/
-        if [ ! -f "output/index.html" ]; then
-          echo "ERROR: IG build failed - no index.html found"
-          exit 1
+        VERSION="${{ steps.version.outputs.version }}"
+        DATE=$(date +%Y-%m-%d)
+        DATETIME=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+        
+        # Update package-list.json and package-feed.xml
+        cat > update-registry-files.py << 'EOF'
+        import json
+        import sys
+        import xml.etree.ElementTree as ET
+        from datetime import datetime
+        
+        version = sys.argv[1]
+        date = sys.argv[2]
+        datetime_iso = sys.argv[3]
+        
+        # ========== Update package-list.json ==========
+        with open('package-list.json', 'r') as f:
+            pkg_list = json.load(f)
+        
+        # Update current build path
+        for entry in pkg_list['list']:
+            if entry['version'] == 'current':
+                entry['path'] = 'https://fhir.dghs.gov.bd/core/'
+                break
+        
+        # Check if this version already exists
+        version_exists = any(e['version'] == version for e in pkg_list['list'])
+        
+        if not version_exists:
+            # Add new version entry
+            new_entry = {
+                "version": version,
+                "date": date,
+                "desc": f"Release {version}",
+                "path": f"https://fhir.dghs.gov.bd/core/{version}/",
+                "status": "trial-use",
+                "sequence": "STU 1"
+            }
+            # Insert after 'current' entry
+            pkg_list['list'].insert(1, new_entry)
+        else:
+            # Update existing entry
+            for entry in pkg_list['list']:
+                if entry['version'] == version:
+                    entry['date'] = date
+                    entry['path'] = f"https://fhir.dghs.gov.bd/core/{version}/"
+                    break
+        
+        with open('output/package-list.json', 'w') as f:
+            json.dump(pkg_list, f, indent=2)
+        
+        print(f"✅ Updated package-list.json with version {version}")
+        
+        # ========== Update package-feed.xml ==========
+        # Register namespaces
+        ET.register_namespace('', 'http://www.w3.org/2005/Atom')
+        
+        # Parse existing feed
+        tree = ET.parse('package-feed.xml')
+        root = tree.getroot()
+        ns = {'atom': 'http://www.w3.org/2005/Atom'}
+        
+        # Update feed updated timestamp
+        updated_elem = root.find('atom:updated', ns)
+        if updated_elem is not None:
+            updated_elem.text = datetime_iso
+        
+        # Check if entry for this version already exists
+        entry_exists = False
+        for entry in root.findall('atom:entry', ns):
+            title = entry.find('atom:title', ns)
+            if title is not None and version in title.text:
+                entry_exists = True
+                # Update existing entry timestamp
+                entry_updated = entry.find('atom:updated', ns)
+                if entry_updated is not None:
+                    entry_updated.text = datetime_iso
+                break
+        
+        # If entry doesn't exist, create new one
+        if not entry_exists:
+            new_entry = ET.Element('{http://www.w3.org/2005/Atom}entry')
+            
+            title = ET.SubElement(new_entry, '{http://www.w3.org/2005/Atom}title')
+            title.text = f"bd.fhir.core version {version}"
+            
+            link = ET.SubElement(new_entry, '{http://www.w3.org/2005/Atom}link')
+            link.set('rel', 'alternate')
+            link.set('href', f"https://fhir.dghs.gov.bd/core/{version}/")
+            
+            entry_id = ET.SubElement(new_entry, '{http://www.w3.org/2005/Atom}id')
+            entry_id.text = f"https://fhir.dghs.gov.bd/core/{version}/"
+            
+            entry_updated = ET.SubElement(new_entry, '{http://www.w3.org/2005/Atom}updated')
+            entry_updated.text = datetime_iso
+            
+            summary = ET.SubElement(new_entry, '{http://www.w3.org/2005/Atom}summary')
+            summary.text = f"Release {version} of Bangladesh Core FHIR Implementation Guide"
+            
+            # Insert new entry at the beginning (after feed metadata)
+            # Find the position after the last feed-level element
+            insert_pos = 0
+            for i, child in enumerate(root):
+                if child.tag.endswith('entry'):
+                    insert_pos = i
+                    break
+                insert_pos = i + 1
+            
+            root.insert(insert_pos, new_entry)
+        
+        # Write updated feed
+        tree.write('output/package-feed.xml', encoding='utf-8', xml_declaration=True)
+        print(f"✅ Updated package-feed.xml with version {version}")
+        
+        EOF
+        
+        python3 update-registry-files.py "$VERSION" "$DATE" "$DATETIME"
+        
+        # Copy updated files
+        cp output/package-list.json package-list.json
+        cp output/package-feed.xml package-feed.xml
+        
+        echo "📋 Updated registry files (package-list.json and package-feed.xml)"
+    
+    - name: Prepare deployment artifact
+      run: |
+        VERSION="${{ steps.version.outputs.version }}"
+        BUILD_TYPE="${{ steps.version.outputs.build_type }}"
+        
+        # Create a tarball of the output
+        if [ "$BUILD_TYPE" == "release" ]; then
+          tar -czf ig-output.tar.gz -C output .
+        else
+          tar -czf ig-output.tar.gz -C output .
         fi
-        echo "IG build successful!"
+        
+        echo "version=$VERSION" > deployment.env
+        echo "build_type=$BUILD_TYPE" >> deployment.env
+        echo "build_date=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> deployment.env
+        
+        ls -lh ig-output.tar.gz
     
-    - name: Login to Gitea Container Registry
-      if: github.ref == 'refs/heads/main'
-      uses: docker/login-action@v3
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
       with:
-        registry: ${{ env.REGISTRY }}
-        username: ${{ gitea.actor }}
-        password: ${{ secrets.ACCESS_TOKEN_GITEA  }}
-    
-    - name: Extract metadata
-      if: github.ref == 'refs/heads/main'
-      id: meta
-      uses: docker/metadata-action@v4
-      with:
-        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-        tags: |
-          type=ref,event=branch
-          type=ref,event=pr
-          type=sha,prefix={{branch}}-
-          type=raw,value=latest,enable={{is_default_branch}}
-    
-    - name: Build and push Docker image
-      if: github.ref == 'refs/heads/main'
-      uses: docker/build-push-action@v6
-      with:
-        context: .
-        file: ./Dockerfile.serve
-        push: true
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
-        # cache-from: type=gha
-        # cache-to: type=gha,mode=max
+        name: ig-output
+        path: |
+          ig-output.tar.gz
+          deployment.env
+          package-list.json
+          package-feed.xml
+        retention-days: 30
 
   deploy:
     needs: build-ig
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
     
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+    - name: Download artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: ig-output
+    
+    - name: Load deployment env
+      id: deploy_info
+      run: |
+        source deployment.env
+        echo "version=$version" >> $GITHUB_OUTPUT
+        echo "build_type=$build_type" >> $GITHUB_OUTPUT
+        echo "build_date=$build_date" >> $GITHUB_OUTPUT
+        
+        echo "Deploying version: $version"
+        echo "Build type: $build_type"
     
     - name: Deploy to server
-      uses: appleboy/ssh-action@v1.0.3
-      env:
-        REGISTRY: ${{ env.REGISTRY }}
-        IMAGE_NAME: ${{ env.IMAGE_NAME }}
-        IMAGE_TAG: latest
+      uses: appleboy/scp-action@v0.1.7
       with:
         host: ${{ secrets.DEPLOY_HOST }}
         username: ${{ secrets.DEPLOY_USER }}
         password: ${{ secrets.DEPLOY_PASSWORD }}
         port: ${{ secrets.DEPLOY_PORT || 22 }}
-        envs: REGISTRY,IMAGE_NAME,IMAGE_TAG
+        source: "ig-output.tar.gz,deployment.env,package-list.json,package-feed.xml"
+        target: "/tmp/fhir-ig-deploy/"
+    
+    - name: Execute deployment on server
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.DEPLOY_HOST }}
+        username: ${{ secrets.DEPLOY_USER }}
+        password: ${{ secrets.DEPLOY_PASSWORD }}
+        port: ${{ secrets.DEPLOY_PORT || 22 }}
         script: |
-          # Create deployment directory if it doesn't exist
-          mkdir -p /opt/fhir-ig
-          cd /opt/fhir-ig
-          
-          # Create docker-compose.prod.yml
-          cat > docker-compose.prod.yml << EOF
-          
-          services:
-            fhir-ig:
-              image: \${REGISTRY}/\${IMAGE_NAME}:\${IMAGE_TAG:-latest}
-              container_name: fhir-ig-app
-              restart: unless-stopped
-              ports:
-                - "80:80"
-              environment:
-                - NODE_ENV=production
-              networks:
-                - fhir-ig-network
-              healthcheck:
-                test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1/health"]
-                interval: 30s
-                timeout: 10s
-                retries: 3
-                start_period: 40s
-              logging:
-                driver: "json-file"
-                options:
-                  max-size: "10m"
-                  max-file: "3"
-              volumes:
-                - fhir-ig-logs:/var/log/nginx
-          
-          networks:
-            fhir-ig-network:
-              driver: bridge
-          
-          volumes:
-            fhir-ig-logs:
-              driver: local
-          EOF
-          
-          # Create deployment script
-          cat > deploy.sh << 'DEPLOY_SCRIPT'
-          #!/bin/bash
           set -e
           
-          # Configuration
-          COMPOSE_FILE="docker-compose.prod.yml"
-          SERVICE_NAME="fhir-ig"
-          BACKUP_DIR="/opt/backups/fhir-ig"
-          LOG_FILE="/var/log/fhir-ig-deploy.log"
+          # Load deployment info
+          source /tmp/fhir-ig-deploy/deployment.env
           
-          # Create directories
-          mkdir -p "$BACKUP_DIR"
-          mkdir -p "$(dirname "$LOG_FILE")"
+          echo "=========================================="
+          echo "Deploying FHIR IG"
+          echo "Version: $version"
+          echo "Build Type: $build_type"
+          echo "Build Date: $build_date"
+          echo "=========================================="
           
-          # Logging function
-          log() {
-              echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" | tee -a "$LOG_FILE"
-          }
+          # Create version directory structure
+          VERSIONS_DIR="/opt/fhir-ig/versions"
+          mkdir -p "$VERSIONS_DIR"
           
-          log "Starting deployment of BD Core FHIR IG..."
-          log "Registry: $REGISTRY"
-          log "Image: $IMAGE_NAME"
-          log "Tag: $IMAGE_TAG"
-          
-          # Login to registry
-          echo "$GITEA_PASSWORD" | docker login $REGISTRY -u "$GITEA_USERNAME" --password-stdin
-          
-          # Backup current container if it exists
-          if docker compose -f "$COMPOSE_FILE" ps --services --filter "status=running" | grep -q "$SERVICE_NAME"; then
-              log "Creating backup of current deployment..."
-              BACKUP_FILE="$BACKUP_DIR/backup-$(date +%Y%m%d-%H%M%S).tar.gz"
-              docker compose -f "$COMPOSE_FILE" exec -T "$SERVICE_NAME" tar -czf - -C /usr/share/nginx/html . > "$BACKUP_FILE" 2>/dev/null || log "Backup failed, continuing..."
+          # Determine target directory
+          if [ "$build_type" == "release" ]; then
+            TARGET_DIR="$VERSIONS_DIR/$version"
+            echo "📦 Deploying release version to: $TARGET_DIR"
+          else
+            TARGET_DIR="$VERSIONS_DIR/dev"
+            echo "🔧 Deploying dev build to: $TARGET_DIR"
           fi
           
-          # Set environment variables for docker compose
-          export REGISTRY="$REGISTRY"
-          export IMAGE_NAME="$IMAGE_NAME" 
-          export IMAGE_TAG="$IMAGE_TAG"
+          # Create target directory
+          mkdir -p "$TARGET_DIR"
           
-          # Pull the latest image
-          log "Pulling latest image: $REGISTRY/$IMAGE_NAME:$IMAGE_TAG..."
-          docker pull "$REGISTRY/$IMAGE_NAME:$IMAGE_TAG"
-
-          # docker pull "\${REGISTRY}/\${IMAGE_NAME}:\${IMAGE_TAG}"
+          # Extract IG output
+          echo "Extracting IG output..."
+          tar -xzf /tmp/fhir-ig-deploy/ig-output.tar.gz -C "$TARGET_DIR"
           
-          # Stop and remove old container
-          log "Stopping old container..."
-          docker compose -f "$COMPOSE_FILE" down || log "No existing container to stop"
+          # Copy package-list.json to root
+          cp /tmp/fhir-ig-deploy/package-list.json "$VERSIONS_DIR/package-list.json"
           
-          # Start new container
-          log "Starting new container..."
-          docker compose -f "$COMPOSE_FILE" up -d
+          # Copy package-feed.xml to root
+          cp /tmp/fhir-ig-deploy/package-feed.xml "$VERSIONS_DIR/package-feed.xml"
           
-          # Wait for container to be healthy
-          # log "Waiting for container to become healthy..."
-          # timeout=120
-          # elapsed=0
-          # healthy=false
+          # Update 'current' symlink for releases
+          if [ "$build_type" == "release" ]; then
+            echo "Updating 'current' symlink to point to $version"
+            rm -f "$VERSIONS_DIR/current"
+            ln -sf "$version" "$VERSIONS_DIR/current"
+          fi
           
-          # while [ $elapsed -lt $timeout ]; do
-          #     if docker compose -f "$COMPOSE_FILE" ps --format json | grep -q '"Health":"healthy"'; then
-          #         log "Container is healthy!"
-          #         healthy=true
-          #         break
-          #     fi
-          #     sleep 5
-          #     elapsed=$((elapsed + 5))
-          #     log "Waiting... ($elapsed/$timeout seconds)"
-          # done
+          # Ensure nginx container is running with correct config
+          cd /opt/fhir-ig
           
-          # if [ "$healthy" = false ]; then
-          #     log "ERROR: Container failed to become healthy within $timeout seconds"
-          #     docker compose -f "$COMPOSE_FILE" logs --tail=50
-          #     log "Rolling back..."
-          #     docker compose -f "$COMPOSE_FILE" down
-          #     exit 1
-          # fi
+          # Download deployment files if they don't exist
+          if [ ! -f "docker-compose.prod.yml" ]; then
+            echo "ERROR: docker-compose.prod.yml not found!"
+            echo "Please deploy the updated docker-compose.prod.yml and nginx.conf first"
+            exit 1
+          fi
           
-          # Cleanup old images (keep last 3 versions)
-          log "Cleaning up old images..."
-          docker images "\${REGISTRY}/\${IMAGE_NAME}" --format "table {{.Repository}}:{{.Tag}}\t{{.CreatedAt}}" | tail -n +2 | sort -k2 -r | tail -n +4 | awk '{print $1}' | xargs -r docker rmi || log "No old images to clean"
+          # Restart nginx to pick up new content
+          docker compose -f docker-compose.prod.yml restart fhir-ig || \
+            docker compose -f docker-compose.prod.yml up -d
           
-          # Cleanup old backups (keep only last 5)
-          log "Cleaning up old backups..."
-          ls -t "$BACKUP_DIR"/backup-*.tar.gz 2>/dev/null | tail -n +6 | xargs -r rm || log "No old backups to clean"
+          # Cleanup
+          rm -rf /tmp/fhir-ig-deploy
           
-          log "Deployment completed successfully!"
-          log "🌐 Service available at: http://$(hostname -I | awk '{print $1}')"
+          echo "=========================================="
+          echo "✅ Deployment completed successfully!"
+          echo "Version $version is now available at:"
+          if [ "$build_type" == "release" ]; then
+            echo "  - https://fhir.dghs.gov.bd/core/$version/"
+            echo "  - https://fhir.dghs.gov.bd/core/ (current)"
+          else
+            echo "  - https://fhir.dghs.gov.bd/core/dev/"
+          fi
+          echo "=========================================="
           
-          # Display final status
-          docker compose -f "$COMPOSE_FILE" ps
-          DEPLOY_SCRIPT
-          
-          # Make deploy script executable
-          chmod +x deploy.sh
-          
-          # Set registry credentials
-          export GITEA_USERNAME="${{ gitea.actor }}"
-          export GITEA_PASSWORD="${{ secrets.ACCESS_TOKEN_GITEA  }}"
-          
-          # Execute deployment
-          ./deploy.sh
+          # List all versions
+          echo "Available versions:"
+          ls -lh "$VERSIONS_DIR" | grep -v total

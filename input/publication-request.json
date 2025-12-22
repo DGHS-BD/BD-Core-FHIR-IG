@@ -1,0 +1,14 @@
+{
+  "package-id": "bd.fhir.core",
+  "version": "0.2.0",
+  "path": "https://fhir.dghs.gov.bd/core/0.2.0",
+  "mode": "working",
+  "status": "trial-use",
+  "sequence": "STU1",
+  "desc": "First draft release of the Bangladesh Core FHIR Implementation Guide",
+  "descmd": "# Bangladesh Core FHIR IG - Release 0.2.0\n\nThis is the first draft release of the Bangladesh Core FHIR Implementation Guide. It defines national base profiles, value sets, and extensions for health data interoperability in Bangladesh.\n\n## Key Features\n- Base profiles for common FHIR resources\n- National value sets and code systems\n- Extensions for Bangladesh-specific requirements\n\n## Status\nThis is a trial-use release. Implementers are encouraged to provide feedback.",
+  "first": true,
+  "category": "National Base",
+  "ci-build": "https://fhir.dghs.gov.bd/core/",
+  "package-list": "https://fhir.dghs.gov.bd/core/package-list.json"
+}
