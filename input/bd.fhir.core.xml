@@ -111,7 +111,7 @@
     <!-- releaselabel should be the ballot status for HL7-published IGs. -->
     <parameter>
       <code value="releaselabel"/>
-      <value value="Published by MoHFW"/>
+      <value value="Published by DGHS, MoHFW"/>
     </parameter>
     <parameter>
       <code value="find-other-resources"/>
