@@ -315,6 +315,9 @@ jobs:
           else
             TARGET_DIR="$VERSIONS_DIR/dev"
             echo "🔧 Deploying dev build to: $TARGET_DIR"
+
+            echo "Cleaning old dev files..."
+            rm -rf "$TARGET_DIR"/*
           fi
           
           # Create target directory
@@ -347,9 +350,9 @@ jobs:
             exit 1
           fi
           
-          # Restart nginx to pick up new content
-          docker compose -f docker-compose.prod.yml restart fhir-ig || \
-            docker compose -f docker-compose.prod.yml up -d
+          # Force recreate container to ensure new config/mounts are applied
+          # This handles "stuck" states better than a simple restart
+          docker compose -f docker-compose.prod.yml up -d --force-recreate fhir-ig
           
           # Cleanup
           rm -rf /tmp/fhir-ig-deploy
