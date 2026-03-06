@@ -1,12 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<div xmlns="http://www.w3.org/1999/xhtml">
-  <p><b>Version History</b></p>
-  
-  <p>This page provides the version history for the Bangladesh Core FHIR Implementation Guide.</p>
-  
-  <p>For a machine-readable version history, see <a href="package-list.json">package-list.json</a>.</p>
+<div xmlns="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://hl7.org/fhir ../../input-cache/schemas/R5/fhir-single.xsd">
+  <a name="intro"> </a>
+  <h3>Version History</h3>
+  <p>
+    This page provides the version history for the Bangladesh Core FHIR Implementation Guide.
+  </p>
+  <p>
+    For a machine-readable version history, see <a href="package-list.json">package-list.json</a>.
+  </p>
 
-  <p><b>Published Versions</b></p>
+  <a name="published"> </a>
+  <h4>Published Versions</h4>
   <table class="grid">
     <thead>
       <tr>
@@ -17,24 +20,25 @@
       </tr>
     </thead>
     <tbody>
-      {% for entry in site.data['package-list'].list %}
-        {% if entry.version != 'current' %}
+      {% for ver in site.data.info.versions %}
+        {% if ver.id != 'current' %}
         <tr>
-          <td><a href="{{entry.path}}"><b>{{entry.version}}</b></a></td>
-          <td>{{entry.date}}</td>
-          <td>{{entry.status}}</td>
-          <td>{{entry.desc}}</td>
+          <td><a href="{{ver.url}}"><b>{{ver.id}}</b></a></td>
+          <td>{{ver.date}}</td>
+          <td>{{ver.status}}</td>
+          <td>{{ver.desc}}</td>
         </tr>
         {% endif %}
       {% endfor %}
     </tbody>
   </table>
-  
-  <p><b>Continuous Integration Build</b></p>
-  {% for entry in site.data['package-list'].list %}
-    {% if entry.version == 'current' %}
+
+  <a name="ci"> </a>
+  <h4>Continuous Integration Build</h4>
+  {% for ver in site.data.info.versions %}
+    {% if ver.id == 'current' %}
     <div style="background-color: #f8f9fa; padding: 10px; border-left: 5px solid #007bff; margin-top: 10px;">
-      <p>Latest development build is available at: <a href="{{entry.path}}">{{entry.path}}</a></p>
+      <p>Latest development build is available at: <a href="{{ver.url}}">{{ver.url}}</a></p>
     </div>
     {% endif %}
   {% endfor %}
