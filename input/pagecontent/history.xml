@@ -18,14 +18,14 @@
     </thead>
     <tbody>
       {% for entry in site.data['package-list'].list %}
-        {% unless entry.version == 'current' %}
+        {% if entry.version != 'current' %}
         <tr>
           <td><a href="{{entry.path}}"><b>{{entry.version}}</b></a></td>
-          <td>{{entry.date | default: 'N/A'}}</td>
-          <td><span class="badge">{{entry.status | default: 'unknown'}}</span></td>
+          <td>{{entry.date}}</td>
+          <td>{{entry.status}}</td>
           <td>{{entry.desc}}</td>
         </tr>
-        {% endunless %}
+        {% endif %}
       {% endfor %}
     </tbody>
   </table>
@@ -34,7 +34,7 @@
   {% for entry in site.data['package-list'].list %}
     {% if entry.version == 'current' %}
     <div style="background-color: #f8f9fa; padding: 10px; border-left: 5px solid #007bff; margin-top: 10px;">
-      <p>Latest development build: <a href="{{entry.path}}">{{entry.path}}</a></p>
+      <p>Latest development build is available at: <a href="{{entry.path}}">{{entry.path}}</a></p>
     </div>
     {% endif %}
   {% endfor %}
