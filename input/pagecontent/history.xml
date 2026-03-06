@@ -34,35 +34,63 @@
   </div>
   
   <script>
-    fetch('package-list.json')
-      .then(response => response.json())
-      .then(data => {
+    (async function() {
+        const loadingDiv = document.getElementById('version-history-loading');
+        const contentDiv = document.getElementById('version-history-content');
+        const errorDiv = document.getElementById('version-history-error');
         const tbody = document.getElementById('versions-tbody');
         const ciDiv = document.getElementById('ci-build-info');
-        
-        // Add published versions
+
+        // We try multiple paths to ensure we find the JSON whether we are at root or in a version folder
+        const pathsToTry = [
+        'package-list.json',          // Current folder
+        '../package-list.json',       // Parent folder
+        '/core/package-list.json'     // Absolute web root
+        ];
+
+        let data = null;
+
+        for (const path of pathsToTry) {
+        try {
+            console.log('Attempting to fetch history from:', path);
+            const response = await fetch(path);
+            if (response.ok) {
+            data = await response.json();
+            console.log('Successfully loaded version history from:', path);
+            break; 
+            }
+        } catch (e) {
+            console.warn('Failed to fetch from:', path, e);
+        }
+        }
+
+        if (!data || !data.list) {
+        loadingDiv.style.display = 'none';
+        errorDiv.style.display = 'block';
+        return;
+        }
+
+        // Sort list to show newest first (optional, but recommended)
         data.list.forEach(entry => {
-          if (entry.version !== 'current') {
+        if (entry.version !== 'current') {
             const row = tbody.insertRow();
-            row.insertCell(0).innerHTML = '<a href="' + entry.path + '">' + entry.version + '</a>';
+            // Use entry.path from JSON to ensure links always point to the right place
+            row.insertCell(0).innerHTML = `<a href="${entry.path}"><b>${entry.version}</b></a>`;
             row.insertCell(1).textContent = entry.date || 'N/A';
-            row.insertCell(2).textContent = entry.status || 'unknown';
+            row.insertCell(2).innerHTML = `<span class="badge">${entry.status || 'unknown'}</span>`;
             row.insertCell(3).textContent = entry.desc || '';
-          } else {
-            // CI build info
-            ciDiv.innerHTML = '<p>The latest development build is available at: <a href="' + entry.path + '">' + entry.path + '</a></p>' +
-                             '<p><i>Note: This is a continuous integration build and may be unstable.</i></p>';
-          }
+        } else {
+            // Continuous Integration Build info
+            ciDiv.innerHTML = `
+            <div style="background-color: #f8f9fa; padding: 10px; border-left: 5px solid #007bff;">
+                <p>The latest development build is available at: <a href="${entry.path}">${entry.path}</a></p>
+                <p><small>Note: This is a continuous integration build and may be unstable.</small></p>
+            </div>`;
+        }
         });
-        
-        // Show content, hide loading
-        document.getElementById('version-history-loading').style.display = 'none';
-        document.getElementById('version-history-content').style.display = 'block';
-      })
-      .catch(error => {
-        console.error('Error loading version history:', error);
-        document.getElementById('version-history-loading').style.display = 'none';
-        document.getElementById('version-history-error').style.display = 'block';
-      });
-  </script>
+
+        loadingDiv.style.display = 'none';
+        contentDiv.style.display = 'block';
+    })();
+    </script>
 </div>
