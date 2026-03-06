@@ -128,18 +128,28 @@ jobs:
         echo "📋 package-list.json is ready for IG Publisher"
         cat package-list.json
 
-    - name: Free Disk Space (Ubuntu)
+    - name: Free Disk Space
       run: |
         echo "Before cleanup:"
         df -h
-        sudo rm -rf /usr/share/dotnet
-        sudo rm -rf /usr/local/lib/android
-        sudo rm -rf /opt/ghc
-        sudo rm -rf "/usr/local/share/boost"
-        sudo rm -rf /usr/share/swift
-        sudo rm -rf /usr/local/lib/node_modules
-        sudo apt-get clean
-        docker system prune -af
+        
+        # Helper function to delete if directory exists
+        clean_dir() {
+          if [ -d "$1" ]; then
+            echo "Deleting $1..."
+            rm -rf "$1"
+          fi
+        }
+
+        # Clear standard heavy paths (no sudo needed in act)
+        clean_dir /usr/share/dotnet
+        clean_dir /usr/local/lib/android
+        clean_dir /opt/ghc
+        clean_dir /usr/local/share/boost
+        
+        # Prune docker layers to free up the 'overlay' space
+        docker system prune -af || true
+        
         echo "After cleanup:"
         df -h
     
