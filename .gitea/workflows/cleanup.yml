@@ -1,0 +1,12 @@
+name: Emergency Host Cleanup
+on: workflow_dispatch # Manual trigger
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest # or whatever label your full runner uses
+    steps:
+      - name: Prune Docker Host
+        # This is the most effective command to clear the 'overlay' 100% full error
+        run: |
+          docker system prune -af --volumes
+          df -h
