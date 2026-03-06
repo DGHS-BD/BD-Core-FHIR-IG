@@ -12,20 +12,28 @@
       </tr>
     </thead>
     <tbody>
-      {% for ver in site.data['package-list'].list %}
-        {% if ver.version != 'current' %}
+      {% comment %} Try Publisher's internal info first, then fall back to the _data file {% endcomment %}
+      {% assign versions = site.data.info.versions %}
+      {% if versions == nil %}
+        {% assign versions = site.data['package-list'].list %}
+      {% endif %}
+
+      {% for ver in versions %}
+        {% if ver.version != 'current' and ver.id != 'current' %}
         <tr>
-          <td><a href="{{ver.path}}"><b>{{ver.version}}</b></a></td>
-          <td>{{ver.date}}</td>
-          <td><span class="badge">{{ver.status}}</span></td>
-          <td>{{ver.desc}}</td>
+          <td><a href="{{ ver.path | default: ver.url }}"><b>{{ ver.version | default: ver.id }}</b></a></td>
+          <td>{{ ver.date }}</td>
+          <td><span class="badge">{{ ver.status }}</span></td>
+          <td>{{ ver.desc }}</td>
         </tr>
         {% endif %}
       {% endfor %}
     </tbody>
   </table>
 
-  {% if site.data['package-list'] == nil %}
-  <p style="color: red;"><i>Notice: package-list.json not found in _data folder during build.</i></p>
+  {% if versions == nil %}
+  <p style="color: #856404; background-color: #fff3cd; padding: 10px; border: 1px solid #ffeeba;">
+    <strong>Notice:</strong> Version data could not be resolved. Ensure <code>input/_data/package-list.json</code> exists.
+  </p>
   {% endif %}
 </div>
