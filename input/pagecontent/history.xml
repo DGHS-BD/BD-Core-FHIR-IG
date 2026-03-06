@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<div xmlns="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <h2>Version History</h2>
+  
+  <p>This page provides the version history for the Bangladesh Core FHIR Implementation Guide.</p>
+  
+  <p>For a machine-readable version history, see <a href="package-list.json">package-list.json</a>.</p>
+  
+  {% if site.data.package-list %}
+  
+  <h3>Published Versions</h3>
+  
+  <table class="grid">
+    <thead>
+      <tr>
+        <th>Version</th>
+        <th>Date</th>
+        <th>Status</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for entry in site.data.package-list.list %}
+        {% if entry.version != 'current' %}
+        <tr>
+          <td><a href="{{ entry.path }}">{{ entry.version }}</a></td>
+          <td>{{ entry.date }}</td>
+          <td>{{ entry.status }}</td>
+          <td>{{ entry.desc }}</td>
+        </tr>
+        {% endif %}
+      {% endfor %}
+    </tbody>
+  </table>
+  
+  <h3>Continuous Integration Build</h3>
+  
+  {% for entry in site.data.package-list.list %}
+    {% if entry.version == 'current' %}
+    <p>The latest development build is available at: <a href="{{ entry.path }}">{{ entry.path }}</a></p>
+    <p><strong>Note:</strong> This is a continuous integration build and may be unstable.</p>
+    {% endif %}
+  {% endfor %}
+  
+  {% else %}
+  <p><em>Version history not available.</em></p>
+  {% endif %}
+</div>
