@@ -61,7 +61,8 @@ jobs:
     - name: Build FHIR IG
       run: |
         echo "Building FHIR IG version ${{ steps.version.outputs.version }}..."
-        
+        mkdir -p input/_data
+        cp package-list.json input/_data/package-list.json
         CONTAINER_ID=$(docker create \
           hl7fhir/ig-publisher-base:latest \
           /bin/bash -c "cp -r /home/publisher/ig /tmp/build && cd /tmp/build && _updatePublisher.sh -y && _genonce.sh")

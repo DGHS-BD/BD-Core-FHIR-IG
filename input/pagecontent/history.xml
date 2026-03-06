@@ -1,15 +1,7 @@
-<div xmlns="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://hl7.org/fhir ../../input-cache/schemas/R5/fhir-single.xsd">
+<div xmlns="http://www.w3.org/1999/xhtml">
   <a name="intro"> </a>
   <h3>Version History</h3>
-  <p>
-    This page provides the version history for the Bangladesh Core FHIR Implementation Guide.
-  </p>
-  <p>
-    For a machine-readable version history, see <a href="package-list.json">package-list.json</a>.
-  </p>
-
-  <a name="published"> </a>
-  <h4>Published Versions</h4>
+  
   <table class="grid">
     <thead>
       <tr>
@@ -20,12 +12,12 @@
       </tr>
     </thead>
     <tbody>
-      {% for ver in site.data.info.versions %}
-        {% if ver.id != 'current' %}
+      {% for ver in site.data['package-list'].list %}
+        {% if ver.version != 'current' %}
         <tr>
-          <td><a href="{{ver.url}}"><b>{{ver.id}}</b></a></td>
+          <td><a href="{{ver.path}}"><b>{{ver.version}}</b></a></td>
           <td>{{ver.date}}</td>
-          <td>{{ver.status}}</td>
+          <td><span class="badge">{{ver.status}}</span></td>
           <td>{{ver.desc}}</td>
         </tr>
         {% endif %}
@@ -33,13 +25,7 @@
     </tbody>
   </table>
 
-  <a name="ci"> </a>
-  <h4>Continuous Integration Build</h4>
-  {% for ver in site.data.info.versions %}
-    {% if ver.id == 'current' %}
-    <div style="background-color: #f8f9fa; padding: 10px; border-left: 5px solid #007bff; margin-top: 10px;">
-      <p>Latest development build is available at: <a href="{{ver.url}}">{{ver.url}}</a></p>
-    </div>
-    {% endif %}
-  {% endfor %}
+  {% if site.data['package-list'] == nil %}
+  <p style="color: red;"><i>Notice: package-list.json not found in _data folder during build.</i></p>
+  {% endif %}
 </div>
