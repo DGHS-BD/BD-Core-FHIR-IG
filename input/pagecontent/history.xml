@@ -5,92 +5,37 @@
   <p>This page provides the version history for the Bangladesh Core FHIR Implementation Guide.</p>
   
   <p>For a machine-readable version history, see <a href="package-list.json">package-list.json</a>.</p>
-  
-  <div id="version-history-loading">
-    <p><i>Loading version history...</i></p>
-  </div>
-  
-  <div id="version-history-content" style="display:none;">
-    <p><b>Published Versions</b></p>
-    <table class="grid" id="versions-table">
-      <thead>
+
+  <p><b>Published Versions</b></p>
+  <table class="grid">
+    <thead>
+      <tr>
+        <th>Version</th>
+        <th>Date</th>
+        <th>Status</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for entry in site.data['package-list'].list %}
+        {% unless entry.version == 'current' %}
         <tr>
-          <th>Version</th>
-          <th>Date</th>
-          <th>Status</th>
-          <th>Description</th>
+          <td><a href="{{entry.path}}"><b>{{entry.version}}</b></a></td>
+          <td>{{entry.date | default: 'N/A'}}</td>
+          <td><span class="badge">{{entry.status | default: 'unknown'}}</span></td>
+          <td>{{entry.desc}}</td>
         </tr>
-      </thead>
-      <tbody id="versions-tbody">
-      </tbody>
-    </table>
-    
-    <p><b>Continuous Integration Build</b></p>
-    <div id="ci-build-info"></div>
-  </div>
+        {% endunless %}
+      {% endfor %}
+    </tbody>
+  </table>
   
-  <div id="version-history-error" style="display:none;">
-    <p><i>Version history not available.</i></p>
-  </div>
-  
-  {% raw %}
-  <script type="text/javascript">
-    (function() {
-        var loadingDiv = document.getElementById('version-history-loading');
-        var contentDiv = document.getElementById('version-history-content');
-        var errorDiv = document.getElementById('version-history-error');
-        var tbody = document.getElementById('versions-tbody');
-        var ciDiv = document.getElementById('ci-build-info');
-
-        var pathsToTry = [
-            'package-list.json',
-            '../package-list.json',
-            '/core/package-list.json'
-        ];
-
-        function loadData(index) {
-            if (index >= pathsToTry.length) {
-                loadingDiv.style.display = 'none';
-                errorDiv.style.display = 'block';
-                return;
-            }
-
-            fetch(pathsToTry[index])
-                .then(function(response) {
-                    if (!response.ok) throw new Error('Not found');
-                    return response.json();
-                })
-                .then(function(data) {
-                    if (!data || !data.list) throw new Error('Invalid format');
-                    
-                    // Clear tbody in case of multiple attempts
-                    tbody.innerHTML = "";
-
-                    for (var i = 0; i < data.list.length; i++) {
-                        var entry = data.list[i];
-                        if (entry.version !== 'current') {
-                            var row = tbody.insertRow();
-                            row.insertCell(0).innerHTML = '<a href="' + entry.path + '"><b>' + entry.version + '</b></a>';
-                            row.insertCell(1).textContent = entry.date || 'N/A';
-                            row.insertCell(2).innerHTML = '<span class="badge">' + (entry.status || 'unknown') + '</span>';
-                            row.insertCell(3).textContent = entry.desc || '';
-                        } else {
-                            ciDiv.innerHTML = '<div style="background-color: #f8f9fa; padding: 10px; border-left: 5px solid #007bff; margin-top: 10px;">' +
-                                                '<p>Latest development build: <a href="' + entry.path + '">' + entry.path + '</a></p>' +
-                                                '</div>';
-                        }
-                    }
-                    loadingDiv.style.display = 'none';
-                    contentDiv.style.display = 'block';
-                })
-                .catch(function(err) {
-                    console.log('Path failed: ' + pathsToTry[index]);
-                    loadData(index + 1);
-                });
-        }
-
-        loadData(0);
-    })();
-  </script>
-  {% endraw %}
+  <p><b>Continuous Integration Build</b></p>
+  {% for entry in site.data['package-list'].list %}
+    {% if entry.version == 'current' %}
+    <div style="background-color: #f8f9fa; padding: 10px; border-left: 5px solid #007bff; margin-top: 10px;">
+      <p>Latest development build: <a href="{{entry.path}}">{{entry.path}}</a></p>
+    </div>
+    {% endif %}
+  {% endfor %}
 </div>
