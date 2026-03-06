@@ -128,29 +128,24 @@ jobs:
         echo "📋 package-list.json is ready for IG Publisher"
         cat package-list.json
 
-    - name: Free Disk Space
+    - name: Emergency Disk Cleanup
       run: |
-        echo "Before cleanup:"
+        echo "Disk usage before:"
         df -h
         
-        # Helper function to delete if directory exists
-        clean_dir() {
-          if [ -d "$1" ]; then
-            echo "Deleting $1..."
-            rm -rf "$1"
-          fi
-        }
-
-        # Clear standard heavy paths (no sudo needed in act)
-        clean_dir /usr/share/dotnet
-        clean_dir /usr/local/lib/android
-        clean_dir /opt/ghc
-        clean_dir /usr/local/share/boost
+        # 1. Delete the Hosted Tool Cache (This is the 47GB culprit in your logs)
+        echo "Clearing tool cache..."
+        rm -rf /opt/hostedtoolcache/*
         
-        # Prune docker layers to free up the 'overlay' space
-        docker system prune -af || true
+        # 2. Delete other common heavy hitters if they exist
+        rm -rf /usr/share/dotnet
+        rm -rf /usr/local/lib/android
+        rm -rf /opt/ghc
         
-        echo "After cleanup:"
+        # 3. Clear the internal package caches
+        rm -rf ~/.fhir/packages
+        
+        echo "Disk usage after:"
         df -h
     
     - name: Install Docker CLI
