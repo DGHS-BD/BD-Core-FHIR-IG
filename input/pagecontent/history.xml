@@ -33,7 +33,8 @@
     <p><i>Version history not available.</i></p>
   </div>
   
-  <script>
+  {% raw %}
+  <script type="text/javascript">
     (function() {
         var loadingDiv = document.getElementById('version-history-loading');
         var contentDiv = document.getElementById('version-history-content');
@@ -42,50 +43,54 @@
         var ciDiv = document.getElementById('ci-build-info');
 
         var pathsToTry = [
-        'package-list.json',
-        '../package-list.json',
-        '/core/package-list.json'
+            'package-list.json',
+            '../package-list.json',
+            '/core/package-list.json'
         ];
 
         function loadData(index) {
-        if (index >= pathsToTry.length) {
-            loadingDiv.style.display = 'none';
-            errorDiv.style.display = 'block';
-            return;
-        }
-
-        fetch(pathsToTry[index])
-            .then(function(response) {
-            if (!response.ok) throw new Error('Not found');
-            return response.json();
-            })
-            .then(function(data) {
-            if (!data.list) throw new Error('Invalid format');
-            
-            for (var i = 0; i < data.list.length; i++) {
-                var entry = data.list[i];
-                if (entry.version !== 'current') {
-                var row = tbody.insertRow();
-                row.insertCell(0).innerHTML = '<a href="' + entry.path + '"><b>' + entry.version + '</b></a>';
-                row.insertCell(1).textContent = entry.date || 'N/A';
-                row.insertCell(2).innerHTML = '<span class="badge">' + (entry.status || 'unknown') + '</span>';
-                row.insertCell(3).textContent = entry.desc || '';
-                } else {
-                ciDiv.innerHTML = '<div style="background-color: #f8f9fa; padding: 10px; border-left: 5px solid #007bff;">' +
-                                    '<p>Latest development build: <a href="' + entry.path + '">' + entry.path + '</a></p>' +
-                                    '</div>';
-                }
+            if (index >= pathsToTry.length) {
+                loadingDiv.style.display = 'none';
+                errorDiv.style.display = 'block';
+                return;
             }
-            loadingDiv.style.display = 'none';
-            contentDiv.style.display = 'block';
-            })
-            .catch(function() {
-            // Try the next path in the array
-            loadData(index + 1);
-            });
+
+            fetch(pathsToTry[index])
+                .then(function(response) {
+                    if (!response.ok) throw new Error('Not found');
+                    return response.json();
+                })
+                .then(function(data) {
+                    if (!data || !data.list) throw new Error('Invalid format');
+                    
+                    // Clear tbody in case of multiple attempts
+                    tbody.innerHTML = "";
+
+                    for (var i = 0; i < data.list.length; i++) {
+                        var entry = data.list[i];
+                        if (entry.version !== 'current') {
+                            var row = tbody.insertRow();
+                            row.insertCell(0).innerHTML = '<a href="' + entry.path + '"><b>' + entry.version + '</b></a>';
+                            row.insertCell(1).textContent = entry.date || 'N/A';
+                            row.insertCell(2).innerHTML = '<span class="badge">' + (entry.status || 'unknown') + '</span>';
+                            row.insertCell(3).textContent = entry.desc || '';
+                        } else {
+                            ciDiv.innerHTML = '<div style="background-color: #f8f9fa; padding: 10px; border-left: 5px solid #007bff; margin-top: 10px;">' +
+                                                '<p>Latest development build: <a href="' + entry.path + '">' + entry.path + '</a></p>' +
+                                                '</div>';
+                        }
+                    }
+                    loadingDiv.style.display = 'none';
+                    contentDiv.style.display = 'block';
+                })
+                .catch(function(err) {
+                    console.log('Path failed: ' + pathsToTry[index]);
+                    loadData(index + 1);
+                });
         }
 
         loadData(0);
     })();
-    </script>
+  </script>
+  {% endraw %}
 </div>
