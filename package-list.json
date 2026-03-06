@@ -12,6 +12,14 @@
       "current": true
     },
     {
+      "version": "0.2.3",
+      "date": "2025-10-06",
+      "desc": "Second draft release of the Bangladesh Core FHIR IG",
+      "path": "https://fhir.dghs.gov.bd/core/0.2.3/",
+      "status": "trial-use",
+      "sequence": "STU 1"
+    },
+    {
       "version": "0.2.2",
       "date": "2025-10-06",
       "desc": "Second draft release of the Bangladesh Core FHIR IG",
