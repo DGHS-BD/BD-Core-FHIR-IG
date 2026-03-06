@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<div xmlns="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <h2>Version History</h2>
+<div xmlns="http://www.w3.org/1999/xhtml">
+  <p><b>Version History</b></p>
   
   <p>This page provides the version history for the Bangladesh Core FHIR Implementation Guide.</p>
   
@@ -8,7 +8,7 @@
   
   {% if site.data.package-list %}
   
-  <h3>Published Versions</h3>
+  <p><b>Published Versions</b></p>
   
   <table class="grid">
     <thead>
@@ -33,16 +33,16 @@
     </tbody>
   </table>
   
-  <h3>Continuous Integration Build</h3>
+  <p><b>Continuous Integration Build</b></p>
   
   {% for entry in site.data.package-list.list %}
     {% if entry.version == 'current' %}
     <p>The latest development build is available at: <a href="{{ entry.path }}">{{ entry.path }}</a></p>
-    <p><strong>Note:</strong> This is a continuous integration build and may be unstable.</p>
+    <p><i>Note: This is a continuous integration build and may be unstable.</i></p>
     {% endif %}
   {% endfor %}
   
   {% else %}
-  <p><em>Version history not available.</em></p>
+  <p><i>Version history not available.</i></p>
   {% endif %}
 </div>
