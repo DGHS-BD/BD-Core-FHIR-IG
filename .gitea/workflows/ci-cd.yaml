@@ -127,6 +127,21 @@ jobs:
         
         echo "📋 package-list.json is ready for IG Publisher"
         cat package-list.json
+
+    - name: Free Disk Space (Ubuntu)
+      run: |
+        echo "Before cleanup:"
+        df -h
+        sudo rm -rf /usr/share/dotnet
+        sudo rm -rf /usr/local/lib/android
+        sudo rm -rf /opt/ghc
+        sudo rm -rf "/usr/local/share/boost"
+        sudo rm -rf /usr/share/swift
+        sudo rm -rf /usr/local/lib/node_modules
+        sudo apt-get clean
+        docker system prune -af
+        echo "After cleanup:"
+        df -h
     
     - name: Install Docker CLI
       run: |
@@ -138,46 +153,11 @@ jobs:
       run: |
         echo "Building FHIR IG version ${{ steps.version.outputs.version }}..."
         
-        CONTAINER_ID=$(docker create \
+        # We run the container, mount the current folder, and --rm ensures it's deleted after
+        docker run --rm \
+          -v $(pwd):/home/publisher/ig \
           hl7fhir/ig-publisher-base:latest \
-          /bin/bash -c "cp -r /home/publisher/ig /tmp/build && cd /tmp/build && _updatePublisher.sh -y && _genonce.sh")
-        
-        echo "Container ID: $CONTAINER_ID"
-        
-        docker cp $(pwd)/. $CONTAINER_ID:/home/publisher/ig/
-        docker start -a $CONTAINER_ID
-        EXIT_CODE=$?
-        
-        # Copy outputs
-        echo "Copying outputs from container..."
-        docker cp $CONTAINER_ID:/tmp/build/output ./output || echo "Warning: No output directory"
-        docker cp $CONTAINER_ID:/tmp/build/fsh-generated ./fsh-generated || echo "No FSH generated"
-        docker cp $CONTAINER_ID:/tmp/build/input-cache ./input-cache || echo "No input-cache"
-        docker cp $CONTAINER_ID:/tmp/build/temp ./temp || echo "No temp directory"
-        
-        if [ $EXIT_CODE -ne 0 ]; then
-          echo "Build failed, showing logs:"
-          docker logs $CONTAINER_ID
-          docker rm $CONTAINER_ID
-          exit 1
-        fi
-        
-        docker rm $CONTAINER_ID
-        
-        if [ ! -f "output/index.html" ]; then
-          echo "ERROR: Build failed - no index.html"
-          exit 1
-        fi
-        
-        # Check if history.html was generated
-        if [ -f "output/history.html" ]; then
-          echo "✅ history.html generated successfully"
-        else
-          echo "⚠️ WARNING: history.html was not generated"
-          echo "This usually means package-list.json was missing or invalid"
-        fi
-        
-        echo "✅ Build successful!"
+          /bin/bash -c "cp -r /home/publisher/ig /tmp/build && cd /tmp/build && _updatePublisher.sh -y && _genonce.sh && cp -r /tmp/build/output /home/publisher/ig/ && cp -r /tmp/build/fsh-generated /home/publisher/ig/ && cp -r /tmp/build/input-cache /home/publisher/ig/ && cp -r /tmp/build/temp /home/publisher/ig/"
     
     - name: Update package-feed.xml for releases
       if: steps.version.outputs.build_type == 'release'
