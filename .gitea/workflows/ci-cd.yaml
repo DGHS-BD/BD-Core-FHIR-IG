@@ -178,11 +178,26 @@ jobs:
               <tbody>
           '''
 
-          published_found = False
-          for entry in pkg_list['list']:
-              if entry.get('version') == 'current':
-                  continue
+          def version_key(v):
+              try:
+                  return tuple(int(x) for x in v.split('.'))
+              except:
+                  return (0,)
 
+          published = [
+              e for e in pkg_list['list']
+              if e.get('version') and e.get('version') != "current"
+          ]
+
+          # Sort versions descending (newest first)
+          published.sort(
+              key=lambda e: version_key(e.get("version", "0.0.0")),
+              reverse=True
+          )
+
+          published_found = False
+
+          for entry in published:
               published_found = True
               version = escape(entry.get('version', 'Unknown'))
               date = escape(entry.get('date', 'N/A'))
