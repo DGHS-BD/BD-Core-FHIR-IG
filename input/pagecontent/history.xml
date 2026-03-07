@@ -5,7 +5,7 @@
     This page provides the version history for the Bangladesh Core FHIR Implementation Guide.
   </p>
 
-  {{site.data.history.table}}
+  [%history%]
 
   <p>
     For a machine-readable version history, see <a href="package-list.json">package-list.json</a>.
