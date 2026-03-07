@@ -321,7 +321,8 @@ jobs:
           CONTAINER_ID=$(docker create \
             -v $(pwd)/fhir-packages:/home/publisher/.fhir/packages-extra \
             hl7fhir/ig-publisher-base:latest \
-            /bin/bash -c "cp -r /home/publisher/.fhir/packages-extra/* /home/publisher/.fhir/packages/ 2>/dev/null || true && cd /tmp/build && _updatePublisher.sh -y && _genonce.sh")
+            /bin/bash -c "cp -r /home/publisher/ig /tmp/build && \
+                          cp -r /home/publisher/.fhir/packages-extra/* /home/publisher/.fhir/packages/ 2>/dev/null || true && cd /tmp/build && _updatePublisher.sh -y && _genonce.sh")
 
           echo "Container ID: $CONTAINER_ID"
 
