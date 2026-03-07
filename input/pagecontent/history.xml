@@ -1,39 +1,13 @@
 <div xmlns="http://www.w3.org/1999/xhtml">
   <a name="intro"> </a>
   <h3>Version History</h3>
-  
-  <table class="grid">
-    <thead>
-      <tr>
-        <th>Version</th>
-        <th>Date</th>
-        <th>Status</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% comment %} Try Publisher's internal info first, then fall back to the _data file {% endcomment %}
-      {% assign versions = site.data.info.versions %}
-      {% if versions == nil %}
-        {% assign versions = site.data['package-list'].list %}
-      {% endif %}
-
-      {% for ver in versions %}
-        {% if ver.version != 'current' and ver.id != 'current' %}
-        <tr>
-          <td><a href="{{ ver.path | default: ver.url }}"><b>{{ ver.version | default: ver.id }}</b></a></td>
-          <td>{{ ver.date }}</td>
-          <td><span class="badge">{{ ver.status }}</span></td>
-          <td>{{ ver.desc }}</td>
-        </tr>
-        {% endif %}
-      {% endfor %}
-    </tbody>
-  </table>
-
-  {% if versions == nil %}
-  <p style="color: #856404; background-color: #fff3cd; padding: 10px; border: 1px solid #ffeeba;">
-    <strong>Notice:</strong> Version data could not be resolved. Ensure <code>input/_data/package-list.json</code> exists.
+  <p>
+    This page provides the version history for the Bangladesh Core FHIR Implementation Guide.
   </p>
-  {% endif %}
+
+  {% include fragment-history.html %}
+
+  <p>
+    For a machine-readable version history, see <a href="package-list.json">package-list.json</a>.
+  </p>
 </div>
