@@ -14,6 +14,6 @@ h6:before{color:silver;counter-increment:more-detail;content:var(--heading-prefi
   {% endif %}
   {% include fragment-pageTable.html %}
   {% assign path = page.path | split: '.html' %}
-  {{ content }}
+  {% include {{path}}.xml %}
 </div>
 {% include fragment-pageend.html %}
