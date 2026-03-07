@@ -1,6 +1,7 @@
 <div xmlns="http://www.w3.org/1999/xhtml">
-  <h3>Version History</h3>
 
-  [%history%]
+<h3>Version History</h3>
+
+[%history%]
 
 </div>
