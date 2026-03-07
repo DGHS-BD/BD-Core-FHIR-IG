@@ -328,6 +328,8 @@ jobs:
 
           cd /tmp/build/ig
 
+          rm -f package-list.json
+
           _updatePublisher.sh -y
           _genonce.sh
           ")
