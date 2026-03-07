@@ -159,8 +159,6 @@ jobs:
           xml = '''<?xml version="1.0" encoding="UTF-8"?>
           <div xmlns="http://www.w3.org/1999/xhtml">
 
-          <p class="lead"><b>Version History</b></p>
-
           <p>This page provides the version history for the Bangladesh Core FHIR Implementation Guide.</p>
 
           <p>For a machine-readable version history see <a href="package-list.json">package-list.json</a>.</p>
@@ -254,10 +252,6 @@ jobs:
               xml += f'''
           <p>The latest development build is available at:
           <a href="{path}">{path}</a></p>
-
-          <div class="alert alert-warning">
-          This is a continuous integration build and may be unstable.
-          </div>
           '''
           else:
               xml += '''
