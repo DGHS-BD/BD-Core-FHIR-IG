@@ -2,7 +2,6 @@ name: FHIR IG CI/CD Pipeline with Version Persistence
 
 on:
   push:
-    branches: [ main, develop ]
     tags:
       - 'v*.*.*'  # Trigger on version tags like v0.3.0
   pull_request:
