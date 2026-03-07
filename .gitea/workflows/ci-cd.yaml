@@ -289,7 +289,7 @@ jobs:
               data = json.load(f)
 
           versions = [v["version"] for v in data["list"] if v["version"] != "current"]
-          print(versions[1] if len(versions) > 1 else "")
+          print(versions[0] if versions else "")
           PY
               )
 
@@ -300,7 +300,7 @@ jobs:
 
               echo "Previous version detected: $PREV_VERSION"
 
-          mkdir -p ~/.fhir/packages
+          mkdir -p fhir-packages
           TMPDIR=$(mktemp -d)
 
           URL="https://fhir.dghs.gov.bd/core/$PREV_VERSION/package.tgz"
@@ -308,23 +308,26 @@ jobs:
           echo "Downloading $URL"
           curl -L "$URL" -o "$TMPDIR/package.tgz"
 
-          mkdir -p ~/.fhir/packages/bd.fhir.core#$PREV_VERSION
-          tar -xzf "$TMPDIR/package.tgz" -C ~/.fhir/packages/bd.fhir.core#$PREV_VERSION
+          mkdir -p "fhir-packages/bd.fhir.core#$PREV_VERSION"
+          tar -xzf "$TMPDIR/package.tgz" -C "fhir-packages/bd.fhir.core#$PREV_VERSION"
 
-          echo "Package cached at:"
-          ls ~/.fhir/packages
+          echo "Cached packages:"
+          ls fhir-packages
 
       - name: Build FHIR IG
         run: |
           echo "Building FHIR IG version ${{ steps.version.outputs.version }}..."
 
           CONTAINER_ID=$(docker create \
+            -v $(pwd)/fhir-packages:/home/publisher/.fhir/packages \
             hl7fhir/ig-publisher-base:latest \
-            /bin/bash -c "cp -r /home/publisher/ig /tmp/build && cd /tmp/build && _updatePublisher.sh -y && _genonce.sh -publish")
+            /bin/bash -c "cp -r /home/publisher/ig /tmp/build && cd /tmp/build && _updatePublisher.sh -y && _genonce.sh")
 
           echo "Container ID: $CONTAINER_ID"
 
           docker cp "$(pwd)/." "$CONTAINER_ID:/home/publisher/ig/"
+          echo "Mounted FHIR packages:"
+          ls -R fhir-packages
           docker start -a "$CONTAINER_ID"
           EXIT_CODE=$?
 
