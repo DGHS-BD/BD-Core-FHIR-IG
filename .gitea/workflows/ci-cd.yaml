@@ -158,24 +158,25 @@ jobs:
 
           xml = '''<?xml version="1.0" encoding="UTF-8"?>
           <div xmlns="http://www.w3.org/1999/xhtml">
-            <p><b>Version History</b></p>
 
-            <p>This page provides the version history for the Bangladesh Core FHIR Implementation Guide.</p>
+          <p class="lead"><b>Version History</b></p>
 
-            <p>For a machine-readable version history, see <a href="package-list.json">package-list.json</a>.</p>
+          <p>This page provides the version history for the Bangladesh Core FHIR Implementation Guide.</p>
 
-            <p><b>Published Versions</b></p>
+          <p>For a machine-readable version history see <a href="package-list.json">package-list.json</a>.</p>
 
-            <table class="grid">
-              <thead>
-                <tr>
-                  <th>Version</th>
-                  <th>Date</th>
-                  <th>Status</th>
-                  <th>Description</th>
-                </tr>
-              </thead>
-              <tbody>
+          <p><b>Published Versions</b></p>
+
+          <table class="grid table table-striped table-bordered table-hover">
+          <thead>
+          <tr>
+          <th>Version</th>
+          <th>Date</th>
+          <th>Status</th>
+          <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
           '''
 
           def version_key(v):
@@ -189,40 +190,57 @@ jobs:
               if e.get('version') and e.get('version') != "current"
           ]
 
-          # Sort versions descending (newest first)
+          # Sort newest version first
           published.sort(
               key=lambda e: version_key(e.get("version", "0.0.0")),
               reverse=True
           )
 
           published_found = False
+          first_row = True
 
           for entry in published:
               published_found = True
+
               version = escape(entry.get('version', 'Unknown'))
               date = escape(entry.get('date', 'N/A'))
-              status = escape(entry.get('status', 'unknown'))
               desc = escape(entry.get('desc', ''))
               path = escape(entry.get('path', '#'))
 
-              xml += f'''      <tr>
-                  <td><a href="{path}">{version}</a></td>
-                  <td>{date}</td>
-                  <td>{status}</td>
-                  <td>{desc}</td>
-                </tr>
+              status_val = entry.get('status', 'unknown')
+
+              if status_val == "trial-use":
+                  status = '<span class="badge bg-info">Trial Use</span>'
+              elif status_val == "normative":
+                  status = '<span class="badge bg-success">Normative</span>'
+              else:
+                  status = f'<span class="badge bg-secondary">{escape(status_val)}</span>'
+
+              badge = '<span class="badge bg-success">Latest</span> ' if first_row else ''
+
+              xml += f'''
+          <tr>
+          <td><a href="{path}">{badge}{version}</a></td>
+          <td>{date}</td>
+          <td>{status}</td>
+          <td>{desc}</td>
+          </tr>
           '''
+
+              first_row = False
 
           if not published_found:
-              xml += '''      <tr>
-                  <td colspan="4">No published versions available yet.</td>
-                </tr>
+              xml += '''
+          <tr>
+          <td colspan="4">No published versions available yet.</td>
+          </tr>
           '''
 
-          xml += '''    </tbody>
-            </table>
+          xml += '''
+          </tbody>
+          </table>
 
-            <p><b>Continuous Integration Build</b></p>
+          <p class="lead"><b>Continuous Integration Build</b></p>
           '''
 
           current_entry = None
@@ -232,15 +250,22 @@ jobs:
                   break
 
           if current_entry:
-              path = escape(current_entry.get('path', 'https://fhir.dghs.gov.bd/core/'))
-              xml += f'''  <p>The latest development build is available at: <a href="{path}">{path}</a></p>
-            <p><i>Note: This is a continuous integration build and may be unstable.</i></p>
+              path = escape(current_entry.get('path', pkg_list.get('canonical', '') + '/'))
+              xml += f'''
+          <p>The latest development build is available at:
+          <a href="{path}">{path}</a></p>
+
+          <div class="alert alert-warning">
+          This is a continuous integration build and may be unstable.
+          </div>
           '''
           else:
-              xml += '''  <p><i>No CI build entry found in package-list.json.</i></p>
+              xml += '''
+          <p><i>No CI build entry found in package-list.json.</i></p>
           '''
 
-          xml += '''</div>
+          xml += '''
+          </div>
           '''
 
           with open('input/pagecontent/history.xml', 'w', encoding='utf-8') as f:
