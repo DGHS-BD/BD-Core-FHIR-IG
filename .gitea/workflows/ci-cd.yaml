@@ -330,7 +330,7 @@ jobs:
 
           docker cp "$(pwd)/." "$CONTAINER_ID:/home/publisher/ig/"
           echo "Mounted FHIR packages:"
-          ls -R fhir-packages
+          ls -R previous-packages || echo "No previous packages directory"
           docker start -a "$CONTAINER_ID"
           EXIT_CODE=$?
 
