@@ -13,7 +13,7 @@ env:
 
 jobs:
   build-ig:
-    runs-on: ubuntu-latest
+    runs-on: fhir-runner
     
     steps:
     - name: Checkout repository
