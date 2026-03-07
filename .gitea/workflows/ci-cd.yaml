@@ -341,10 +341,10 @@ jobs:
           EXIT_CODE=$?
 
           echo "Copying outputs from container..."
-          docker cp "$CONTAINER_ID:/tmp/build/output" ./output || echo "Warning: No output directory"
-          docker cp "$CONTAINER_ID:/tmp/build/fsh-generated" ./fsh-generated || echo "No FSH generated"
-          docker cp "$CONTAINER_ID:/tmp/build/input-cache" ./input-cache || echo "No input-cache"
-          docker cp "$CONTAINER_ID:/tmp/build/temp" ./temp || echo "No temp directory"
+          docker cp "$CONTAINER_ID:/tmp/build/ig/output" ./output || echo "Warning: No output directory"
+          docker cp "$CONTAINER_ID:/tmp/build/ig/fsh-generated" ./fsh-generated || echo "No FSH generated"
+          docker cp "$CONTAINER_ID:/tmp/build/ig/input-cache" ./input-cache || echo "No input-cache"
+          docker cp "$CONTAINER_ID:/tmp/build/ig/temp" ./temp || echo "No temp directory"
 
           if [ $EXIT_CODE -ne 0 ]; then
             echo "Build failed, showing logs:"
