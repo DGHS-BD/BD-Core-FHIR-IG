@@ -8,7 +8,6 @@
   - If dealing with a multi-version IG, it will be run against both IG versions.
   -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:html="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://hl7.org/fhir" exclude-result-prefixes="html f">
-  <xsl:include href="onGenerate.getVersions.xslt"/>
   <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes" omit-xml-declaration="yes"/>
   <xsl:variable name="noRootToc" select="/f:ImplementationGuide/f:definition/f:parameter[f:code/@value='noRootToc']/f:value/@value"/>
   <xsl:variable name="artifactsOnRoot" select="/f:ImplementationGuide/f:definition/f:parameter[f:code/@value='artifactsOnRoot']/f:value/@value"/>
