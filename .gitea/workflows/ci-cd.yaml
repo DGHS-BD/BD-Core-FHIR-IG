@@ -2,6 +2,7 @@ name: FHIR IG CI/CD Pipeline with Version Persistence
 
 on:
   push:
+    branches: [ main, develop ]
     tags:
       - 'v*.*.*'  # Trigger on version tags like v0.3.0
   pull_request:
@@ -13,7 +14,7 @@ env:
 
 jobs:
   build-ig:
-    runs-on: fhir-runner
+    runs-on: ubuntu-latest
     
     steps:
     - name: Checkout repository
@@ -61,6 +62,7 @@ jobs:
     - name: Build FHIR IG
       run: |
         echo "Building FHIR IG version ${{ steps.version.outputs.version }}..."
+        
         CONTAINER_ID=$(docker create \
           hl7fhir/ig-publisher-base:latest \
           /bin/bash -c "cp -r /home/publisher/ig /tmp/build && cd /tmp/build && _updatePublisher.sh -y && _genonce.sh")
