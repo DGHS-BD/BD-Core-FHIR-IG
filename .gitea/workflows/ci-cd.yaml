@@ -279,6 +279,41 @@ jobs:
           apt-get install -y docker.io
           docker --version
 
+      - name: Preload previous IG package for comparison
+        run: |
+          echo "Detecting previous version..."
+
+          PREV_VERSION=$(python3 <<'PY'
+          import json
+          with open("package-list.json") as f:
+              data = json.load(f)
+
+          versions = [v["version"] for v in data["list"] if v["version"] != "current"]
+          print(versions[1] if len(versions) > 1 else "")
+          PY
+              )
+
+              if [ -z "$PREV_VERSION" ]; then
+                echo "No previous version found. Skipping preload."
+                exit 0
+              fi
+
+              echo "Previous version detected: $PREV_VERSION"
+
+          mkdir -p ~/.fhir/packages
+          TMPDIR=$(mktemp -d)
+
+          URL="https://fhir.dghs.gov.bd/core/$PREV_VERSION/package.tgz"
+
+          echo "Downloading $URL"
+          curl -L "$URL" -o "$TMPDIR/package.tgz"
+
+          mkdir -p ~/.fhir/packages/bd.fhir.core#$PREV_VERSION
+          tar -xzf "$TMPDIR/package.tgz" -C ~/.fhir/packages/bd.fhir.core#$PREV_VERSION
+
+          echo "Package cached at:"
+          ls ~/.fhir/packages
+
       - name: Build FHIR IG
         run: |
           echo "Building FHIR IG version ${{ steps.version.outputs.version }}..."
