@@ -377,15 +377,6 @@ jobs:
           echo "================================"
           echo "✅ Build successful!"
 
-      - name: Ensure registry files in output for dev builds
-        if: steps.version.outputs.build_type == 'dev'
-        run: |
-          cp package-list.json output/package-list.json
-          if [ -f "package-feed.xml" ]; then
-            cp package-feed.xml output/package-feed.xml
-          fi
-          echo "📋 Copied registry files for dev artifact"
-
       - name: Update package-feed.xml for releases
         if: steps.version.outputs.build_type == 'release'
         run: |
@@ -559,9 +550,12 @@ jobs:
               echo "⚠️ WARNING: history.html not found in deployment"
             fi
 
-            cp /tmp/fhir-ig-deploy/package-list.json "$VERSIONS_DIR/package-list.json"
-            cp /tmp/fhir-ig-deploy/package-feed.xml "$VERSIONS_DIR/package-feed.xml"
+            cp "$TARGET_DIR/package-list.json" "$VERSIONS_DIR/package-list.json"
+            cp "$TARGET_DIR/package-feed.xml" "$VERSIONS_DIR/package-feed.xml"
 
+            cp "$TARGET_DIR/package-list.json" "/opt/fhir-ig/package-list.json"
+            cp "$TARGET_DIR/package-feed.xml" "/opt/fhir-ig/package-feed.xml"
+            
             if [ "$build_type" = "release" ]; then
               echo "Updating 'current' symlink to point to $version"
               rm -f "$VERSIONS_DIR/current"
