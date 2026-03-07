@@ -249,6 +249,13 @@ jobs:
           echo "  - Root: $(pwd)/package-list.json"
           echo "  - Input: $(pwd)/input/package-list.json"
           echo "  - History: $(pwd)/input/pagecontent/history.xml"
+          echo "==============================="
+          echo "PACKAGE LIST USED FOR BUILD:"
+          cat package-list.json
+          echo "-------------------------------"
+          echo "INPUT COPY:"
+          cat input/package-list.json
+          echo "==============================="
 
       - name: Emergency Disk Cleanup
         run: |
