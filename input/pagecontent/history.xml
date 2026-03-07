@@ -1,10 +1,6 @@
----
-layout: changehistory
----
-
 <div xmlns="http://www.w3.org/1999/xhtml">
-<h2>Version History</h2>
-<p>
-This page provides the version history for the Bangladesh Core FHIR Implementation Guide.
-</p>
+<h2>TEST</h2>
+
+[%history%]
+
 </div>
