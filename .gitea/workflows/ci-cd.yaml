@@ -322,7 +322,10 @@ jobs:
             echo "⚠️ WARNING: history.html was NOT generated"
             echo "This might indicate an issue with the template or history.xml/package-list.json"
           fi
-
+          echo "================================"
+          echo "IG Publisher comparison log:"
+          cat output/qa.compare.txt || echo "qa.compare.txt not found"
+          echo "================================"
           echo "✅ Build successful!"
 
       - name: Ensure registry files in output for dev builds
