@@ -107,7 +107,7 @@ jobs:
                   "current": True
               })
 
-          if build_type == 'release' and os.environ.get("POST_PUBLISH") == "true":
+          if build_type == 'release':
               version_exists = any(e.get('version') == version for e in pkg_list['list'])
               if not version_exists:
                   new_entry = {
@@ -555,7 +555,7 @@ jobs:
 
             cp "$TARGET_DIR/package-list.json" "/opt/fhir-ig/package-list.json"
             cp "$TARGET_DIR/package-feed.xml" "/opt/fhir-ig/package-feed.xml"
-            
+
             if [ "$build_type" = "release" ]; then
               echo "Updating 'current' symlink to point to $version"
               rm -f "$VERSIONS_DIR/current"
