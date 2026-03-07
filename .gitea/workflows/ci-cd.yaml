@@ -107,7 +107,7 @@ jobs:
                   "current": True
               })
 
-          if build_type == 'release':
+          if build_type == 'release' and os.environ.get("POST_PUBLISH") == "true":
               version_exists = any(e.get('version') == version for e in pkg_list['list'])
               if not version_exists:
                   new_entry = {
