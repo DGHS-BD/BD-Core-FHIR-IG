@@ -52,6 +52,185 @@ jobs:
         echo "build_type=$BUILD_TYPE" >> $GITHUB_OUTPUT
         echo "Build type: $BUILD_TYPE"
     
+    - name: Pre-build package-list.json and generate history.xml
+      run: |
+        VERSION="${{ steps.version.outputs.version }}"
+        BUILD_TYPE="${{ steps.version.outputs.build_type }}"
+        DATE=$(date +%Y-%m-%d)
+        
+        # Export for Python
+        export VERSION DATE
+        
+        echo "📋 Preparing package-list.json and history.xml for IG Publisher..."
+        
+        # Check if package-list.json exists in repo
+        if [ ! -f "package-list.json" ]; then
+          echo "⚠️ package-list.json not found in repo root"
+          echo "Creating initial package-list.json..."
+          cat > package-list.json << 'PKGEOF'
+{
+  "package-id": "bd.fhir.core",
+  "title": "Bangladesh Core FHIR Implementation Guide",
+  "canonical": "https://fhir.dghs.gov.bd/core",
+  "introduction": "The Bangladesh Core FHIR IG defines national base profiles, value sets, and extensions for health data interoperability.",
+  "list": [
+    {
+      "version": "current",
+      "desc": "Continuous Integration Build (latest in version control)",
+      "path": "https://fhir.dghs.gov.bd/core/",
+      "status": "ci-build",
+      "current": true
+    }
+  ]
+}
+PKGEOF
+        fi
+        
+        # For release builds, add the new version entry
+        if [ "$BUILD_TYPE" == "release" ]; then
+          echo "📝 Adding version $VERSION to package-list.json..."
+          
+          python3 << PYEOF
+import json
+import os
+
+version = os.environ.get('VERSION', '')
+date = os.environ.get('DATE', '')
+
+with open('package-list.json', 'r') as f:
+    pkg_list = json.load(f)
+
+# Check if this version already exists
+version_exists = any(e['version'] == version for e in pkg_list['list'])
+
+if not version_exists:
+    new_entry = {
+        "version": version,
+        "date": date,
+        "desc": f"Release {version}",
+        "path": f"https://fhir.dghs.gov.bd/core/{version}/",
+        "status": "trial-use",
+        "sequence": "STU 1"
+    }
+    # Insert after 'current' entry
+    pkg_list['list'].insert(1, new_entry)
+    
+    with open('package-list.json', 'w') as f:
+        json.dump(pkg_list, f, indent=2)
+    
+    print(f"✅ Added version {version} to package-list.json")
+else:
+    print(f"ℹ️ Version {version} already exists in package-list.json")
+PYEOF
+        else
+          echo "ℹ️ Dev build - using existing package-list.json without modifications"
+        fi
+        
+        # Validate JSON syntax
+        echo "🔍 Validating package-list.json..."
+        python3 -m json.tool package-list.json > /dev/null && echo "✅ Valid JSON" || (echo "❌ Invalid JSON!" && exit 1)
+        
+        # Copy to input/ for IG Publisher
+        echo "📂 Ensuring package-list.json is in required locations..."
+        cp package-list.json input/package-list.json
+        
+        # Generate static history.xml from package-list.json
+        echo "📝 Generating static history.xml from package-list.json..."
+        mkdir -p input/pagecontent
+        
+        python3 << 'PYEOF'
+import json
+import os
+
+# Ensure directory exists
+os.makedirs('input/pagecontent', exist_ok=True)
+
+with open('package-list.json', 'r') as f:
+    pkg_list = json.load(f)
+
+# Generate static XHTML
+xml = '''<?xml version="1.0" encoding="UTF-8"?>
+<div xmlns="http://www.w3.org/1999/xhtml">
+  <p><b>Version History</b></p>
+  
+  <p>This page provides the version history for the Bangladesh Core FHIR Implementation Guide.</p>
+  
+  <p>For a machine-readable version history, see <a href="package-list.json">package-list.json</a>.</p>
+  
+  <p><b>Published Versions</b></p>
+  
+  <table class="grid">
+    <thead>
+      <tr>
+        <th>Version</th>
+        <th>Date</th>
+        <th>Status</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+'''
+
+# Add each version (skip 'current')
+for entry in pkg_list['list']:
+    if entry['version'] == 'current':
+        continue
+    
+    version = entry.get('version', 'Unknown')
+    date = entry.get('date', 'N/A')
+    status = entry.get('status', 'unknown')
+    desc = entry.get('desc', '')
+    path = entry.get('path', '#')
+    
+    xml += f'''      <tr>
+        <td><a href="{path}">{version}</a></td>
+        <td>{date}</td>
+        <td>{status}</td>
+        <td>{desc}</td>
+      </tr>
+'''
+
+xml += '''    </tbody>
+  </table>
+  
+  <p><b>Continuous Integration Build</b></p>
+'''
+
+# Add CI build info
+for entry in pkg_list['list']:
+    if entry['version'] == 'current':
+        path = entry.get('path', '')
+        xml += f'''  <p>The latest development build is available at: <a href="{path}">{path}</a></p>
+  <p><i>Note: This is a continuous integration build and may be unstable.</i></p>
+'''
+        break
+
+xml += '''</div>
+'''
+
+with open('input/pagecontent/history.xml', 'w') as f:
+    f.write(xml)
+
+print("✅ Generated static history.xml")
+print(f"   File location: {os.path.abspath('input/pagecontent/history.xml')}")
+print(f"   File size: {os.path.getsize('input/pagecontent/history.xml')} bytes")
+PYEOF
+        
+        # Verify the file was created
+        if [ -f "input/pagecontent/history.xml" ]; then
+          echo "✅ Verified: history.xml exists"
+          echo "   First 20 lines:"
+          head -20 input/pagecontent/history.xml
+        else
+          echo "❌ ERROR: history.xml was not created!"
+          exit 1
+        fi
+        
+        echo "✅ Pre-build preparation complete:"
+        echo "  - Root: $(pwd)/package-list.json"
+        echo "  - Input: $(pwd)/input/package-list.json"
+        echo "  - History: $(pwd)/input/pagecontent/history.xml (generated)"
+    
     - name: Install Docker CLI
       run: |
         apt-get update
@@ -93,150 +272,104 @@ jobs:
           exit 1
         fi
         
+        # Check if history.html was generated
+        echo ""
+        echo "🔍 Checking for history.html..."
+        if [ -f "output/history.html" ]; then
+          echo "✅ history.html generated successfully!"
+          echo "📄 history.html size: $(ls -lh output/history.html | awk '{print $5}')"
+        else
+          echo "⚠️ WARNING: history.html was NOT generated"
+          echo "This might indicate an issue with the template or history.xml"
+        fi
+        
         echo "✅ Build successful!"
     
-    - name: Update package-list.json and package-feed.xml for releases
+    - name: Update package-feed.xml for releases
       if: steps.version.outputs.build_type == 'release'
       run: |
         VERSION="${{ steps.version.outputs.version }}"
-        DATE=$(date +%Y-%m-%d)
         DATETIME=$(date -u +%Y-%m-%dT%H:%M:%SZ)
         
-        # Update package-list.json and package-feed.xml
-        cat > update-registry-files.py << 'EOF'
-        import json
-        import sys
-        import xml.etree.ElementTree as ET
-        from datetime import datetime
-        
-        version = sys.argv[1]
-        date = sys.argv[2]
-        datetime_iso = sys.argv[3]
-        
-        # ========== Update package-list.json ==========
-        with open('package-list.json', 'r') as f:
-            pkg_list = json.load(f)
-        
-        # Update current build path
-        for entry in pkg_list['list']:
-            if entry['version'] == 'current':
-                entry['path'] = 'https://fhir.dghs.gov.bd/core/'
-                break
-        
-        # Check if this version already exists
-        version_exists = any(e['version'] == version for e in pkg_list['list'])
-        
-        if not version_exists:
-            # Add new version entry
-            new_entry = {
-                "version": version,
-                "date": date,
-                "desc": f"Release {version}",
-                "path": f"https://fhir.dghs.gov.bd/core/{version}/",
-                "status": "trial-use",
-                "sequence": "STU 1"
-            }
-            # Insert after 'current' entry
-            pkg_list['list'].insert(1, new_entry)
-        else:
-            # Update existing entry
-            for entry in pkg_list['list']:
-                if entry['version'] == version:
-                    entry['date'] = date
-                    entry['path'] = f"https://fhir.dghs.gov.bd/core/{version}/"
-                    break
-        
-        with open('output/package-list.json', 'w') as f:
-            json.dump(pkg_list, f, indent=2)
-        
-        print(f"✅ Updated package-list.json with version {version}")
-        
-        # ========== Update package-feed.xml ==========
-        # Register namespaces
-        ET.register_namespace('', 'http://www.w3.org/2005/Atom')
-        
-        # Parse existing feed
-        tree = ET.parse('package-feed.xml')
-        root = tree.getroot()
-        ns = {'atom': 'http://www.w3.org/2005/Atom'}
-        
-        # Update feed updated timestamp
-        updated_elem = root.find('atom:updated', ns)
-        if updated_elem is not None:
-            updated_elem.text = datetime_iso
-        
-        # Check if entry for this version already exists
-        entry_exists = False
-        for entry in root.findall('atom:entry', ns):
-            title = entry.find('atom:title', ns)
-            if title is not None and version in title.text:
-                entry_exists = True
-                # Update existing entry timestamp
-                entry_updated = entry.find('atom:updated', ns)
-                if entry_updated is not None:
-                    entry_updated.text = datetime_iso
-                break
-        
-        # If entry doesn't exist, create new one
-        if not entry_exists:
-            new_entry = ET.Element('{http://www.w3.org/2005/Atom}entry')
-            
-            title = ET.SubElement(new_entry, '{http://www.w3.org/2005/Atom}title')
-            title.text = f"bd.fhir.core version {version}"
-            
-            link = ET.SubElement(new_entry, '{http://www.w3.org/2005/Atom}link')
-            link.set('rel', 'alternate')
-            link.set('href', f"https://fhir.dghs.gov.bd/core/{version}/")
-            
-            entry_id = ET.SubElement(new_entry, '{http://www.w3.org/2005/Atom}id')
-            entry_id.text = f"https://fhir.dghs.gov.bd/core/{version}/"
-            
-            entry_updated = ET.SubElement(new_entry, '{http://www.w3.org/2005/Atom}updated')
+        cat > update-feed.py << 'EOF'
+import sys
+import xml.etree.ElementTree as ET
+
+version = sys.argv[1]
+datetime_iso = sys.argv[2]
+
+ET.register_namespace('', 'http://www.w3.org/2005/Atom')
+
+tree = ET.parse('package-feed.xml')
+root = tree.getroot()
+ns = {'atom': 'http://www.w3.org/2005/Atom'}
+
+updated_elem = root.find('atom:updated', ns)
+if updated_elem is not None:
+    updated_elem.text = datetime_iso
+
+entry_exists = False
+for entry in root.findall('atom:entry', ns):
+    title = entry.find('atom:title', ns)
+    if title is not None and version in title.text:
+        entry_exists = True
+        entry_updated = entry.find('atom:updated', ns)
+        if entry_updated is not None:
             entry_updated.text = datetime_iso
-            
-            summary = ET.SubElement(new_entry, '{http://www.w3.org/2005/Atom}summary')
-            summary.text = f"Release {version} of Bangladesh Core FHIR Implementation Guide"
-            
-            # Insert new entry at the beginning (after feed metadata)
-            # Find the position after the last feed-level element
-            insert_pos = 0
-            for i, child in enumerate(root):
-                if child.tag.endswith('entry'):
-                    insert_pos = i
-                    break
-                insert_pos = i + 1
-            
-            root.insert(insert_pos, new_entry)
+        break
+
+if not entry_exists:
+    new_entry = ET.Element('{http://www.w3.org/2005/Atom}entry')
+    
+    title = ET.SubElement(new_entry, '{http://www.w3.org/2005/Atom}title')
+    title.text = f"bd.fhir.core version {version}"
+    
+    link = ET.SubElement(new_entry, '{http://www.w3.org/2005/Atom}link')
+    link.set('rel', 'alternate')
+    link.set('href', f"https://fhir.dghs.gov.bd/core/{version}/")
+    
+    entry_id = ET.SubElement(new_entry, '{http://www.w3.org/2005/Atom}id')
+    entry_id.text = f"https://fhir.dghs.gov.bd/core/{version}/"
+    
+    entry_updated = ET.SubElement(new_entry, '{http://www.w3.org/2005/Atom}updated')
+    entry_updated.text = datetime_iso
+    
+    summary = ET.SubElement(new_entry, '{http://www.w3.org/2005/Atom}summary')
+    summary.text = f"Release {version} of Bangladesh Core FHIR Implementation Guide"
+    
+    insert_pos = 0
+    for i, child in enumerate(root):
+        if child.tag.endswith('entry'):
+            insert_pos = i
+            break
+        insert_pos = i + 1
+    
+    root.insert(insert_pos, new_entry)
+
+tree.write('output/package-feed.xml', encoding='utf-8', xml_declaration=True)
+print(f"✅ Updated package-feed.xml")
+EOF
         
-        # Write updated feed
-        tree.write('output/package-feed.xml', encoding='utf-8', xml_declaration=True)
-        print(f"✅ Updated package-feed.xml with version {version}")
+        python3 update-feed.py "$VERSION" "$DATETIME"
         
-        EOF
+        # Also copy the updated package-list.json to output
+        cp package-list.json output/package-list.json
         
-        python3 update-registry-files.py "$VERSION" "$DATE" "$DATETIME"
-        
-        # Copy updated files
-        cp output/package-list.json package-list.json
-        cp output/package-feed.xml package-feed.xml
-        
-        echo "📋 Updated registry files (package-list.json and package-feed.xml)"
+        echo "📋 Updated registry files"
     
     - name: Prepare deployment artifact
       run: |
         VERSION="${{ steps.version.outputs.version }}"
         BUILD_TYPE="${{ steps.version.outputs.build_type }}"
         
-        # Create a tarball of the output
-        if [ "$BUILD_TYPE" == "release" ]; then
-          tar -czf ig-output.tar.gz -C output .
-        else
-          tar -czf ig-output.tar.gz -C output .
-        fi
+        tar -czf ig-output.tar.gz -C output .
         
         echo "version=$VERSION" > deployment.env
         echo "build_type=$BUILD_TYPE" >> deployment.env
         echo "build_date=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> deployment.env
+        
+        echo "📦 Output contents:"
+        ls -lh output/ | grep -E "(history\.html|package-list\.json|package-feed\.xml|index\.html)" || echo "Some files may be missing"
         
         ls -lh ig-output.tar.gz
     
@@ -254,7 +387,7 @@ jobs:
   deploy:
     needs: build-ig
     runs-on: ubuntu-latest
-    if: (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
+    if: startsWith(github.ref, 'refs/tags/v')
     
     steps:
     - name: Download artifact
@@ -293,7 +426,6 @@ jobs:
         script: |
           set -e
           
-          # Load deployment info
           source /tmp/fhir-ig-deploy/deployment.env
           
           echo "=========================================="
@@ -303,67 +435,50 @@ jobs:
           echo "Build Date: $build_date"
           echo "=========================================="
           
-          # Create version directory structure
           VERSIONS_DIR="/opt/fhir-ig/versions"
           mkdir -p "$VERSIONS_DIR"
           
-          # Determine target directory
-          if [ "$build_type" == "release" ]; then
-            TARGET_DIR="$VERSIONS_DIR/$version"
-            echo "📦 Deploying release version to: $TARGET_DIR"
-          else
-            TARGET_DIR="$VERSIONS_DIR/dev"
-            echo "🔧 Deploying dev build to: $TARGET_DIR"
-          fi
+          TARGET_DIR="$VERSIONS_DIR/$version"
+          echo "📦 Deploying release version to: $TARGET_DIR"
           
-          # Create target directory
           mkdir -p "$TARGET_DIR"
           
-          # Extract IG output
           echo "Extracting IG output..."
           tar -xzf /tmp/fhir-ig-deploy/ig-output.tar.gz -C "$TARGET_DIR"
           
-          # Copy package-list.json to root
-          cp /tmp/fhir-ig-deploy/package-list.json "$VERSIONS_DIR/package-list.json"
-          
-          # Copy package-feed.xml to root
-          cp /tmp/fhir-ig-deploy/package-feed.xml "$VERSIONS_DIR/package-feed.xml"
-          
-          # Update 'current' symlink for releases
-          if [ "$build_type" == "release" ]; then
-            echo "Updating 'current' symlink to point to $version"
-            rm -f "$VERSIONS_DIR/current"
-            ln -sf "$version" "$VERSIONS_DIR/current"
+          # Verify history.html was deployed
+          if [ -f "$TARGET_DIR/history.html" ]; then
+            echo "✅ history.html deployed successfully"
+          else
+            echo "⚠️ WARNING: history.html not found in deployment"
           fi
           
-          # Ensure nginx container is running with correct config
+          cp /tmp/fhir-ig-deploy/package-list.json "$VERSIONS_DIR/package-list.json"
+          cp /tmp/fhir-ig-deploy/package-feed.xml "$VERSIONS_DIR/package-feed.xml"
+          
+          echo "Updating 'current' symlink to point to $version"
+          rm -f "$VERSIONS_DIR/current"
+          ln -sf "$version" "$VERSIONS_DIR/current"
+          
           cd /opt/fhir-ig
           
-          # Download deployment files if they don't exist
           if [ ! -f "docker-compose.prod.yml" ]; then
             echo "ERROR: docker-compose.prod.yml not found!"
-            echo "Please deploy the updated docker-compose.prod.yml and nginx.conf first"
             exit 1
           fi
           
-          # Restart nginx to pick up new content
           docker compose -f docker-compose.prod.yml restart fhir-ig || \
             docker compose -f docker-compose.prod.yml up -d
           
-          # Cleanup
           rm -rf /tmp/fhir-ig-deploy
           
           echo "=========================================="
           echo "✅ Deployment completed successfully!"
           echo "Version $version is now available at:"
-          if [ "$build_type" == "release" ]; then
-            echo "  - https://fhir.dghs.gov.bd/core/$version/"
-            echo "  - https://fhir.dghs.gov.bd/core/ (current)"
-          else
-            echo "  - https://fhir.dghs.gov.bd/core/dev/"
-          fi
+          echo "  - https://fhir.dghs.gov.bd/core/$version/"
+          echo "  - https://fhir.dghs.gov.bd/core/$version/history.html"
+          echo "  - https://fhir.dghs.gov.bd/core/ (current)"
           echo "=========================================="
           
-          # List all versions
           echo "Available versions:"
           ls -lh "$VERSIONS_DIR" | grep -v total
