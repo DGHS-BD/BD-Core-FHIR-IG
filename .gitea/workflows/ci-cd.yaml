@@ -320,7 +320,7 @@ jobs:
       - name: Preload previous IG package for comparison
         run: |
           echo "Detecting previous version..."
-
+          export VERSION="${{ steps.version.outputs.version }}"
           PREV_VERSION=$(python3 <<'PY'
           import json
           import os
