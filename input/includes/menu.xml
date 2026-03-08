@@ -20,6 +20,9 @@
         <a href="spec.html">Detailed Specification</a>
       </li>
       <li>
+        <a href="icd11.html">ICD-11 Implementation</a>
+      </li>
+      <li>
         <a href="fragments.html">Instance Fragments</a>
       </li>
     </ul>

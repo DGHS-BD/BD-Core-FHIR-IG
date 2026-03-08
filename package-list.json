@@ -11,10 +11,18 @@
       "status": "ci-build",
       "current": true
     },
+        {
+      "version": "0.2.5",
+      "date": "2025-10-06",
+      "desc": "Minor bug fix release",
+      "path": "https://fhir.dghs.gov.bd/core/0.2.5/",
+      "status": "trial-use",
+      "sequence": "STU 1"
+    },
     {
       "version": "0.2.4",
       "date": "2025-10-06",
-      "desc": "Second draft release of the Bangladesh Core FHIR IG",
+      "desc": "Minor visual improvements",
       "path": "https://fhir.dghs.gov.bd/core/0.2.4/",
       "status": "trial-use",
       "sequence": "STU 1"
@@ -22,7 +30,7 @@
     {
       "version": "0.2.3",
       "date": "2025-10-06",
-      "desc": "Second draft release of the Bangladesh Core FHIR IG",
+      "desc": "Minor documentation updates",
       "path": "https://fhir.dghs.gov.bd/core/0.2.3/",
       "status": "trial-use",
       "sequence": "STU 1"
@@ -30,7 +38,7 @@
     {
       "version": "0.2.2",
       "date": "2025-10-06",
-      "desc": "Second draft release of the Bangladesh Core FHIR IG",
+      "desc": "Minor bug fix release",
       "path": "https://fhir.dghs.gov.bd/core/0.2.2/",
       "status": "trial-use",
       "sequence": "STU 1"

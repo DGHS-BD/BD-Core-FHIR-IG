@@ -6,7 +6,7 @@ description: >
   This Implementation Guide defines the Bangladesh Core FHIR profiles,
   value sets, code systems, and implementation rules for national digital health systems.
 status: draft
-version: 0.2.5
+version: 0.3.0
 fhirVersion: 4.0.1
 copyrightYear: 2025+
 releaseLabel: CI Build
