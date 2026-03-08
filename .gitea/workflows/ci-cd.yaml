@@ -374,7 +374,7 @@ jobs:
           echo "Building FHIR IG version ${{ steps.version.outputs.version }}..."
 
           CONTAINER_ID=$(docker create \
-            -v $(pwd)/previous-packages:/previous-packages \
+            -v $(pwd)/previous-packages:/home/publisher/.fhir/packages \
             hl7fhir/ig-publisher-base:latest \
             /bin/bash -c "
 
