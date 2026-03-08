@@ -325,7 +325,7 @@ jobs:
           import json
           import os
 
-          current = os.environ.get("VERSION")
+          current_build = os.environ.get("VERSION")
 
           with open("package-list.json") as f:
               data = json.load(f)
@@ -339,7 +339,7 @@ jobs:
           versions = [
               v["version"]
               for v in data["list"]
-              if v.get("version") not in ("current", current)
+              if v.get("version") not in ("current", current_build)
           ]
 
           versions.sort(key=parse, reverse=True)
@@ -361,7 +361,7 @@ jobs:
           URL="https://fhir.dghs.gov.bd/core/$PREV_VERSION/package.tgz"
 
           echo "Downloading $URL"
-          curl -L "$URL" -o "$TMPDIR/package.tgz"
+          curl -fL "$URL" -o "$TMPDIR/package.tgz"
 
           mkdir -p "previous-packages/bd.fhir.core#$PREV_VERSION"
           tar -xzf "$TMPDIR/package.tgz" -C "previous-packages/bd.fhir.core#$PREV_VERSION"
