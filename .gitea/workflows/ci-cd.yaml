@@ -7,20 +7,9 @@ on:
   pull_request:
     branches: [ main ]
 
-permissions:
-  contents: read
-
-concurrency:
-  group: fhir-ig-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 env:
   REGISTRY: git.dghs.gov.bd
   IMAGE_NAME: gitadmin/bd-core-fhir-ig
-
-defaults:
-  run:
-    shell: bash
 
 jobs:
   build-ig:
@@ -28,55 +17,52 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
       - name: Extract version from IG
         id: version
         run: |
-          set -euo pipefail
+          VERSION=$(grep -oP '<version value="\K[^"]+' input/bd.fhir.core.xml | head -1)
 
-          VERSION="$(grep -oP '<version value="\K[^"]+' input/bd.fhir.core.xml | head -1 || true)"
-
-          if [[ -z "${VERSION}" ]]; then
+          if [ -z "$VERSION" ]; then
             echo "ERROR: Could not extract version from ImplementationGuide XML"
             exit 1
           fi
 
-          echo "Extracted version: ${VERSION}"
-          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "Extracted version: $VERSION"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
 
-          if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
             BUILD_TYPE="release"
             TAG_VERSION="${GITHUB_REF#refs/tags/v}"
 
-            if [[ "${TAG_VERSION}" != "${VERSION}" ]]; then
-              echo "ERROR: Git tag version (${TAG_VERSION}) doesn't match IG version (${VERSION})"
+            if [ "$TAG_VERSION" != "$VERSION" ]; then
+              echo "ERROR: Git tag version ($TAG_VERSION) doesn't match IG version ($VERSION)"
               exit 1
             fi
           else
             BUILD_TYPE="dev"
           fi
 
-          echo "build_type=${BUILD_TYPE}" >> "$GITHUB_OUTPUT"
-          echo "Build type: ${BUILD_TYPE}"
+          echo "build_type=$BUILD_TYPE" >> $GITHUB_OUTPUT
+          echo "Build type: $BUILD_TYPE"
 
-      - name: Prepare package-list.json and history.xml
-        env:
-          VERSION: ${{ steps.version.outputs.version }}
-          BUILD_TYPE: ${{ steps.version.outputs.build_type }}
+      - name: Prepare package-list.json and history.xml for IG Publisher
         run: |
-          set -euo pipefail
+          VERSION="${{ steps.version.outputs.version }}"
+          BUILD_TYPE="${{ steps.version.outputs.build_type }}"
+          DATE=$(date +%Y-%m-%d)
 
-          DATE="$(date +%Y-%m-%d)"
-          export VERSION BUILD_TYPE DATE
+          export VERSION DATE BUILD_TYPE
 
-          echo "Preparing package-list.json and history.xml..."
+          echo "📋 Preparing package-list.json and history.xml for IG Publisher..."
 
-          if [[ ! -f package-list.json ]]; then
-            echo "package-list.json not found in repo root. Creating initial file..."
-            cat > package-list.json <<'PKGEOF'
+          if [ ! -f "package-list.json" ]; then
+            echo "⚠️ package-list.json not found in repo root"
+            echo "Creating initial package-list.json..."
+            cat > package-list.json << 'PKGEOF'
           {
             "package-id": "bd.fhir.core",
             "title": "Bangladesh Core FHIR Implementation Guide",
@@ -95,27 +81,25 @@ jobs:
           PKGEOF
           fi
 
-          python3 <<'PYEOF'
+          python3 << 'PYEOF'
           import json
           import os
           import sys
-          from html import escape
-          from pathlib import Path
 
-          version = os.environ["VERSION"]
-          date = os.environ["DATE"]
-          build_type = os.environ["BUILD_TYPE"]
+          version = os.environ.get('VERSION', '')
+          date = os.environ.get('DATE', '')
+          build_type = os.environ.get('BUILD_TYPE', '')
 
-          pkg_path = Path("package-list.json")
-          with pkg_path.open("r", encoding="utf-8") as f:
+          with open('package-list.json', 'r', encoding='utf-8') as f:
               pkg_list = json.load(f)
 
-          if "list" not in pkg_list or not isinstance(pkg_list["list"], list):
+          if 'list' not in pkg_list or not isinstance(pkg_list['list'], list):
               print("ERROR: package-list.json does not contain a valid 'list' array")
               sys.exit(1)
 
-          if not any(e.get("version") == "current" for e in pkg_list["list"]):
-              pkg_list["list"].insert(0, {
+          current_entries = [e for e in pkg_list['list'] if e.get('version') == 'current']
+          if not current_entries:
+              pkg_list['list'].insert(0, {
                   "version": "current",
                   "desc": "Continuous Integration Build (latest in version control)",
                   "path": "https://fhir.dghs.gov.bd/core/",
@@ -123,9 +107,13 @@ jobs:
                   "current": True
               })
 
-          if build_type == "release":
-              existing = next((e for e in pkg_list["list"] if e.get("version") == version), None)
-              if existing is None:
+          if build_type == 'release':
+              version_entry = None
+              for e in pkg_list['list']:
+                  if e.get('version') == version:
+                      version_entry = e
+                      break
+              if version_entry is None:
                   new_entry = {
                       "version": version,
                       "date": date,
@@ -134,320 +122,341 @@ jobs:
                       "status": "trial-use",
                       "sequence": "STU 1"
                   }
+
                   insert_index = 1
-                  for i, entry in enumerate(pkg_list["list"]):
-                      if entry.get("version") == "current":
+                  for i, entry in enumerate(pkg_list['list']):
+                      if entry.get('version') == 'current':
                           insert_index = i + 1
                           break
-                  pkg_list["list"].insert(insert_index, new_entry)
-                  print(f"Added version {version} to package-list.json")
+
+                  pkg_list['list'].insert(insert_index, new_entry)
+                  print(f"✅ Added version {version} to package-list.json")
               else:
-                  print(f"Version {version} already exists in package-list.json")
+                  print(f"ℹ️ Version {version} already exists in package-list.json")
           else:
-              print("Dev build - keeping existing package-list.json structure")
+              print("ℹ️ Dev build - using existing package-list.json without release modification")
 
-          with pkg_path.open("w", encoding="utf-8") as f:
+          with open('package-list.json', 'w', encoding='utf-8') as f:
               json.dump(pkg_list, f, indent=2, ensure_ascii=False)
+          PYEOF
 
-          Path("input").mkdir(parents=True, exist_ok=True)
-          Path("input/package-list.json").write_text(
-              pkg_path.read_text(encoding="utf-8"),
-              encoding="utf-8"
-          )
+          echo "🔍 Validating package-list.json..."
+          python3 -m json.tool package-list.json > /dev/null && echo "✅ Valid JSON" || (echo "❌ Invalid JSON!" && exit 1)
 
-          Path("input/pagecontent").mkdir(parents=True, exist_ok=True)
+          echo "📂 Ensuring package-list.json is in required locations..."
+          mkdir -p input
+          cp package-list.json input/package-list.json
 
-          def version_key(v: str):
+          echo "📝 Generating static history.xml from package-list.json..."
+          mkdir -p input/pagecontent
+
+          python3 << 'PYEOF'
+          import json
+          import os
+          from html import escape
+
+          os.makedirs('input/pagecontent', exist_ok=True)
+
+          with open('package-list.json', 'r', encoding='utf-8') as f:
+              pkg_list = json.load(f)
+
+          xml = '''<?xml version="1.0" encoding="UTF-8"?>
+          <div xmlns="http://www.w3.org/1999/xhtml">
+
+          <p>This page provides the version history for the Bangladesh Core FHIR Implementation Guide.</p>
+
+          <p>For a machine-readable version history see <a href="package-list.json">package-list.json</a>.</p>
+
+          <p><b>Published Versions</b></p>
+
+          <table class="grid table table-striped table-bordered table-hover">
+          <thead>
+          <tr>
+          <th>Version</th>
+          <th>Date</th>
+          <th>Status</th>
+          <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+          '''
+
+          def version_key(v):
               try:
-                  return tuple(int(x) for x in v.split("."))
-              except Exception:
+                  return tuple(int(x) for x in v.split('.'))
+              except:
                   return (0,)
 
           published = [
-              e for e in pkg_list["list"]
-              if e.get("version") and e.get("version") != "current"
-          ]
-          published.sort(key=lambda e: version_key(e.get("version", "0.0.0")), reverse=True)
-
-          xml_parts = [
-              '<?xml version="1.0" encoding="UTF-8"?>',
-              '<div xmlns="http://www.w3.org/1999/xhtml">',
-              '',
-              '<p>This page provides the version history for the Bangladesh Core FHIR Implementation Guide.</p>',
-              '',
-              '<p>For a machine-readable version history see <a href="package-list.json">package-list.json</a>.</p>',
-              '',
-              '<p><b>Published Versions</b></p>',
-              '',
-              '<table class="grid table table-striped table-bordered table-hover">',
-              '<thead>',
-              '<tr>',
-              '<th>Version</th>',
-              '<th>Date</th>',
-              '<th>Status</th>',
-              '<th>Description</th>',
-              '</tr>',
-              '</thead>',
-              '<tbody>',
+              e for e in pkg_list['list']
+              if e.get('version') and e.get('version') != "current"
           ]
 
-          if published:
-              for idx, entry in enumerate(published):
-                  version_escaped = escape(entry.get("version", "Unknown"))
-                  date_escaped = escape(entry.get("date", "N/A"))
-                  desc_escaped = escape(entry.get("desc", ""))
-                  path_escaped = escape(entry.get("path", "#"))
-                  status_val = entry.get("status", "unknown")
-
-                  if status_val == "trial-use":
-                      status = '<span class="badge bg-info">Trial Use</span>'
-                  elif status_val == "normative":
-                      status = '<span class="badge bg-success">Normative</span>'
-                  else:
-                      status = f'<span class="badge bg-secondary">{escape(status_val)}</span>'
-
-                  badge = '<span class="badge bg-success">Latest</span> ' if idx == 0 else ''
-
-                  xml_parts.extend([
-                      '<tr>',
-                      f'<td><a href="{path_escaped}">{badge}{version_escaped}</a></td>',
-                      f'<td>{date_escaped}</td>',
-                      f'<td>{status}</td>',
-                      f'<td>{desc_escaped}</td>',
-                      '</tr>',
-                  ])
-          else:
-              xml_parts.extend([
-                  '<tr>',
-                  '<td colspan="4">No published versions available yet.</td>',
-                  '</tr>',
-              ])
-
-          xml_parts.extend([
-              '</tbody>',
-              '</table>',
-              '',
-              '<p class="lead"><b>Continuous Integration Build</b></p>',
-          ])
-
-          current_entry = next((e for e in pkg_list["list"] if e.get("version") == "current"), None)
-          if current_entry:
-              path_escaped = escape(current_entry.get("path", pkg_list.get("canonical", "") + "/"))
-              xml_parts.append(
-                  f'<p>The latest development build is available at: <a href="{path_escaped}">{path_escaped}</a></p>'
-              )
-          else:
-              xml_parts.append('<p><i>No CI build entry found in package-list.json.</i></p>')
-
-          xml_parts.extend(['', '</div>', ''])
-
-          Path("input/pagecontent/history.xml").write_text(
-              "\n".join(xml_parts),
-              encoding="utf-8"
+          # Sort newest version first
+          published.sort(
+              key=lambda e: version_key(e.get("version", "0.0.0")),
+              reverse=True
           )
 
-          print("Generated input/pagecontent/history.xml")
+          published_found = False
+          first_row = True
+
+          for entry in published:
+              published_found = True
+
+              version = escape(entry.get('version', 'Unknown'))
+              date = escape(entry.get('date', 'N/A'))
+              desc = escape(entry.get('desc', ''))
+              path = escape(entry.get('path', '#'))
+
+              status_val = entry.get('status', 'unknown')
+
+              if status_val == "trial-use":
+                  status = '<span class="badge bg-info">Trial Use</span>'
+              elif status_val == "normative":
+                  status = '<span class="badge bg-success">Normative</span>'
+              else:
+                  status = f'<span class="badge bg-secondary">{escape(status_val)}</span>'
+
+              badge = '<span class="badge bg-success">Latest</span> ' if first_row else ''
+
+              xml += f'''
+          <tr>
+          <td><a href="{path}">{badge}{version}</a></td>
+          <td>{date}</td>
+          <td>{status}</td>
+          <td>{desc}</td>
+          </tr>
+          '''
+
+              first_row = False
+
+          if not published_found:
+              xml += '''
+          <tr>
+          <td colspan="4">No published versions available yet.</td>
+          </tr>
+          '''
+
+          xml += '''
+          </tbody>
+          </table>
+
+          <p class="lead"><b>Continuous Integration Build</b></p>
+          '''
+
+          current_entry = None
+          for entry in pkg_list['list']:
+              if entry.get('version') == 'current':
+                  current_entry = entry
+                  break
+
+          if current_entry:
+              path = escape(current_entry.get('path', pkg_list.get('canonical', '') + '/'))
+              xml += f'''
+          <p>The latest development build is available at:
+          <a href="{path}">{path}</a></p>
+          '''
+          else:
+              xml += '''
+          <p><i>No CI build entry found in package-list.json.</i></p>
+          '''
+
+          xml += '''
+          </div>
+          '''
+
+          with open('input/pagecontent/history.xml', 'w', encoding='utf-8') as f:
+              f.write(xml)
+
+          print("✅ Generated static history.xml")
+          print(f"   File location: {os.path.abspath('input/pagecontent/history.xml')}")
+          print(f"   File size: {os.path.getsize('input/pagecontent/history.xml')} bytes")
           PYEOF
 
-          python3 -m json.tool package-list.json > /dev/null
-          test -f input/package-list.json
-          test -f input/pagecontent/history.xml
-
-          echo "Prepared files:"
-          echo "  - $(pwd)/package-list.json"
-          echo "  - $(pwd)/input/package-list.json"
-          echo "  - $(pwd)/input/pagecontent/history.xml"
-
-      - name: Lightweight disk cleanup
-        run: |
-          set -euo pipefail
-
-          echo "Disk usage before cleanup:"
-          df -h
-
-          AVAIL_GB="$(df -BG "$GITHUB_WORKSPACE" | awk 'NR==2 {gsub(/G/, "", $4); print $4}')"
-
-          if [[ "${AVAIL_GB}" -lt 10 ]]; then
-            echo "Low free disk detected (${AVAIL_GB}G). Running safe cleanup..."
-            docker system prune -af || true
-            rm -rf "${GITHUB_WORKSPACE}/output" \
-                   "${GITHUB_WORKSPACE}/temp" \
-                   "${GITHUB_WORKSPACE}/input-cache" \
-                   "${GITHUB_WORKSPACE}/fsh-generated" || true
-            rm -rf ~/.fhir/packages || true
+          if [ -f "input/pagecontent/history.xml" ]; then
+            echo "✅ Verified: history.xml exists"
+            echo "   First 20 lines:"
+            head -20 input/pagecontent/history.xml
           else
-            echo "Sufficient disk available (${AVAIL_GB}G). Skipping aggressive cleanup."
+            echo "❌ ERROR: history.xml was not created!"
+            exit 1
           fi
 
-          echo "Disk usage after cleanup:"
+          echo "✅ Pre-build preparation complete:"
+          echo "  - Root: $(pwd)/package-list.json"
+          echo "  - Input: $(pwd)/input/package-list.json"
+          echo "  - History: $(pwd)/input/pagecontent/history.xml"
+          echo "==============================="
+          echo "PACKAGE LIST USED FOR BUILD:"
+          cat package-list.json
+          echo "-------------------------------"
+          echo "INPUT COPY:"
+          cat input/package-list.json
+          echo "==============================="
+
+      - name: Emergency Disk Cleanup
+        run: |
+          echo "Disk usage before:"
           df -h
 
-      - name: Ensure Docker is available
+          echo "Clearing tool cache..."
+          rm -rf /opt/hostedtoolcache/* || true
+
+          rm -rf /usr/share/dotnet || true
+          rm -rf /usr/local/lib/android || true
+          rm -rf /opt/ghc || true
+          rm -rf ~/.fhir/packages || true
+
+          echo "Disk usage after:"
+          df -h
+
+      - name: Install Docker CLI
         run: |
-          set -euo pipefail
-
-          if command -v docker >/dev/null 2>&1; then
-            echo "Docker already installed: $(docker --version)"
-            exit 0
-          fi
-
-          echo "Docker not found. Installing..."
-          sudo apt-get update
-          sudo apt-get install -y docker.io
+          apt-get update
+          apt-get install -y docker.io
           docker --version
 
       - name: Preload previous IG package for comparison
-        env:
-          VERSION: ${{ steps.version.outputs.version }}
         run: |
-          set -euo pipefail
-
           echo "Detecting previous version..."
-
-          PREV_VERSION="$(
-            python3 <<'PY'
+          export VERSION="${{ steps.version.outputs.version }}"
+          PREV_VERSION=$(python3 <<'PY'
           import json
           import os
 
-          current_build = os.environ.get("VERSION", "")
+          current_build = os.environ.get("VERSION")
 
-          with open("package-list.json", encoding="utf-8") as f:
+          with open("package-list.json") as f:
               data = json.load(f)
 
           def parse(v):
               try:
                   return tuple(int(x) for x in v.split("."))
-              except Exception:
+              except:
                   return (0,)
 
           versions = [
-              entry["version"]
-              for entry in data.get("list", [])
-              if entry.get("version") not in ("current", current_build)
+              v["version"]
+              for v in data["list"]
+              if v.get("version") not in ("current", current_build)
           ]
+
           versions.sort(key=parse, reverse=True)
+
           print(versions[0] if versions else "")
           PY
-          )"
+          )
 
-          rm -rf previous-packages
+              if [ -z "$PREV_VERSION" ]; then
+                echo "No previous version found. Skipping preload."
+                exit 0
+              fi
+
+              echo "Previous version detected: $PREV_VERSION"
+
           mkdir -p previous-packages
+          TMPDIR=$(mktemp -d)
 
-          if [[ -z "${PREV_VERSION}" ]]; then
-            echo "No previous version found. Skipping preload."
-            exit 0
-          fi
+          URL="https://fhir.dghs.gov.bd/core/$PREV_VERSION/package.tgz"
 
-          echo "Previous version detected: ${PREV_VERSION}"
+          echo "Downloading $URL"
+          curl -fL "$URL" -o "$TMPDIR/package.tgz"
 
-          TMPDIR="$(mktemp -d)"
-          trap 'rm -rf "$TMPDIR"' EXIT
-
-          URL="https://fhir.dghs.gov.bd/core/${PREV_VERSION}/package.tgz"
-          echo "Downloading ${URL}"
-          curl -fL "${URL}" -o "${TMPDIR}/package.tgz"
-
-          mkdir -p "previous-packages/bd.fhir.core#${PREV_VERSION}"
-          tar -xzf "${TMPDIR}/package.tgz" -C "previous-packages/bd.fhir.core#${PREV_VERSION}"
+          mkdir -p "previous-packages/bd.fhir.core#$PREV_VERSION"
+          tar -xzf "$TMPDIR/package.tgz" -C "previous-packages/bd.fhir.core#$PREV_VERSION"
 
           echo "Previous package cached:"
-          ls -lah previous-packages
+          ls previous-packages
 
       - name: Build FHIR IG
-        env:
-          VERSION: ${{ steps.version.outputs.version }}
         run: |
-          set -euo pipefail
+          echo "Building FHIR IG version ${{ steps.version.outputs.version }}..."
 
-          echo "Building FHIR IG version ${VERSION}..."
+          CONTAINER_ID=$(docker create \
+            -v $(pwd)/previous-packages:/previous-packages \
+            hl7fhir/ig-publisher-base:latest \
+            /bin/bash -c "
 
-          CONTAINER_ID="$(
-            docker create \
-              -v "$(pwd)/previous-packages:/previous-packages" \
-              hl7fhir/ig-publisher-base:latest \
-              /bin/bash -lc '
-                set -euo pipefail
-                mkdir -p /tmp/build
-                cp -r /home/publisher/ig /tmp/build/ig
-                cd /tmp/build/ig
-                rm -f package-list.json
-                _updatePublisher.sh -y
-                _genonce.sh
-              '
-          )"
+          mkdir -p /tmp/build
+          cp -r /home/publisher/ig /tmp/build/ig
 
-          echo "Container ID: ${CONTAINER_ID}"
+          cd /tmp/build/ig
 
-          cleanup() {
-            docker rm -f "${CONTAINER_ID}" >/dev/null 2>&1 || true
-          }
-          trap cleanup EXIT
+          rm -f package-list.json
 
-          docker cp "$(pwd)/." "${CONTAINER_ID}:/home/publisher/ig/"
+          _updatePublisher.sh -y
+          _genonce.sh
+          ")
 
-          echo "Mounted previous packages:"
+          echo "Container ID: $CONTAINER_ID"
+
+          docker cp "$(pwd)/." "$CONTAINER_ID:/home/publisher/ig/"
+          echo "Mounted FHIR packages:"
           ls -R previous-packages || echo "No previous packages directory"
-
-          docker start -a "${CONTAINER_ID}"
+          docker start -a "$CONTAINER_ID"
           EXIT_CODE=$?
 
           echo "Copying outputs from container..."
-          docker cp "${CONTAINER_ID}:/tmp/build/ig/output" ./output || echo "Warning: No output directory"
-          docker cp "${CONTAINER_ID}:/tmp/build/ig/fsh-generated" ./fsh-generated || echo "No FSH generated"
-          docker cp "${CONTAINER_ID}:/tmp/build/ig/input-cache" ./input-cache || echo "No input-cache"
-          docker cp "${CONTAINER_ID}:/tmp/build/ig/temp" ./temp || echo "No temp directory"
+          docker cp "$CONTAINER_ID:/tmp/build/ig/output" ./output || echo "Warning: No output directory"
+          docker cp "$CONTAINER_ID:/tmp/build/ig/fsh-generated" ./fsh-generated || echo "No FSH generated"
+          docker cp "$CONTAINER_ID:/tmp/build/ig/input-cache" ./input-cache || echo "No input-cache"
+          docker cp "$CONTAINER_ID:/tmp/build/ig/temp" ./temp || echo "No temp directory"
 
-          if [[ ${EXIT_CODE} -ne 0 ]]; then
-            echo "Build failed."
-            exit "${EXIT_CODE}"
-          fi
-
-          if [[ ! -f output/index.html ]]; then
-            echo "ERROR: Build failed - output/index.html not found"
+          if [ $EXIT_CODE -ne 0 ]; then
+            echo "Build failed, showing logs:"
+            docker logs "$CONTAINER_ID"
+            docker rm "$CONTAINER_ID"
             exit 1
           fi
 
-          echo "Checking for history.html..."
-          if [[ -f output/history.html ]]; then
-            echo "history.html generated successfully"
-            ls -lh output/history.html
-          else
-            echo "WARNING: history.html was not generated"
+          docker rm "$CONTAINER_ID"
+
+          if [ ! -f "output/index.html" ]; then
+            echo "ERROR: Build failed - no index.html"
+            exit 1
           fi
 
+          echo ""
+          echo "🔍 Checking for history.html..."
+          if [ -f "output/history.html" ]; then
+            echo "✅ history.html generated successfully!"
+            echo "📄 history.html size: $(ls -lh output/history.html | awk '{print $5}')"
+          else
+            echo "⚠️ WARNING: history.html was NOT generated"
+            echo "This might indicate an issue with the template or history.xml/package-list.json"
+          fi
+          echo "================================"
           echo "IG Publisher comparison log:"
           cat output/qa.compare.txt || echo "qa.compare.txt not found"
-
-          echo "Build successful"
+          echo "================================"
+          echo "✅ Build successful!"
 
       - name: Update package-feed.xml for releases
         if: steps.version.outputs.build_type == 'release'
-        env:
-          VERSION: ${{ steps.version.outputs.version }}
         run: |
-          set -euo pipefail
+          VERSION="${{ steps.version.outputs.version }}"
+          DATETIME=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 
-          DATETIME="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          export DATETIME
+          if [ ! -f "package-feed.xml" ]; then
+            echo "⚠️ package-feed.xml not found, creating initial feed..."
 
-          if [[ ! -f package-feed.xml ]]; then
-            echo "package-feed.xml not found, creating initial feed..."
             cat > package-feed.xml <<EOF
           <?xml version="1.0" encoding="UTF-8"?>
           <feed xmlns="http://www.w3.org/2005/Atom">
             <title>bd.fhir.core</title>
             <id>https://fhir.dghs.gov.bd/core/package-feed.xml</id>
-            <updated>${DATETIME}</updated>
+            <updated>$DATETIME</updated>
           </feed>
           EOF
-          fi
+              fi
 
-          python3 <<'PYEOF'
-          import os
+              cat > update-feed.py << 'EOF'
+          import sys
           import xml.etree.ElementTree as ET
 
-          version = os.environ["VERSION"]
-          datetime_iso = os.environ["DATETIME"]
+          version = sys.argv[1]
+          datetime_iso = sys.argv[2]
 
           ET.register_namespace('', 'http://www.w3.org/2005/Atom')
 
@@ -498,35 +507,33 @@ jobs:
               root.insert(insert_pos, new_entry)
 
           tree.write('output/package-feed.xml', encoding='utf-8', xml_declaration=True)
-          print("Updated package-feed.xml")
-          PYEOF
+          print("✅ Updated package-feed.xml")
+          EOF
 
-          cp package-list.json output/package-list.json
-          echo "Updated registry files"
+              python3 update-feed.py "$VERSION" "$DATETIME"
+
+              cp package-list.json output/package-list.json
+
+              echo "📋 Updated registry files"
 
       - name: Prepare deployment artifact
         run: |
-          set -euo pipefail
-
           VERSION="${{ steps.version.outputs.version }}"
           BUILD_TYPE="${{ steps.version.outputs.build_type }}"
-          BUILD_DATE="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
           tar -czf ig-output.tar.gz -C output .
 
-          {
-            echo "version=${VERSION}"
-            echo "build_type=${BUILD_TYPE}"
-            echo "build_date=${BUILD_DATE}"
-          } > deployment.env
+          echo "version=$VERSION" > deployment.env
+          echo "build_type=$BUILD_TYPE" >> deployment.env
+          echo "build_date=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> deployment.env
 
-          echo "Output contents:"
+          echo "📦 Output contents:"
           ls -lh output/ | grep -E "(history\.html|package-list\.json|package-feed\.xml|index\.html)" || echo "Some files may be missing"
 
           ls -lh ig-output.tar.gz
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: ig-output
           path: |
@@ -534,7 +541,6 @@ jobs:
             deployment.env
             package-list.json
             package-feed.xml
-          if-no-files-found: warn
           retention-days: 30
 
   deploy:
@@ -544,25 +550,22 @@ jobs:
 
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v3
         with:
           name: ig-output
 
       - name: Load deployment env
         id: deploy_info
         run: |
-          set -euo pipefail
-
           source deployment.env
+          echo "version=$version" >> $GITHUB_OUTPUT
+          echo "build_type=$build_type" >> $GITHUB_OUTPUT
+          echo "build_date=$build_date" >> $GITHUB_OUTPUT
 
-          echo "version=${version}" >> "$GITHUB_OUTPUT"
-          echo "build_type=${build_type}" >> "$GITHUB_OUTPUT"
-          echo "build_date=${build_date}" >> "$GITHUB_OUTPUT"
+          echo "Deploying version: $version"
+          echo "Build type: $build_type"
 
-          echo "Deploying version: ${version}"
-          echo "Build type: ${build_type}"
-
-      - name: Deploy files to server
+      - name: Deploy to server
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.DEPLOY_HOST }}
@@ -580,7 +583,7 @@ jobs:
           password: ${{ secrets.DEPLOY_PASSWORD }}
           port: ${{ secrets.DEPLOY_PORT || 22 }}
           script: |
-            set -euo pipefail
+            set -e
 
             source /tmp/fhir-ig-deploy/deployment.env
 
@@ -594,12 +597,12 @@ jobs:
             VERSIONS_DIR="/opt/fhir-ig/versions"
             mkdir -p "$VERSIONS_DIR"
 
-            if [[ "$build_type" == "release" ]]; then
+            if [ "$build_type" = "release" ]; then
               TARGET_DIR="$VERSIONS_DIR/$version"
-              echo "Deploying release version to: $TARGET_DIR"
+              echo "📦 Deploying release version to: $TARGET_DIR"
             else
               TARGET_DIR="$VERSIONS_DIR/dev"
-              echo "Deploying dev build to: $TARGET_DIR"
+              echo "🔧 Deploying dev build to: $TARGET_DIR"
               mkdir -p "$TARGET_DIR"
               echo "Cleaning old dev files..."
               rm -rf "$TARGET_DIR"/*
@@ -610,37 +613,29 @@ jobs:
             echo "Extracting IG output..."
             tar -xzf /tmp/fhir-ig-deploy/ig-output.tar.gz -C "$TARGET_DIR"
 
-            if [[ -f "$TARGET_DIR/history.html" ]]; then
-              echo "history.html deployed successfully"
+            if [ -f "$TARGET_DIR/history.html" ]; then
+              echo "✅ history.html deployed successfully"
             else
-              echo "WARNING: history.html not found in deployment"
+              echo "⚠️ WARNING: history.html not found in deployment"
             fi
 
-            if [[ -f "$TARGET_DIR/package-list.json" ]]; then
-              cp "$TARGET_DIR/package-list.json" "$VERSIONS_DIR/package-list.json"
-              cp "$TARGET_DIR/package-list.json" "/opt/fhir-ig/package-list.json"
-            elif [[ -f /tmp/fhir-ig-deploy/package-list.json ]]; then
-              cp /tmp/fhir-ig-deploy/package-list.json "$VERSIONS_DIR/package-list.json"
-              cp /tmp/fhir-ig-deploy/package-list.json "/opt/fhir-ig/package-list.json"
-            fi
+            cp "$TARGET_DIR/package-list.json" "$VERSIONS_DIR/package-list.json"
+            cp "$TARGET_DIR/package-feed.xml" "$VERSIONS_DIR/package-feed.xml"
 
-            if [[ -f "$TARGET_DIR/package-feed.xml" ]]; then
-              cp "$TARGET_DIR/package-feed.xml" "$VERSIONS_DIR/package-feed.xml"
-              cp "$TARGET_DIR/package-feed.xml" "/opt/fhir-ig/package-feed.xml"
-            elif [[ -f /tmp/fhir-ig-deploy/package-feed.xml ]]; then
-              cp /tmp/fhir-ig-deploy/package-feed.xml "$VERSIONS_DIR/package-feed.xml"
-              cp /tmp/fhir-ig-deploy/package-feed.xml "/opt/fhir-ig/package-feed.xml"
-            fi
+            cp "$TARGET_DIR/package-list.json" "/opt/fhir-ig/package-list.json"
+            cp "$TARGET_DIR/package-feed.xml" "/opt/fhir-ig/package-feed.xml"
 
-            if [[ "$build_type" == "release" ]]; then
-              echo "Updating current symlink to point to $version"
-              ln -sfn "$version" "$VERSIONS_DIR/current"
+            if [ "$build_type" = "release" ]; then
+              echo "Updating 'current' symlink to point to $version"
+              rm -f "$VERSIONS_DIR/current"
+              ln -sf "$version" "$VERSIONS_DIR/current"
             fi
 
             cd /opt/fhir-ig
 
-            if [[ ! -f docker-compose.prod.yml ]]; then
+            if [ ! -f "docker-compose.prod.yml" ]; then
               echo "ERROR: docker-compose.prod.yml not found!"
+              echo "Please deploy the updated docker-compose.prod.yml and nginx.conf first"
               exit 1
             fi
 
@@ -649,8 +644,9 @@ jobs:
             rm -rf /tmp/fhir-ig-deploy
 
             echo "=========================================="
-            echo "Deployment completed successfully"
-            if [[ "$build_type" == "release" ]]; then
+            echo "✅ Deployment completed successfully!"
+            echo "Version $version is now available at:"
+            if [ "$build_type" = "release" ]; then
               echo "  - https://fhir.dghs.gov.bd/core/$version/"
               echo "  - https://fhir.dghs.gov.bd/core/$version/history.html"
               echo "  - https://fhir.dghs.gov.bd/core/ (current)"
@@ -660,4 +656,4 @@ jobs:
             echo "=========================================="
 
             echo "Available versions:"
-            ls -lh "$VERSIONS_DIR" | grep -v total || true
+            ls -lh "$VERSIONS_DIR" | grep -v total
