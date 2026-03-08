@@ -323,13 +323,30 @@ jobs:
 
           PREV_VERSION=$(python3 <<'PY'
           import json
+          import os
+
+          current = os.environ.get("VERSION")
+
           with open("package-list.json") as f:
               data = json.load(f)
 
-          versions = [v["version"] for v in data["list"] if v["version"] != "current"]
+          def parse(v):
+              try:
+                  return tuple(int(x) for x in v.split("."))
+              except:
+                  return (0,)
+
+          versions = [
+              v["version"]
+              for v in data["list"]
+              if v.get("version") not in ("current", current)
+          ]
+
+          versions.sort(key=parse, reverse=True)
+
           print(versions[0] if versions else "")
           PY
-              )
+          )
 
               if [ -z "$PREV_VERSION" ]; then
                 echo "No previous version found. Skipping preload."
