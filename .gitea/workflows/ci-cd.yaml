@@ -108,8 +108,12 @@ jobs:
               })
 
           if build_type == 'release':
-              version_exists = any(e.get('version') == version for e in pkg_list['list'])
-              if not version_exists:
+              version_entry = None
+              for e in pkg_list['list']:
+                  if e.get('version') == version:
+                      version_entry = e
+                      break
+              if version_entry is None:
                   new_entry = {
                       "version": version,
                       "date": date,
