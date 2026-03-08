@@ -437,18 +437,21 @@ jobs:
         run: |
           VERSION="${{ steps.version.outputs.version }}"
           DATETIME=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+
           if [ ! -f "package-feed.xml" ]; then
             echo "⚠️ package-feed.xml not found, creating initial feed..."
+
             cat > package-feed.xml <<EOF
-            <?xml version="1.0" encoding="UTF-8"?>
-            <feed xmlns="http://www.w3.org/2005/Atom">
-              <title>bd.fhir.core</title>
-              <id>https://fhir.dghs.gov.bd/core/package-feed.xml</id>
-              <updated>$DATETIME</updated>
-            </feed>
-            EOF
-          fi
-          cat > update-feed.py << 'EOF'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <feed xmlns="http://www.w3.org/2005/Atom">
+            <title>bd.fhir.core</title>
+            <id>https://fhir.dghs.gov.bd/core/package-feed.xml</id>
+            <updated>$DATETIME</updated>
+          </feed>
+          EOF
+              fi
+
+              cat > update-feed.py << 'EOF'
           import sys
           import xml.etree.ElementTree as ET
 
@@ -507,10 +510,11 @@ jobs:
           print("✅ Updated package-feed.xml")
           EOF
 
-          python3 update-feed.py "$VERSION" "$DATETIME"
-          cp package-list.json output/package-list.json
+              python3 update-feed.py "$VERSION" "$DATETIME"
 
-          echo "📋 Updated registry files"
+              cp package-list.json output/package-list.json
+
+              echo "📋 Updated registry files"
 
       - name: Prepare deployment artifact
         run: |
