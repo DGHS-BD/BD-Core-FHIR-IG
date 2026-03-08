@@ -17,6 +17,3 @@ publisher:
 parameters:
   logo: assets/images/001.svg
   show-in-header: true
-  excludelogic: bd-condition-icd11-diagnosis-valueset
-  special-urls:
-    - http://id.who.int/icd/release/11/mms
