@@ -34,11 +34,11 @@ Inline CodeableConcept is not permitted in this profile.
 """
 
 * subject 1..1 MS
-* subject only Reference(BDPatientProfile)
+* subject only Reference(BDPatient)
 * subject ^short = "Patient for whom the medication is prescribed"
 
 * encounter 0..1 MS
-* encounter only Reference(BDEncounterProfile)
+* encounter only Reference(BDEncounter)
 * encounter ^short = "Encounter during which this prescription was created"
 * encounter ^definition = """
 The encounter during which this prescription was created. Should be populated
@@ -52,7 +52,7 @@ for inpatient and outpatient prescriptions where an encounter record exists.
 * requester only Reference(BDPractitioner or BDOrganization)
 * requester ^short = "Practitioner or organisation that authored the prescription"
 
-* reportedReference only Reference(BDPractitioner or BDOrganization or BDPatientProfile)
+* reportedReference only Reference(BDPractitioner or BDOrganization or BDPatient)
 
 * priorPrescription only Reference(BDMedicationRequest)
 * priorPrescription ^short = "Reference to a prior prescription this replaces"

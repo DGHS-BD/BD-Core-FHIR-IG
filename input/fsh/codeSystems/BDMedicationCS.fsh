@@ -21,4 +21,4 @@ ValueSet: BDMedicationVS
 Id: bd-medication-valueset
 Title: "Bangladesh Medication ValueSet"
 Description: "Bangladesh Medication ValueSet"
-* include codes from system BDMedicationCodeSystem
+* include codes from system BDMedicationCS

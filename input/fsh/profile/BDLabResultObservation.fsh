@@ -54,6 +54,7 @@ Coded results (Ord/Nom scale):
 // ── Value[x] ──────────────────────────────────────────────────────────────
 // Required — every leaf result must carry a value.
 * value[x] 1..1 MS
+* value[x] only Quantity or CodeableConcept
 * value[x] ^definition = "The actual result value for this laboratory test"
 
 // Numeric results (Qn scale) — UCUM units required
