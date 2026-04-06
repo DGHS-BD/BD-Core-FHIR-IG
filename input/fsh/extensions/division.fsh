@@ -7,4 +7,4 @@ Context: Address
 
 
 * value[x] only CodeableConcept
-valueCodeableConcept from BDDivisionsVS (required)
+* valueCodeableConcept from BDDivisionsVS (required)

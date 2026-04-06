@@ -38,4 +38,3 @@ Id: bd-dose-form-valueset
 Title: "Bangladesh Medication Dose Form ValueSet"
 Description: "Medication dose form value set according to CCDS guideline"
 * ^url = "https://fhir.dghs.gov.bd/core/ValueSet/bd-dose-form-valueset"
-* include codes from system BDMedicationDoseForm
