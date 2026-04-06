@@ -17,7 +17,7 @@ The authoritative content is maintained by the World Health Organization.
 In Bangladesh, runtime code validation and lookup are delegated to the
 national OCL terminology server at https://tr.ocl.dghs.gov.bd.
 
-Supported operations (use `system=` parameter, not `url=`):
+Supported operations (use system= parameter, not url=):
   - $validate-code: https://tr.ocl.dghs.gov.bd/api/fhir/CodeSystem/$validate-code?system=http://id.who.int/icd/release/11/mms&code={code}
   - $lookup:        https://tr.ocl.dghs.gov.bd/api/fhir/CodeSystem/$lookup?system=http://id.who.int/icd/release/11/mms&code={code}
 

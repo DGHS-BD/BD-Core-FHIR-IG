@@ -13,9 +13,9 @@ International Patient Summary (IPS) generation and cross-border data exchange.
 Ingredient data is system-populated from OCL Has-active-ingredient mappings and
 is not required to be entered manually by clinicians.
 
-Combination drugs are supported via the repeating `ingredient` element.
+Combination drugs are supported via the repeating ingredient element.
 Unmatched ingredients (not yet mapped to ICD-11 substances) may be represented
-using `ingredient.itemCodeableConcept.text` without a coded value.
+using ingredient.itemCodeableConcept.text without a coded value.
 
 Dose form is optional and should be coded using EDQM Standard Terms when
 populated. Dose form is derivable from the DGDA drug concept via OCL lookup.

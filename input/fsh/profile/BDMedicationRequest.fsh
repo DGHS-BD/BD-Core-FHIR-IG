@@ -4,13 +4,13 @@ Parent: MedicationRequest
 Title: "Medication Request Profile for Bangladesh"
 Description: """
 Profile of the MedicationRequest resource for the Bangladesh National Health
-Information Exchange (HIE). Prescriptions must reference a `BDMedication`
+Information Exchange (HIE). Prescriptions must reference a BDMedication
 resource coded against the DGDA Drug Registry, ensuring all prescribed
 medications are traceable to DGDA-registered drug products.
 
-This profile constrains medication references to `BDMedication` only.
-Inline `medicationCodeableConcept` is not permitted — all medication data
-must be carried in a referenced `BDMedication` resource to support ingredient
+This profile constrains medication references to BDMedication only.
+Inline medicationCodeableConcept is not permitted — all medication data
+must be carried in a referenced BDMedication resource to support ingredient
 coding for IPS and cross-border data exchange.
 
 Route of administration is coded using HL7 v3 RouteOfAdministration served

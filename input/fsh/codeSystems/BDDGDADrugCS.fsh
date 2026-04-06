@@ -11,10 +11,10 @@ This code system contains two concept classes:
 - **Drug**: Finished pharmaceutical drug products (identified by DAR number and trade name)
 - **Ingredient**: Raw material / active pharmaceutical ingredients
 
-Concept IDs follow the format: `{DAR-number}--{trade-name-slug}`
-Example: `353-0026-039--marvelous-fe`
+Concept IDs follow the format: {DAR-number}--{trade-name-slug}
+Example: 353-0026-039--marvelous-fe
 
-**Canonical URL note:** `https://dgda.gov.bd/drug-registry` is a logical identifier
+**Canonical URL note:** https://dgda.gov.bd/drug-registry is a logical identifier
 only and does not resolve to a web endpoint.
 """
 
