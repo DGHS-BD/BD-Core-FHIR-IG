@@ -1,5 +1,5 @@
 Instance: BDEncounterExample
-InstanceOf: BDEncounterProfile
+InstanceOf: BDEncounter
 Usage: #example
 Title: "Example of a Bangladesh Patient Encounter"
 Description: "An example of an outpatient encounter for a Bangladesh patient."

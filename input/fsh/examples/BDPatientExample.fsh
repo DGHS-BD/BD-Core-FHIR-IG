@@ -1,5 +1,5 @@
 Instance: BDPatientExample
-InstanceOf: BDPatientProfile
+InstanceOf: BDPatient
 Usage: #example
 Title: "Example of a Bangladesh Patient"
 Description: "A minimal example for a patient satisfying name translations and address requirements."

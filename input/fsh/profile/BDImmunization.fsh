@@ -35,11 +35,11 @@ Description: "Bangladesh Immunization Profile"
 
 * patient 1..1
 * patient ^definition = "The patient receiving the vaccine"
-* patient only Reference(BDPatientProfile)
+* patient only Reference(BDPatient)
 
 * encounter 1..1
 * encounter ^definition = "Encounter during which vaccine was administered"
-* encounter only Reference(BDEncounterProfile)
+* encounter only Reference(BDEncounter)
 
 * occurrence[x] 1..1
 
