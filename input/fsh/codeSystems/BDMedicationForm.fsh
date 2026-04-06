@@ -30,11 +30,11 @@ Description: "Medication dose form codes according to CCDS guideline"
     "Low-viscosity liquid topical dosage form for external application."
 
 
-// ---------------------------
-// ValueSet for BD Medication Dose Forms
-// ---------------------------
-ValueSet: BDMedicationDoseFormVS
-Id: bd-dose-form-valueset
-Title: "Bangladesh Medication Dose Form ValueSet"
-Description: "Medication dose form value set according to CCDS guideline"
-* ^url = "https://fhir.dghs.gov.bd/core/ValueSet/bd-dose-form-valueset"
+// // ---------------------------
+// // ValueSet for BD Medication Dose Forms
+// // ---------------------------
+// ValueSet: BDMedicationDoseFormVS
+// Id: bd-dose-form-valueset
+// Title: "Bangladesh Medication Dose Form ValueSet"
+// Description: "Medication dose form value set according to CCDS guideline"
+// * ^url = "https://fhir.dghs.gov.bd/core/ValueSet/bd-dose-form-valueset"
