@@ -7,7 +7,7 @@ Value set containing all ICD-11 MMS substance and medicament concepts
 terminology server at https://tr.ocl.dghs.gov.bd.
 
 This value set contains 7,776 substance concepts and is used for coding
-active pharmaceutical ingredients in the `BDMedication.ingredient` element
+active pharmaceutical ingredients in the BDMedication.ingredient element
 to support IPS generation and cross-border data exchange.
 
 This value set is defined and maintained in OCL. It is declared here as a

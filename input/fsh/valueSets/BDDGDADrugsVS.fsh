@@ -7,17 +7,17 @@ Authority (DGDA) of Bangladesh. This value set includes 39,196 finished
 pharmaceutical drug product concepts maintained in the national OCL terminology
 server at https://tr.ocl.dghs.gov.bd.
 
-This value set is the normative binding for `BDMedication.code` and represents
+This value set is the normative binding for BDMedication.code and represents
 the only permitted drug coding vocabulary for medication resources in the
 Bangladesh national health information exchange.
 
-Validation is performed via `$validate-code` and `$lookup` against the national
-OCL terminology server. `$expand` is not supported for this value set due to its
+Validation is performed via $validate-code and $lookup against the national
+OCL terminology server. $expand is not supported for this value set due to its
 size.
 
-**Source collection:** dgda-registered-drugs-valueset (MoHFW organisation, OCL)
-**OCL collection canonical:** https://dgda.gov.bd/fhir/ValueSet/registered-drugs
-**OCL FHIR endpoint:** https://tr.ocl.dghs.gov.bd/orgs/MoHFW/collections/dgda-registered-drugs-valueset/
+Source collection: dgda-registered-drugs-valueset (MoHFW organisation, OCL)
+OCL collection canonical: https://dgda.gov.bd/fhir/ValueSet/registered-drugs
+OCL FHIR endpoint: https://tr.ocl.dghs.gov.bd/orgs/MoHFW/collections/dgda-registered-drugs-valueset/
 """
 
 * ^url = "https://dgda.gov.bd/fhir/ValueSet/registered-drugs"
