@@ -11,7 +11,15 @@
       "status": "ci-build",
       "current": true
     },
-        {
+    {
+      "version": "0.3.0",
+      "date": "2026-03-08",
+      "desc": "ICD-11 MMS integration and minor bug fixes",
+      "path": "https://fhir.dghs.gov.bd/core/0.3.0/",
+      "status": "trial-use",
+      "sequence": "STU 1"
+    },
+    {
       "version": "0.2.5",
       "date": "2025-10-06",
       "desc": "Minor bug fix release",
