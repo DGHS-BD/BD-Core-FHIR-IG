@@ -10,8 +10,10 @@ Description: "Address for Bangladesh Standard"
 
 * country 1..1 MS
 * extension contains Division named division 1..1 MS
+* extension[division] ^short = "Division code"
 
 * district 1..1 MS
 * district from BDDistrictsVS
 
 * extension contains Upazillas named upazilla 1..1 MS
+* extension[upazilla] ^short = "Upazilla code"

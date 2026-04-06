@@ -6,5 +6,5 @@ Description: "BD Upazilla"
 Context: Address
 
 
-* value[x] only string
-* value[x] from BDUpazillasVS
+* value[x] only CodeableConcept
+* valueCodeableConcept from BDUpazillasVS (required)

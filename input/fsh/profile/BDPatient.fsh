@@ -51,7 +51,7 @@ Patient profile for Bangladesh.
 * identifier[NID].system = "http://dghs.gov.bd/identifier/nid"
 * identifier[NID].type.coding.code = #NID
 // * identifier[NID].type.coding.system = "http://terminology.hl7.org/CodeSystem/v2-0203"
-* identifier[NID].type.coding.system = "https://fhir.dghs.gov.bd/core/ValueSet/bd-identifier-type-valueset"
+* identifier[NID].type.coding.system = "https://fhir.dghs.gov.bd/core/CodeSystem/bd-identifier-type"
 * identifier[NID].type from BangladeshIdentifierTypeVS (extensible)
 * identifier[NID].type.text = "Organization identifier"
 // * identifier[NID].value = "Personal identifier National ID"
@@ -61,7 +61,7 @@ Patient profile for Bangladesh.
 
 * identifier[BRN].system = "http://dghs.gov.bd/identifier/brn"
 * identifier[BRN].type.coding.code = #BRN
-* identifier[BRN].type.coding.system = "https://fhir.dghs.gov.bd/core/ValueSet/bd-identifier-type-valueset"
+* identifier[BRN].type.coding.system = "https://fhir.dghs.gov.bd/core/CodeSystem/bd-identifier-type"
 * identifier[BRN].type from BangladeshIdentifierTypeVS (extensible)
 * identifier[BRN].type.text = "Organization identifier"
 // * identifier[BRN].value = "Personal identifier Birth Registration"
@@ -69,7 +69,7 @@ Patient profile for Bangladesh.
 
 * identifier[UHID].system = "http://dghs.gov.bd/identifier/uhid"
 * identifier[UHID].type.coding.code = #UHID
-* identifier[UHID].type.coding.system = "https://fhir.dghs.gov.bd/core/ValueSet/bd-identifier-type-valueset"
+* identifier[UHID].type.coding.system = "https://fhir.dghs.gov.bd/core/CodeSystem/bd-identifier-type"
 * identifier[UHID].type from BangladeshIdentifierTypeVS (extensible)
 * identifier[UHID].type.text = "Organization identifier"
 

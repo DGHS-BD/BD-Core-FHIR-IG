@@ -30,10 +30,10 @@ Description: "A minimal example for a patient satisfying name translations and a
 * address[0].country = "BD"
 
 // The "Division" extension (Must match the name in BDAddress)
-* address[0].extension[division].valueCodeableConcept = https://fhir.dghs.gov.bd/core/CodeSystem/bd-geo-codes#30 "Dhaka"
+* address[0].extension[division].valueCodeableConcept = https://fhir.dghs.gov.bd/core/CodeSystem/bd-geocodes#30 "Dhaka"
 
 // The "Upazilla" extension (Must match the name in BDAddress)
-* address[0].extension[upazilla].valueCodeableConcept = https://fhir.dghs.gov.bd/core/CodeSystem/bd-geo-codes#3026 "Dhamrai"
+* address[0].extension[upazilla].valueCodeableConcept = https://fhir.dghs.gov.bd/core/CodeSystem/bd-geocodes#3026 "Dhamrai"
 
 // Optional Religion Extension
 * extension[religion].valueCodeableConcept = https://fhir.dghs.gov.bd/core/CodeSystem/bd-religions-cs#islam "Islam"
