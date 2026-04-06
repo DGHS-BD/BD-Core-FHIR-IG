@@ -31,4 +31,4 @@ OCL FHIR endpoint: https://tr.ocl.dghs.gov.bd/orgs/MoHFW/collections/dgda-regist
 * ^jurisdiction = urn:iso:std:iso:3166#BD "Bangladesh"
 * ^immutable = false
 
-* include codes from system "https://dgda.gov.bd/drug-registry"
+* include codes from system https://dgda.gov.bd/drug-registry
