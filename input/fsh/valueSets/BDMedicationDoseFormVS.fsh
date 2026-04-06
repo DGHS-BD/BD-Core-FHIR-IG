@@ -33,4 +33,4 @@ DGDA plain text dose forms to EDQM codes is planned for a future IG version.
 * ^jurisdiction = urn:iso:std:iso:3166#BD "Bangladesh"
 * ^immutable = false
 
-* include codes from system "https://standardterms.edqm.eu"
+* include codes from system https://standardterms.edqm.eu

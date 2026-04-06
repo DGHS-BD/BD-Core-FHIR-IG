@@ -1,4 +1,4 @@
-CodeSystem: BDMedicationCodeSystem
+CodeSystem: BDMedicationCS
 Id: bd-medication-code
 Title: "Bangladesh Medication Codes"
 Description: "Bangladesh Medication Codes"

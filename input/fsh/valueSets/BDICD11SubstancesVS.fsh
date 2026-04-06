@@ -28,5 +28,5 @@ minimal stub to allow IG publisher binding resolution only.
 * ^jurisdiction = urn:iso:std:iso:3166#BD "Bangladesh"
 * ^immutable = false
 
-* include codes from system "http://id.who.int/icd/release/11/mms"
+* include codes from system http://id.who.int/icd/release/11/mms
     where concept-class = "Substance"
