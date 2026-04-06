@@ -1,7 +1,7 @@
 Alias: $translation = http://hl7.org/fhir/StructureDefinition/translation
 // @Name: Profile
 // @Description: Example of a profile of the Patient resource. This example includes a few of the most commonly used constraints and documentation features of FHIR profiles.
-Profile:     BDPatientProfile
+Profile:     BDPatient
 Id:          bd-patient
 Parent:      Patient
 Title:       "Patient Profile for Bangladesh"

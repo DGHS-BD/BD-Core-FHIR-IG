@@ -1,5 +1,5 @@
 
-Profile:     BDEncounterProfile
+Profile:     BDEncounter
 Id:          bd-encounter
 Parent:      Encounter
 Title:       "Encounter Profile for Bangladesh"
