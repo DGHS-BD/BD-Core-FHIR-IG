@@ -17,16 +17,23 @@ Description: "A minimal example for a patient satisfying name translations and a
 * birthDate = "1985-05-20"
 
 // Identifier Slice: NID Example
-* identifier[NID].system = "http://dghs.gov.bd/identifier/nid"
+* identifier[NID].type.coding.system = "https://fhir.dghs.gov.bd/core/CodeSystem/bd-identifier-type"
+* identifier[NID].type.coding.code = #NID
 * identifier[NID].value = "1234567890"
-* identifier[NID].type = http://terminology.hl7.org/CodeSystem/v2-0203#NI "National unique individual identifier"
 
-// Required Address using BDAddress profile
-* address[0].line = "123 Green Road"
-* address[0].city = "Dhaka"
-* address[0].district = "Dhaka"
-* address[0].division = "Dhaka"
+// --- Address with required extensions ---
+* address[0].use = #home
+* address[0].line = "House 12, Road 5"
+* address[0].city = "Dhamrai"
+* address[0].district = "Dhaka" // This is a native field in your profile
+* address[0].postalCode = "1350"
 * address[0].country = "BD"
+
+// The "Division" extension (Must match the name in BDAddress)
+* address[0].extension[division].valueCodeableConcept = https://fhir.dghs.gov.bd/core/CodeSystem/bd-geo-codes#30 "Dhaka"
+
+// The "Upazilla" extension (Must match the name in BDAddress)
+* address[0].extension[upazilla].valueCodeableConcept = https://fhir.dghs.gov.bd/core/CodeSystem/bd-geo-codes#3026 "Dhamrai"
 
 // Optional Religion Extension
 * extension[religion].valueCodeableConcept = https://fhir.dghs.gov.bd/core/CodeSystem/bd-religions-cs#islam "Islam"
