@@ -22,7 +22,7 @@ DGDA plain text dose forms to EDQM codes is planned for a future IG version.
 **OCL source:** https://tr.ocl.dghs.gov.bd/#/orgs/MoHFW/sources/EDQM-PDF/
 """
 
-* ^url = "https://fhir.dghs.gov.bd/core/ValueSet/bd-medication-dose-form"
+* ^url = "https://fhir.dghs.gov.bd/core/ValueSet/edqm-dose-forms"
 * ^version = "1.0.0"
 * ^status = #active
 * ^experimental = false

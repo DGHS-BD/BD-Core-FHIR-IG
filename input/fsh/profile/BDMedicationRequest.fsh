@@ -60,5 +60,7 @@ for inpatient and outpatient prescriptions where an encounter record exists.
 * basedOn only Reference(BDMedicationRequest or ServiceRequest or CarePlan or ImmunizationRecommendation)
 * basedOn ^short = "Plan or request this prescription is based on"
 
+* dosageInstruction 0..* MS
+* dosageInstruction.route MS
 * dosageInstruction.route from BDRouteOfAdministrationVS (required)
 * dosageInstruction.route ^short = "Route of administration coded using HL7 v3 RouteOfAdministration"
