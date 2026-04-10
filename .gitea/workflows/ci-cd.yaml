@@ -14,8 +14,6 @@ env:
 jobs:
   build-ig:
     runs-on: fhir-runner
-    volumes:
-        - /home/mishealth/gitea-runner/input-cache:/cache
 
     steps:
       - name: Checkout repository
@@ -374,7 +372,7 @@ jobs:
       - name: Prepare IG Publisher
         run: |
           mkdir -p input-cache
-          cp /cache/publisher.jar input-cache/publisher.jar
+          cp /home/mishealth/gitea-runner/input-cache/publisher.jar input-cache/publisher.jar
           ls -al input-cache
 
       - name: Build FHIR IG
