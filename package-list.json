@@ -12,6 +12,14 @@
       "current": true
     },
     {
+      "version": "0.4.2",
+      "date": "2026-04-06",
+      "desc": "Patient profile minor bug fixes",
+      "path": "https://fhir.dghs.gov.bd/core/0.4.2/",
+      "status": "trial-use",
+      "sequence": "STU 1"
+    },
+    {
       "version": "0.4.1",
       "date": "2026-04-06",
       "desc": "DGDA Drug and LOINC Integration with minor bug fixes",

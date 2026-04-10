@@ -13,17 +13,15 @@ Patient profile for Bangladesh.
 """
 
 // ----- Begin rules:
-// Require exactly one HumanName
 * name 1..1 MS
 * name.use 1..1
 * name.use = #official (exactly)
 
-// Require a text element
 * name.text 1..1 MS
 
-// Require translation extensions on text — sliced by lang sub-extension value
+// Slice translation extensions by pattern on the lang sub-extension
 * name.text.extension ^slicing.discriminator.type = #value
-* name.text.extension ^slicing.discriminator.path = "extension('lang').value"
+* name.text.extension ^slicing.discriminator.path = "url"
 * name.text.extension ^slicing.rules = #open
 * name.text.extension ^slicing.ordered = false
 * name.text.extension 2..* MS
@@ -31,11 +29,19 @@ Patient profile for Bangladesh.
     $translation named nameEn 1..1 MS and
     $translation named nameBn 1..1 MS
 
-// Constraints on English name
+// English name — pattern discriminated by lang=en
+* name.text.extension[nameEn] ^short = "English name translation"
+* name.text.extension[nameEn].extension ^slicing.discriminator.type = #value
+* name.text.extension[nameEn].extension ^slicing.discriminator.path = "url"
+* name.text.extension[nameEn].extension ^slicing.rules = #open
 * name.text.extension[nameEn].extension[lang].valueCode = #en (exactly)
 * name.text.extension[nameEn].extension[content] 1..1 MS
 
-// Constraints on Bangla name
+// Bangla name — pattern discriminated by lang=bn
+* name.text.extension[nameBn] ^short = "Bangla name translation"
+* name.text.extension[nameBn].extension ^slicing.discriminator.type = #value
+* name.text.extension[nameBn].extension ^slicing.discriminator.path = "url"
+* name.text.extension[nameBn].extension ^slicing.rules = #open
 * name.text.extension[nameBn].extension[lang].valueCode = #bn (exactly)
 * name.text.extension[nameBn].extension[content] 1..1 MS
 
