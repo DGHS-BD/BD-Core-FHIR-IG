@@ -375,7 +375,6 @@ jobs:
 
           CONTAINER_ID=$(docker create \
             -v $(pwd)/previous-packages:/previous-packages \
-            -v /cache:/input-cache \
             hl7fhir/ig-publisher-base:latest \
             /bin/bash -c "
 
@@ -384,11 +383,10 @@ jobs:
 
           cd /tmp/build/ig
           mkdir -p input-cache
-          cp /input-cache/publisher.jar input-cache/publisher.jar
-
+          curl -L -o input-cache/publisher.jar https://supervision.dghs.gov.bd/publisher.jar
+          ls -lh input-cache
           rm -f package-list.json
 
-          _updatePublisher.sh -y
           _genonce.sh
           ")
 
