@@ -369,6 +369,12 @@ jobs:
           echo "Previous package cached:"
           ls previous-packages
 
+      - name: Prepare IG Publisher
+        run: |
+          mkdir -p input-cache
+          cp /cache/publisher.jar input-cache/publisher.jar
+          ls -al input-cache
+
       - name: Build FHIR IG
         run: |
           echo "Building FHIR IG version ${{ steps.version.outputs.version }}..."
