@@ -14,6 +14,8 @@ env:
 jobs:
   build-ig:
     runs-on: fhir-runner
+    volumes:
+        - /home/mishealth/gitea-runner/input-cache:/cache
 
     steps:
       - name: Checkout repository
