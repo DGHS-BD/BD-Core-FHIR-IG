@@ -16,12 +16,6 @@ jobs:
     runs-on: fhir-runner
 
     steps:
-      - name: Prepare IG Publisher
-        run: |
-          mkdir -p input-cache
-          cp /home/mishealth/gitea-runner/input-cache/publisher.jar input-cache/publisher.jar
-          ls -al input-cache
-
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
@@ -375,18 +369,11 @@ jobs:
           echo "Previous package cached:"
           ls previous-packages
 
-      - name: Prepare IG Publisher
-        run: |
-          mkdir -p input-cache
-          cp /home/mishealth/gitea-runner/input-cache/publisher.jar input-cache/publisher.jar
-          ls -al input-cache
-
       - name: Build FHIR IG
         run: |
           echo "Building FHIR IG version ${{ steps.version.outputs.version }}..."
 
           CONTAINER_ID=$(docker create \
-            -v $(pwd)/input-cache:/tmp/build/ig/input-cache \
             -v $(pwd)/previous-packages:/previous-packages \
             hl7fhir/ig-publisher-base:latest \
             /bin/bash -c "
@@ -398,7 +385,7 @@ jobs:
 
           rm -f package-list.json
 
-          
+          _updatePublisher.sh -y
           _genonce.sh
           ")
 
