@@ -16,6 +16,12 @@ jobs:
     runs-on: fhir-runner
 
     steps:
+      - name: Prepare IG Publisher
+        run: |
+          mkdir -p input-cache
+          cp /home/mishealth/gitea-runner/input-cache/publisher.jar input-cache/publisher.jar
+          ls -al input-cache
+
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
