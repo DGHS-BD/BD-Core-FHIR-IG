@@ -21,7 +21,11 @@ Patient profile for Bangladesh.
 // Require a text element
 * name.text 1..1 MS
 
-// Require translation extensions on text
+// Require translation extensions on text — sliced by lang sub-extension value
+* name.text.extension ^slicing.discriminator.type = #value
+* name.text.extension ^slicing.discriminator.path = "extension('lang').value"
+* name.text.extension ^slicing.rules = #open
+* name.text.extension ^slicing.ordered = false
 * name.text.extension 2..* MS
 * name.text.extension contains
     $translation named nameEn 1..1 MS and
