@@ -375,6 +375,7 @@ jobs:
 
           CONTAINER_ID=$(docker create \
             -v $(pwd)/previous-packages:/previous-packages \
+            -v /cache:/input-cache \
             hl7fhir/ig-publisher-base:latest \
             /bin/bash -c "
 
