@@ -16,7 +16,7 @@ Guide (BD-Core-FHIR-IG) published by DGHS/MoHFW.
 """
 
 * code 1..1 MS
-* code from bd-condition-icd11-diagnosis-valueset (preferred)
+* code from bd-condition-icd11-diagnosis-valueset (required)
 * code ^comment = """
 Condition.code SHALL contain at least one coding conforming to the
 coding[stem] slice with system = http://id.who.int/icd/release/11/mms.
