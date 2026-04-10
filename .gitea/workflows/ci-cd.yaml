@@ -383,6 +383,8 @@ jobs:
           cp -r /home/publisher/ig /tmp/build/ig
 
           cd /tmp/build/ig
+          mkdir -p input-cache
+          cp /input-cache/publisher.jar input-cache/publisher.jar
 
           rm -f package-list.json
 
