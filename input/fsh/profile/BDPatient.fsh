@@ -16,24 +16,10 @@ Patient profile for Bangladesh.
 * name 1..1 MS
 * name.use 1..1
 * name.use = #official (exactly)
-
 * name.text 1..1 MS
-
-// Slice translation extensions by pattern on the lang sub-extension
-* name.text.extension ^slicing.discriminator.type = #pattern
-* name.text.extension ^slicing.discriminator.path = "extension('lang').value"
-* name.text.extension ^slicing.rules = #open
-* name.text.extension ^slicing.ordered = false
-* name.text.extension 2..* MS
 * name.text.extension contains
-    $translation named nameEn 1..1 MS and
-    $translation named nameBn 1..1 MS
-
-* name.text.extension[nameEn].extension[lang].valueCode = #en (exactly)
-* name.text.extension[nameEn].extension[content] 1..1 MS
-
-* name.text.extension[nameBn].extension[lang].valueCode = #bn (exactly)
-* name.text.extension[nameBn].extension[content] 1..1 MS
+    BDNameEn named nameEn 1..1 MS and
+    BDNameBn named nameBn 1..1 MS
 
 //////////////////////
 
