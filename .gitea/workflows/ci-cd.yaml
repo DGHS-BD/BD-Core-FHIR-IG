@@ -377,21 +377,31 @@ jobs:
             -v $(pwd)/previous-packages:/previous-packages \
             hl7fhir/ig-publisher-base:latest \
             /bin/bash -c "
-
-          mkdir -p /tmp/build
-          cp -r /home/publisher/ig /tmp/build/ig
-
-          cd /tmp/build/ig
-          mkdir -p input-cache
-          curl -L -o input-cache/publisher.jar https://supervision.dghs.gov.bd/publisher.jar
-          ls -lh input-cache
-          rm -f package-list.json
-
-          _genonce.sh
-          ")
+            mkdir -p /tmp/build
+            cp -r /home/publisher/ig /tmp/build/ig
+            cd /tmp/build/ig
+            mkdir -p input-cache
+            curl -L -o input-cache/publisher.jar https://supervision.dghs.gov.bd/publisher.jar
+            ls -lh input-cache
+            rm -f package-list.json
+            
+            # NEW: Install previous packages to cache
+            if [ -d /previous-packages ]; then
+              echo 'Installing previous versions to package cache...'
+              for pkg_dir in /previous-packages/bd.fhir.core#*; do
+                if [ -d \"\$pkg_dir\" ]; then
+                  PKG_NAME=\$(basename \"\$pkg_dir\")
+                  echo \"  Installing \$PKG_NAME\"
+                  cp -r \"\$pkg_dir\" /home/publisher/.fhir/packages/\$PKG_NAME
+                fi
+              done
+              echo 'Previous versions installed'
+            fi
+            
+            _genonce.sh
+            ")
 
           echo "Container ID: $CONTAINER_ID"
-
           docker cp "$(pwd)/." "$CONTAINER_ID:/home/publisher/ig/"
           echo "Mounted FHIR packages:"
           ls -R previous-packages || echo "No previous packages directory"
