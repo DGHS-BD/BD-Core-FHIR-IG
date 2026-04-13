@@ -1,7 +1,7 @@
 Instance: BDOrganizationExample
 InstanceOf: BDOrganization
 Usage: #example
-Title: "Dhaka Medical College Hospital"
+Title: "Example of a Bangladesh Organization"
 Description: "Example for DMCH using the Facility Code 10000033"
 
 // Strictly following 'identifier 1..* MS' from your profile
