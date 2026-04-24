@@ -8,6 +8,33 @@
   <p>
     By adopting international FHIR standards, this guide helps ensure that patient data can flow smoothly between hospitals, clinics, and national programs, while also enabling future cross-border health information exchange.
   </p>
+  <hr/>
+
+  <h4>FHIR Sandbox Server</h4>
+
+  <p>
+    A live sandbox environment is available for testing and development based on this implementation guide.
+  </p>
+
+  <p>
+    <b>Base URL:</b><br/>
+    <a href="https://sandbox.fhir.dghs.gov.bd/fhir" target="_blank">
+      https://sandbox.fhir.dghs.gov.bd/fhir
+    </a>
+  </p>
+
+  <p>
+    This sandbox supports HL7 FHIR R4 and implements the Bangladesh Core FHIR profiles and terminology bindings.
+    It is intended for testing, validation, and system integration only.
+  </p>
+  <ul>
+    <li><a href="https://sandbox.fhir.dghs.gov.bd/fhir/metadata" target="_blank" rel="noopener noreferrer">Capability Statement</a></li>
+    <li><a href="https://sandbox.fhir.dghs.gov.bd" target="_blank" rel="noopener noreferrer">FHIR Tester UI</a></li>
+  </ul>
+  <p>
+    Developers are encouraged to validate their implementations against this sandbox before moving to production environments.
+  </p>
+  <hr/>
 	<a name="technical"> </a>
 	<h3>Technical Overview</h3>
 	<p>
