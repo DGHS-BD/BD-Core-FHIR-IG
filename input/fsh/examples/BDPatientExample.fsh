@@ -22,8 +22,6 @@ Description: "A minimal example for a patient satisfying name translations and a
 
 // Address with required extensions
 * address[0].use = #home
-* address[0].line = "House 12, Road 5"
-* address[0].city = "Dhamrai"
 * address[0].district = "3026"
 * address[0].country = "BD"
 
@@ -31,7 +29,7 @@ Description: "A minimal example for a patient satisfying name translations and a
 * address[0].extension[division].valueCodeableConcept = https://fhir.dghs.gov.bd/core/CodeSystem/bd-geocodes#30 "Dhaka"
 
 // Upazilla extension
-* address[0].extension[upazilla].valueCodeableConcept = https://fhir.dghs.gov.bd/core/CodeSystem/bd-geocodes#10040028 "Barguna Sadar"
+* address[0].extension[upazilla].valueCodeableConcept = https://fhir.dghs.gov.bd/core/CodeSystem/bd-geocodes#10040028 "Dhamrai"
 
 // Optional Religion Extension
 * extension[religion].valueCodeableConcept = https://fhir.dghs.gov.bd/core/CodeSystem/bd-religions#1 "Islam"
