@@ -77,7 +77,7 @@ Patient profile for Bangladesh.
 // Require a value from a specific value set be used for an element
 // * maritalStatus from http://hl7.org/fhir/ValueSet/marital-status
 * maritalStatus 0..1 MS
-* maritalStatus.valueCodeableConcept from BDMaritalStatusVS
+* maritalStatus from BDMaritalStatusVS
 
 // Restrict something[x] to a specific type -- in this case only allowing dateTime to be used
 * deceased[x] only dateTime
