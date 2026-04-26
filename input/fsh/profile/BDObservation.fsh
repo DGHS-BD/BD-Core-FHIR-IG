@@ -43,7 +43,7 @@ Planned derived profiles (v0.5.0+):
 // (e.g. BD LOINC lab panels, BD LOINC lab results). Required binding here
 // would prevent child profiles from using a subset binding.
 * code 1..1 MS
-* code from http://hl7.org/fhir/ValueSet/observation-codes (required)
+* code from http://hl7.org/fhir/ValueSet/observation-codes (example)
 * code ^definition = "Type of observation / test / measurement"
 * code ^comment = "E.g. Hb, RBS, CBC. Child profiles bind to specific ValueSets."
 
