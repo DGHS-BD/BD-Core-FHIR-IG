@@ -364,7 +364,7 @@ jobs:
           curl -fL "$URL" -o "$TMPDIR/package.tgz"
 
           mkdir -p "previous-packages/bd.fhir.core#$PREV_VERSION"
-          tar -xzf "$TMPDIR/package.tgz" -C "previous-packages/bd.fhir.core#$PREV_VERSION"
+          tar -xzf "$TMPDIR/package.tgz" --strip-components=1 -C "previous-packages/bd.fhir.core#$PREV_VERSION"
 
           echo "Previous package cached:"
           ls previous-packages
