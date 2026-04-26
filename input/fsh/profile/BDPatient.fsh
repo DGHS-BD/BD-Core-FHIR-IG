@@ -102,5 +102,5 @@ Patient profile for Bangladesh.
 * link ^definition = "Link to a RelatedPerson resource representing father, mother, or guardian"
 * link ^comment = "At least one RelatedPerson with BD identifier and relationship is required."
 * link.other 1..1 MS
-* link.other only Reference(RelatedPerson)
+* link.other only Reference(BDRelatedPerson)
 * link.type = #seealso (exactly)
