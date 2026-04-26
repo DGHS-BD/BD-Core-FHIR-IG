@@ -36,7 +36,7 @@ FHIR hasMember pattern:
 // ── Code ──────────────────────────────────────────────────────────────────
 // Bound to BD LOINC Lab Panels ValueSet — orderable panel codes only.
 * code 1..1 MS
-* code from https://fhir.dghs.gov.bd/core/ValueSet/loinc-lab-panels (extensible)
+* code from https://fhir.dghs.gov.bd/core/ValueSet/loinc-lab-panels (required)
 * code ^definition = "LOINC panel/order code for this laboratory panel"
 * code ^comment = "E.g. 58410-2 CBC panel, 24323-8 Comprehensive metabolic panel"
 

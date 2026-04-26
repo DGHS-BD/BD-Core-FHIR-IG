@@ -39,7 +39,7 @@ Coded results (Ord/Nom scale):
 // ── Code ──────────────────────────────────────────────────────────────────
 // Bound to BD LOINC Lab Results ValueSet — leaf result codes only.
 * code 1..1 MS
-* code from https://fhir.dghs.gov.bd/core/ValueSet/loinc-lab-results (extensible)
+* code from https://fhir.dghs.gov.bd/core/ValueSet/loinc-lab-results (required)
 * code ^definition = "LOINC result/component code for this individual laboratory result"
 * code ^comment = "E.g. 718-7 Hemoglobin, 2160-0 Creatinine"
 
@@ -68,7 +68,7 @@ Coded results (Ord/Nom scale):
 
 // Coded results (Ord/Nom scale) — bound to LOINC Answer Lists
 * valueCodeableConcept MS
-* valueCodeableConcept from https://fhir.dghs.gov.bd/core/ValueSet/loinc-answer-lists (extensible)
+* valueCodeableConcept from https://fhir.dghs.gov.bd/core/ValueSet/loinc-answer-lists (required)
 * valueCodeableConcept ^comment = "Use for ordinal or nominal (Ord/Nom scale) results."
 
 // ── hasMember ─────────────────────────────────────────────────────────────

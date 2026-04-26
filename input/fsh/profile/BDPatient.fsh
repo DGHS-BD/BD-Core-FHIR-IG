@@ -19,7 +19,7 @@ Patient profile for Bangladesh.
 * name.text 1..1 MS
 * name.text.extension contains
     BDNameEn named nameEn 1..1 MS and
-    BDNameBn named nameBn 1..1 MS
+    BDNameBn named nameBn 0..1 MS
 
 //////////////////////
 
@@ -32,7 +32,7 @@ Patient profile for Bangladesh.
 * identifier contains
     NID 0..1 and
     BRN 0..1 and
-    UHID 0..1
+    UHID 1..1
 
 * identifier[NID].system = "http://dghs.gov.bd/identifier/nid"
 * identifier[NID].type.coding.code = #NID
@@ -75,7 +75,8 @@ Patient profile for Bangladesh.
 
 
 // Require a value from a specific value set be used for an element
-* maritalStatus from http://hl7.org/fhir/ValueSet/marital-status
+// * maritalStatus from http://hl7.org/fhir/ValueSet/marital-status
+* maritalStatus.valueCodeableConcept from https://fhir.dghs.gov.bd/core/ValueSet/bd-marital-status-valueset
 
 // Restrict something[x] to a specific type -- in this case only allowing dateTime to be used
 * deceased[x] only dateTime
@@ -86,3 +87,19 @@ Patient profile for Bangladesh.
 
 * address 1..* MS
 * address only BDAddress
+
+// ── Photo ─────────────────────────────────────────────────────────────────
+// Optional patient photo — may be used for identity verification at point of care.
+* photo 0..* MS
+* photo ^definition = "Patient photo for identity verification"
+* photo ^comment = "Attach a photo of the patient when available. Use image/jpeg or image/png."
+
+// ── Link to RelatedPerson ─────────────────────────────────────────────────
+// At least one RelatedPerson link is required — father, mother, or guardian.
+// The referenced RelatedPerson must carry a BD identifier and a relationship.
+* link 0..* MS
+* link ^definition = "Link to a RelatedPerson resource representing father, mother, or guardian"
+* link ^comment = "At least one RelatedPerson with BD identifier and relationship is required."
+* link.other 1..1 MS
+* link.other only Reference(RelatedPerson)
+* link.type = #seealso (exactly)
