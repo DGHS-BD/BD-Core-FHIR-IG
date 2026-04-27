@@ -313,11 +313,8 @@ jobs:
 
       - name: Install Docker CLI
         run: |
-          find /etc/apt -name "*.list" -type f -print0 | xargs -0 sed -i \
-            's|http://archive.ubuntu.com/ubuntu|http://mirror.xeonbd.com/ubuntu|g; s|http://security.ubuntu.com/ubuntu|http://mirror.xeonbd.com/ubuntu|g'
-
-          apt-get update -o Acquire::Retries=5
-          apt-get install -y --no-install-recommends docker.io
+          apt-get update
+          apt-get install -y docker.io
           docker --version
 
       - name: Preload previous IG package for comparison
