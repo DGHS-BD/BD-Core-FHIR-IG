@@ -372,6 +372,19 @@ jobs:
       - name: Build FHIR IG
         run: |
           echo "Building FHIR IG version ${{ steps.version.outputs.version }}..."
+          PREV_VERSION=$(ls previous-packages/ 2>/dev/null | grep 'bd.fhir.core#' | sed 's/bd.fhir.core#//' | head -1)
+          
+          echo "Injecting previous version into ig.ini: $PREV_VERSION"
+          if [ -n "$PREV_VERSION" ]; then
+            # Add or replace previous-version line in ig.ini
+            if grep -q "^previous-version" ig.ini; then
+              sed -i "s/^previous-version.*/previous-version = $PREV_VERSION/" ig.ini
+            else
+              echo "previous-version = $PREV_VERSION" >> ig.ini
+            fi
+          fi
+          
+          cat ig.ini
 
           CONTAINER_ID=$(docker create \
             -v $(pwd)/previous-packages:/previous-packages \
