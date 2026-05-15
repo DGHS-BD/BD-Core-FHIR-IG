@@ -461,85 +461,159 @@ jobs:
         if: steps.version.outputs.build_type == 'release'
         run: |
           VERSION="${{ steps.version.outputs.version }}"
-          DATETIME=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          DATETIME_RFC3339=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          DATETIME_RSS=$(date -u -R)
 
-          if [ ! -f "package-feed.xml" ]; then
-            echo "⚠️ package-feed.xml not found, creating initial feed..."
-
-            cat > package-feed.xml <<EOF
-          <?xml version="1.0" encoding="UTF-8"?>
-          <feed xmlns="http://www.w3.org/2005/Atom">
-            <title>bd.fhir.core</title>
-            <id>https://fhir.dghs.gov.bd/core/package-feed.xml</id>
-            <updated>$DATETIME</updated>
-          </feed>
-          EOF
-              fi
-
-              cat > update-feed.py << 'EOF'
+          cat > update-feed.py << 'EOF'
           import sys
+          import os
+          import email.utils
           import xml.etree.ElementTree as ET
 
           version = sys.argv[1]
-          datetime_iso = sys.argv[2]
+          datetime_rss = sys.argv[2]
 
-          ET.register_namespace('', 'http://www.w3.org/2005/Atom')
+          FEED_FILE = "package-feed.xml"
+          OUT_FILE = "output/package-feed.xml"
 
-          tree = ET.parse('package-feed.xml')
-          root = tree.getroot()
-          ns = {'atom': 'http://www.w3.org/2005/Atom'}
+          NS_ATOM = "http://www.w3.org/2005/Atom"
+          NS_DC = "http://purl.org/dc/elements/1.1/"
+          NS_FHIR = "http://hl7.org/fhir/feed"
 
-          updated_elem = root.find('atom:updated', ns)
-          if updated_elem is not None:
-              updated_elem.text = datetime_iso
+          ET.register_namespace("atom", NS_ATOM)
+          ET.register_namespace("dc", NS_DC)
+          ET.register_namespace("fhir", NS_FHIR)
 
-          entry_exists = False
-          for entry in root.findall('atom:entry', ns):
-              title = entry.find('atom:title', ns)
-              if title is not None and version in (title.text or ''):
-                  entry_exists = True
-                  entry_updated = entry.find('atom:updated', ns)
-                  if entry_updated is not None:
-                      entry_updated.text = datetime_iso
+          package_url = f"https://fhir.dghs.gov.bd/core/{version}/package.tgz"
+          guide_url = f"https://fhir.dghs.gov.bd/core/{version}/"
+
+          def create_new_feed():
+              rss = ET.Element("rss", {
+                  "version": "2.0",
+                  f"xmlns:atom": NS_ATOM,
+                  f"xmlns:content": "http://purl.org/rss/1.0/modules/content/",
+                  f"xmlns:dc": NS_DC,
+                  f"xmlns:fhir": NS_FHIR,
+              })
+
+              channel = ET.SubElement(rss, "channel")
+
+              ET.SubElement(channel, "title").text = "Bangladesh Core FHIR Packages"
+              ET.SubElement(channel, "description").text = "New Packages published by DGHS Bangladesh"
+              ET.SubElement(channel, "link").text = "https://fhir.dghs.gov.bd/core/package-feed.xml"
+              ET.SubElement(channel, "generator").text = "HL7, Inc FHIR Publication tooling"
+              ET.SubElement(channel, "lastBuildDate").text = datetime_rss
+
+              atom_link = ET.SubElement(channel, f"{{{NS_ATOM}}}link")
+              atom_link.set("href", "https://fhir.dghs.gov.bd/core/package-feed.xml")
+              atom_link.set("rel", "self")
+              atom_link.set("type", "application/rss+xml")
+
+              ET.SubElement(channel, "pubDate").text = datetime_rss
+              ET.SubElement(channel, "language").text = "en"
+              ET.SubElement(channel, "ttl").text = "600"
+
+              return ET.ElementTree(rss)
+
+          def is_rss_feed(root):
+              return root.tag == "rss"
+
+          if os.path.exists(FEED_FILE):
+              try:
+                  tree = ET.parse(FEED_FILE)
+                  root = tree.getroot()
+
+                  # If old Atom feed exists, safely convert to new RSS feed.
+                  if not is_rss_feed(root):
+                      print("⚠️ Existing Atom feed detected. Converting to RSS 2.0 package feed.")
+                      tree = create_new_feed()
+                      root = tree.getroot()
+              except Exception:
+                  print("⚠️ Existing feed could not be parsed. Creating fresh RSS feed.")
+                  tree = create_new_feed()
+                  root = tree.getroot()
+          else:
+              print("⚠️ package-feed.xml not found. Creating initial RSS feed.")
+              tree = create_new_feed()
+              root = tree.getroot()
+
+          channel = root.find("channel")
+          if channel is None:
+              tree = create_new_feed()
+              root = tree.getroot()
+              channel = root.find("channel")
+
+          for tag in ["lastBuildDate", "pubDate"]:
+              elem = channel.find(tag)
+              if elem is not None:
+                  elem.text = datetime_rss
+
+          item_exists = False
+          for item in channel.findall("item"):
+              title = item.find("title")
+              guid = item.find("guid")
+              if (
+                  title is not None and title.text == f"bd.fhir.core#{version}"
+              ) or (
+                  guid is not None and guid.text == package_url
+              ):
+                  item_exists = True
+
+                  pub_date = item.find("pubDate")
+                  if pub_date is not None:
+                      pub_date.text = datetime_rss
+
+                  link = item.find("link")
+                  if link is not None:
+                      link.text = package_url
+
+                  if guid is not None:
+                      guid.text = package_url
+                      guid.set("isPermaLink", "true")
+
                   break
 
-          if not entry_exists:
-              new_entry = ET.Element('{http://www.w3.org/2005/Atom}entry')
+          if not item_exists:
+              item = ET.Element("item")
 
-              title = ET.SubElement(new_entry, '{http://www.w3.org/2005/Atom}title')
-              title.text = f"bd.fhir.core version {version}"
+              ET.SubElement(item, "title").text = f"bd.fhir.core#{version}"
+              ET.SubElement(item, "description").text = "Bangladesh Core FHIR Implementation Guide"
+              ET.SubElement(item, "link").text = package_url
 
-              link = ET.SubElement(new_entry, '{http://www.w3.org/2005/Atom}link')
-              link.set('rel', 'alternate')
-              link.set('href', f"https://fhir.dghs.gov.bd/core/{version}/")
+              guid = ET.SubElement(item, "guid")
+              guid.set("isPermaLink", "true")
+              guid.text = package_url
 
-              entry_id = ET.SubElement(new_entry, '{http://www.w3.org/2005/Atom}id')
-              entry_id.text = f"https://fhir.dghs.gov.bd/core/{version}/"
+              ET.SubElement(item, f"{{{NS_DC}}}creator").text = "DGHS Bangladesh"
+              ET.SubElement(item, f"{{{NS_FHIR}}}version").text = "4.0.1"
+              ET.SubElement(item, f"{{{NS_FHIR}}}kind").text = "IG"
+              ET.SubElement(item, "pubDate").text = datetime_rss
+              ET.SubElement(item, f"{{{NS_FHIR}}}details").text = (
+                  f"Release {version} of Bangladesh Core FHIR Implementation Guide"
+              )
 
-              entry_updated = ET.SubElement(new_entry, '{http://www.w3.org/2005/Atom}updated')
-              entry_updated.text = datetime_iso
-
-              summary = ET.SubElement(new_entry, '{http://www.w3.org/2005/Atom}summary')
-              summary.text = f"Release {version} of Bangladesh Core FHIR Implementation Guide"
-
-              insert_pos = 0
-              for i, child in enumerate(root):
-                  if child.tag.endswith('entry'):
-                      insert_pos = i
+              # Insert newest release at the top, after channel metadata.
+              first_item_index = None
+              for i, child in enumerate(list(channel)):
+                  if child.tag == "item":
+                      first_item_index = i
                       break
-                  insert_pos = i + 1
 
-              root.insert(insert_pos, new_entry)
+              if first_item_index is None:
+                  channel.append(item)
+              else:
+                  channel.insert(first_item_index, item)
 
-          tree.write('output/package-feed.xml', encoding='utf-8', xml_declaration=True)
-          print("✅ Updated package-feed.xml")
+          os.makedirs("output", exist_ok=True)
+          tree.write(OUT_FILE, encoding="utf-8", xml_declaration=True)
+          print("✅ Updated RSS package-feed.xml")
           EOF
 
-              python3 update-feed.py "$VERSION" "$DATETIME"
+          python3 update-feed.py "$VERSION" "$DATETIME_RSS"
 
-              cp package-list.json output/package-list.json
+          cp package-list.json output/package-list.json
 
-              echo "📋 Updated registry files"
+          echo "📋 Updated registry files"
 
       - name: Prepare deployment artifact
         run: |
