@@ -13,7 +13,7 @@
   </extension>-->
   <url value="https://fhir.dghs.gov.bd/core/ImplementationGuide/bd.fhir.core"/>
   <!-- This version will propagate to all artifacts unless the "propagate-version" extension is overridden -->
-  <version value="0.4.6"/>
+  <version value="0.4.7"/>
   <name value="BangladeshCoreFHIRIG"/>
   <title value="Bangladesh Core FHIR Implementation Guide"/>
   <status value="active"/>
@@ -57,7 +57,7 @@
       <reference>
         <reference value="StructureDefinition/bd-patient"/>
       </reference>
-      <description value="Banlgladesh Patient Profile"/>
+      <description value="Bangladesh Patient Profile"/>
     </resource>
     <page>
       <!-- The root will always be toc.html - the template will force it if you don't do it -->
