@@ -529,24 +529,41 @@ jobs:
           def is_rss_feed(root):
               return root.tag == "rss"
 
-          if os.path.exists(FEED_FILE):
-              try:
-                  tree = ET.parse(FEED_FILE)
-                  root = tree.getroot()
+          LIVE_FEED_URL = "https://fhir.dghs.gov.bd/core/package-feed.xml"
 
-                  # If old Atom feed exists, safely convert to new RSS feed.
-                  if not is_rss_feed(root):
-                      print("⚠️ Existing Atom feed detected. Converting to RSS 2.0 package feed.")
-                      tree = create_new_feed()
-                      root = tree.getroot()
-              except Exception:
-                  print("⚠️ Existing feed could not be parsed. Creating fresh RSS feed.")
-                  tree = create_new_feed()
-                  root = tree.getroot()
-          else:
-              print("⚠️ package-feed.xml not found. Creating initial RSS feed.")
+          def load_rss_tree(data):
+              root = ET.fromstring(data)
+              if not is_rss_feed(root) or root.find("channel") is None:
+                  raise ValueError("not an RSS 2.0 feed with a channel")
+              return ET.ElementTree(root)
+
+          tree = None
+
+          # 1. The live feed is the source of truth, so a release never drops
+          #    items published earlier.
+          try:
+              import urllib.request
+              with urllib.request.urlopen(LIVE_FEED_URL, timeout=30) as resp:
+                  tree = load_rss_tree(resp.read())
+              print("✅ Using the live package feed as base")
+          except Exception as exc:
+              print(f"⚠️ Live package feed unusable ({exc}); trying committed seed feed")
+
+          # 2. Fall back to the seed feed committed to the repository.
+          if tree is None and os.path.exists(FEED_FILE):
+              try:
+                  with open(FEED_FILE, "rb") as fh:
+                      tree = load_rss_tree(fh.read())
+                  print("✅ Using committed package-feed.xml as base")
+              except Exception as exc:
+                  print(f"⚠️ Committed package-feed.xml unusable ({exc})")
+
+          # 3. Last resort: start a new feed (earlier items will be missing).
+          if tree is None:
+              print("⚠️ No usable base feed. Creating initial RSS feed.")
               tree = create_new_feed()
-              root = tree.getroot()
+
+          root = tree.getroot()
 
           channel = root.find("channel")
           if channel is None:

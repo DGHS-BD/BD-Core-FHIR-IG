@@ -1,0 +1,190 @@
+<?xml version='1.0' encoding='utf-8'?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:fhir="http://hl7.org/fhir/feed" version="2.0">
+  <channel>
+    <title>Bangladesh Core FHIR Packages</title>
+    <description>New Packages published by DGHS Bangladesh</description>
+    <link>https://fhir.dghs.gov.bd/core/package-feed.xml</link>
+    <generator>HL7, Inc FHIR Publication tooling</generator>
+    <lastBuildDate>Mon, 12 Oct 2026 15:47:20 +0000</lastBuildDate>
+    <atom:link href="https://fhir.dghs.gov.bd/core/package-feed.xml" rel="self" type="application/rss+xml" />
+    <pubDate>Mon, 12 Oct 2026 15:47:20 +0000</pubDate>
+    <language>en</language>
+    <ttl>600</ttl>
+    <item>
+      <title>bd.fhir.core#0.4.8</title>
+      <description>Bangladesh Core FHIR Implementation Guide</description>
+      <link>https://fhir.dghs.gov.bd/core/0.4.8/package.tgz</link>
+      <guid isPermaLink="true">https://fhir.dghs.gov.bd/core/0.4.8/package.tgz</guid>
+      <dc:creator>DGHS Bangladesh</dc:creator>
+      <fhir:version>4.0.1</fhir:version>
+      <fhir:kind>IG</fhir:kind>
+      <pubDate>Mon, 12 Oct 2026 15:47:20 +0000</pubDate>
+      <fhir:details>Release 0.4.8 of Bangladesh Core FHIR Implementation Guide</fhir:details>
+    </item>
+    <item>
+      <title>bd.fhir.core#0.4.7</title>
+      <description>Bangladesh Core FHIR Implementation Guide</description>
+      <link>https://fhir.dghs.gov.bd/core/0.4.7/package.tgz</link>
+      <guid isPermaLink="true">https://fhir.dghs.gov.bd/core/0.4.7/package.tgz</guid>
+      <dc:creator>DGHS Bangladesh</dc:creator>
+      <fhir:version>4.0.1</fhir:version>
+      <fhir:kind>IG</fhir:kind>
+      <pubDate>Mon, 12 Oct 2026 00:00:00 +0000</pubDate>
+      <fhir:details>Release 0.4.7 of Bangladesh Core FHIR Implementation Guide</fhir:details>
+    </item>
+    <item>
+      <title>bd.fhir.core#0.4.6</title>
+      <description>Bangladesh Core FHIR Implementation Guide</description>
+      <link>https://fhir.dghs.gov.bd/core/0.4.6/package.tgz</link>
+      <guid isPermaLink="true">https://fhir.dghs.gov.bd/core/0.4.6/package.tgz</guid>
+      <dc:creator>DGHS Bangladesh</dc:creator>
+      <fhir:version>4.0.1</fhir:version>
+      <fhir:kind>IG</fhir:kind>
+      <pubDate>Mon, 27 Apr 2026 00:00:00 +0000</pubDate>
+      <fhir:details>Release 0.4.6 of Bangladesh Core FHIR Implementation Guide</fhir:details>
+    </item>
+    <item>
+      <title>bd.fhir.core#0.4.5</title>
+      <description>Bangladesh Core FHIR Implementation Guide</description>
+      <link>https://fhir.dghs.gov.bd/core/0.4.5/package.tgz</link>
+      <guid isPermaLink="true">https://fhir.dghs.gov.bd/core/0.4.5/package.tgz</guid>
+      <dc:creator>DGHS Bangladesh</dc:creator>
+      <fhir:version>4.0.1</fhir:version>
+      <fhir:kind>IG</fhir:kind>
+      <pubDate>Fri, 10 Apr 2026 00:00:00 +0000</pubDate>
+      <fhir:details>Release 0.4.5 of Bangladesh Core FHIR Implementation Guide</fhir:details>
+    </item>
+    <item>
+      <title>bd.fhir.core#0.4.4</title>
+      <description>Bangladesh Core FHIR Implementation Guide</description>
+      <link>https://fhir.dghs.gov.bd/core/0.4.4/package.tgz</link>
+      <guid isPermaLink="true">https://fhir.dghs.gov.bd/core/0.4.4/package.tgz</guid>
+      <dc:creator>DGHS Bangladesh</dc:creator>
+      <fhir:version>4.0.1</fhir:version>
+      <fhir:kind>IG</fhir:kind>
+      <pubDate>Mon, 06 Apr 2026 00:00:00 +0000</pubDate>
+      <fhir:details>Release 0.4.4 of Bangladesh Core FHIR Implementation Guide</fhir:details>
+    </item>
+    <item>
+      <title>bd.fhir.core#0.4.3</title>
+      <description>Bangladesh Core FHIR Implementation Guide</description>
+      <link>https://fhir.dghs.gov.bd/core/0.4.3/package.tgz</link>
+      <guid isPermaLink="true">https://fhir.dghs.gov.bd/core/0.4.3/package.tgz</guid>
+      <dc:creator>DGHS Bangladesh</dc:creator>
+      <fhir:version>4.0.1</fhir:version>
+      <fhir:kind>IG</fhir:kind>
+      <pubDate>Mon, 06 Apr 2026 00:00:00 +0000</pubDate>
+      <fhir:details>Release 0.4.3 of Bangladesh Core FHIR Implementation Guide</fhir:details>
+    </item>
+    <item>
+      <title>bd.fhir.core#0.4.2</title>
+      <description>Bangladesh Core FHIR Implementation Guide</description>
+      <link>https://fhir.dghs.gov.bd/core/0.4.2/package.tgz</link>
+      <guid isPermaLink="true">https://fhir.dghs.gov.bd/core/0.4.2/package.tgz</guid>
+      <dc:creator>DGHS Bangladesh</dc:creator>
+      <fhir:version>4.0.1</fhir:version>
+      <fhir:kind>IG</fhir:kind>
+      <pubDate>Mon, 06 Apr 2026 00:00:00 +0000</pubDate>
+      <fhir:details>Release 0.4.2 of Bangladesh Core FHIR Implementation Guide</fhir:details>
+    </item>
+    <item>
+      <title>bd.fhir.core#0.4.1</title>
+      <description>Bangladesh Core FHIR Implementation Guide</description>
+      <link>https://fhir.dghs.gov.bd/core/0.4.1/package.tgz</link>
+      <guid isPermaLink="true">https://fhir.dghs.gov.bd/core/0.4.1/package.tgz</guid>
+      <dc:creator>DGHS Bangladesh</dc:creator>
+      <fhir:version>4.0.1</fhir:version>
+      <fhir:kind>IG</fhir:kind>
+      <pubDate>Mon, 06 Apr 2026 00:00:00 +0000</pubDate>
+      <fhir:details>Release 0.4.1 of Bangladesh Core FHIR Implementation Guide</fhir:details>
+    </item>
+    <item>
+      <title>bd.fhir.core#0.4.0</title>
+      <description>Bangladesh Core FHIR Implementation Guide</description>
+      <link>https://fhir.dghs.gov.bd/core/0.4.0/package.tgz</link>
+      <guid isPermaLink="true">https://fhir.dghs.gov.bd/core/0.4.0/package.tgz</guid>
+      <dc:creator>DGHS Bangladesh</dc:creator>
+      <fhir:version>4.0.1</fhir:version>
+      <fhir:kind>IG</fhir:kind>
+      <pubDate>Mon, 06 Apr 2026 00:00:00 +0000</pubDate>
+      <fhir:details>Release 0.4.0 of Bangladesh Core FHIR Implementation Guide</fhir:details>
+    </item>
+    <item>
+      <title>bd.fhir.core#0.3.0</title>
+      <description>Bangladesh Core FHIR Implementation Guide</description>
+      <link>https://fhir.dghs.gov.bd/core/0.3.0/package.tgz</link>
+      <guid isPermaLink="true">https://fhir.dghs.gov.bd/core/0.3.0/package.tgz</guid>
+      <dc:creator>DGHS Bangladesh</dc:creator>
+      <fhir:version>4.0.1</fhir:version>
+      <fhir:kind>IG</fhir:kind>
+      <pubDate>Sun, 08 Mar 2026 00:00:00 +0000</pubDate>
+      <fhir:details>Release 0.3.0 of Bangladesh Core FHIR Implementation Guide</fhir:details>
+    </item>
+    <item>
+      <title>bd.fhir.core#0.2.5</title>
+      <description>Bangladesh Core FHIR Implementation Guide</description>
+      <link>https://fhir.dghs.gov.bd/core/0.2.5/package.tgz</link>
+      <guid isPermaLink="true">https://fhir.dghs.gov.bd/core/0.2.5/package.tgz</guid>
+      <dc:creator>DGHS Bangladesh</dc:creator>
+      <fhir:version>4.0.1</fhir:version>
+      <fhir:kind>IG</fhir:kind>
+      <pubDate>Mon, 06 Oct 2025 00:00:00 +0000</pubDate>
+      <fhir:details>Release 0.2.5 of Bangladesh Core FHIR Implementation Guide</fhir:details>
+    </item>
+    <item>
+      <title>bd.fhir.core#0.2.4</title>
+      <description>Bangladesh Core FHIR Implementation Guide</description>
+      <link>https://fhir.dghs.gov.bd/core/0.2.4/package.tgz</link>
+      <guid isPermaLink="true">https://fhir.dghs.gov.bd/core/0.2.4/package.tgz</guid>
+      <dc:creator>DGHS Bangladesh</dc:creator>
+      <fhir:version>4.0.1</fhir:version>
+      <fhir:kind>IG</fhir:kind>
+      <pubDate>Mon, 06 Oct 2025 00:00:00 +0000</pubDate>
+      <fhir:details>Release 0.2.4 of Bangladesh Core FHIR Implementation Guide</fhir:details>
+    </item>
+    <item>
+      <title>bd.fhir.core#0.2.3</title>
+      <description>Bangladesh Core FHIR Implementation Guide</description>
+      <link>https://fhir.dghs.gov.bd/core/0.2.3/package.tgz</link>
+      <guid isPermaLink="true">https://fhir.dghs.gov.bd/core/0.2.3/package.tgz</guid>
+      <dc:creator>DGHS Bangladesh</dc:creator>
+      <fhir:version>4.0.1</fhir:version>
+      <fhir:kind>IG</fhir:kind>
+      <pubDate>Mon, 06 Oct 2025 00:00:00 +0000</pubDate>
+      <fhir:details>Release 0.2.3 of Bangladesh Core FHIR Implementation Guide</fhir:details>
+    </item>
+    <item>
+      <title>bd.fhir.core#0.2.2</title>
+      <description>Bangladesh Core FHIR Implementation Guide</description>
+      <link>https://fhir.dghs.gov.bd/core/0.2.2/package.tgz</link>
+      <guid isPermaLink="true">https://fhir.dghs.gov.bd/core/0.2.2/package.tgz</guid>
+      <dc:creator>DGHS Bangladesh</dc:creator>
+      <fhir:version>4.0.1</fhir:version>
+      <fhir:kind>IG</fhir:kind>
+      <pubDate>Mon, 06 Oct 2025 00:00:00 +0000</pubDate>
+      <fhir:details>Release 0.2.2 of Bangladesh Core FHIR Implementation Guide</fhir:details>
+    </item>
+    <item>
+      <title>bd.fhir.core#0.2.1</title>
+      <description>Bangladesh Core FHIR Implementation Guide</description>
+      <link>https://fhir.dghs.gov.bd/core/0.2.1/package.tgz</link>
+      <guid isPermaLink="true">https://fhir.dghs.gov.bd/core/0.2.1/package.tgz</guid>
+      <dc:creator>DGHS Bangladesh</dc:creator>
+      <fhir:version>4.0.1</fhir:version>
+      <fhir:kind>IG</fhir:kind>
+      <pubDate>Mon, 06 Oct 2025 00:00:00 +0000</pubDate>
+      <fhir:details>Release 0.2.1 of Bangladesh Core FHIR Implementation Guide</fhir:details>
+    </item>
+    <item>
+      <title>bd.fhir.core#0.2.0</title>
+      <description>Bangladesh Core FHIR Implementation Guide</description>
+      <link>https://fhir.dghs.gov.bd/core/0.2.0/package.tgz</link>
+      <guid isPermaLink="true">https://fhir.dghs.gov.bd/core/0.2.0/package.tgz</guid>
+      <dc:creator>DGHS Bangladesh</dc:creator>
+      <fhir:version>4.0.1</fhir:version>
+      <fhir:kind>IG</fhir:kind>
+      <pubDate>Thu, 02 Oct 2025 00:00:00 +0000</pubDate>
+      <fhir:details>Release 0.2.0 of Bangladesh Core FHIR Implementation Guide</fhir:details>
+    </item>
+  </channel>
+</rss>
