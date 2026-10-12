@@ -313,8 +313,13 @@ jobs:
 
       - name: Install Docker CLI
         run: |
-          apt-get update
-          apt-get install -y docker.io
+          # The job image is Debian 11 (EOL): its apt repos 404, so install the
+          # static docker CLI instead of the docker.io package.
+          if ! command -v docker >/dev/null 2>&1; then
+            DOCKER_VERSION=27.3.1
+            curl -fsSL "https://download.docker.com/linux/static/stable/$(uname -m)/docker-${DOCKER_VERSION}.tgz" \
+              | tar -xz --strip-components=1 -C /usr/local/bin docker/docker
+          fi
           docker --version
 
       - name: Preload previous IG package for comparison
