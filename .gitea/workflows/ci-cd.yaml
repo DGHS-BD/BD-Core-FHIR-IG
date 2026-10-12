@@ -502,13 +502,10 @@ jobs:
           guide_url = f"https://fhir.dghs.gov.bd/core/{version}/"
 
           def create_new_feed():
-              rss = ET.Element("rss", {
-                  "version": "2.0",
-                  f"xmlns:atom": NS_ATOM,
-                  f"xmlns:content": "http://purl.org/rss/1.0/modules/content/",
-                  f"xmlns:dc": NS_DC,
-                  f"xmlns:fhir": NS_FHIR,
-              })
+              # Namespace declarations are emitted by ElementTree from
+              # register_namespace(); adding xmlns:* attributes here as well
+              # duplicates them and produces malformed XML.
+              rss = ET.Element("rss", {"version": "2.0"})
 
               channel = ET.SubElement(rss, "channel")
 
