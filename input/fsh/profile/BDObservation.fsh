@@ -75,21 +75,14 @@ Planned derived profiles (v0.5.0+):
 // Result observations set value[x] to 1..1.
 * value[x] 0..1
 * value[x] ^definition = "Result value (Quantity, string, code, boolean, etc.)"
+// Only valueQuantity is constrained below (UCUM system/code). The other value[x]
+// types are already 0..1 via value[x]; repeating them as 0..1 type-slices made the
+// panel profile (value[x] 0..0) generate a type-less value[x] with 11 prohibited slices.
 * valueQuantity 0..1
 * valueQuantity ^comment = "If numeric, must include UCUM unit"
 * valueQuantity.system 0..1
 * valueQuantity.system = "http://unitsofmeasure.org"
 * valueQuantity.code 0..1
-* valueString 0..1
-* valueCodeableConcept 0..1
-* valueBoolean 0..1
-* valueInteger 0..1
-* valueRange 0..1
-* valueRatio 0..1
-* valueSampledData 0..1
-* valueTime 0..1
-* valueDateTime 0..1
-* valuePeriod 0..1
 
 // ── Interpretation ────────────────────────────────────────────────────────
 // Extensible at base — required was too strict for general observation use.
