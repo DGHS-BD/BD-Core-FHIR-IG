@@ -392,8 +392,9 @@ jobs:
           
           cat ig.ini
 
+          # No bind mount: the job runs in a container against the host's docker
+          # daemon, so $(pwd) does not exist on the daemon's host. Use docker cp.
           CONTAINER_ID=$(docker create \
-            -v $(pwd)/previous-packages:/previous-packages \
             hl7fhir/ig-publisher-base:latest \
             /bin/bash -c "
             mkdir -p /tmp/build
@@ -407,6 +408,8 @@ jobs:
             # NEW: Install previous packages to cache
             if [ -d /previous-packages ]; then
               echo 'Installing previous versions to package cache...'
+              ls -la /previous-packages
+              mkdir -p /home/publisher/.fhir/packages
               for pkg_dir in /previous-packages/bd.fhir.core#*; do
                 if [ -d \"\$pkg_dir\" ]; then
                   PKG_NAME=\$(basename \"\$pkg_dir\")
@@ -414,7 +417,10 @@ jobs:
                   cp -r \"\$pkg_dir\" /home/publisher/.fhir/packages/\$PKG_NAME
                 fi
               done
-              echo 'Previous versions installed'
+              echo 'Previous versions installed:'
+              ls -la /home/publisher/.fhir/packages
+            else
+              echo 'WARNING: /previous-packages not found - no previous version comparison'
             fi
             
             _genonce.sh
@@ -422,7 +428,10 @@ jobs:
 
           echo "Container ID: $CONTAINER_ID"
           docker cp "$(pwd)/." "$CONTAINER_ID:/home/publisher/ig/"
-          echo "Mounted FHIR packages:"
+          if [ -d previous-packages ]; then
+            docker cp previous-packages "$CONTAINER_ID:/previous-packages"
+          fi
+          echo "Previous FHIR packages:"
           ls -R previous-packages || echo "No previous packages directory"
           docker start -a "$CONTAINER_ID"
           EXIT_CODE=$?
