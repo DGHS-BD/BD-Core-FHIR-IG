@@ -12,6 +12,14 @@
       "current": true
     },
     {
+      "version": "0.4.6",
+      "date": "2026-04-27",
+      "desc": "minor bug fixes",
+      "path": "https://fhir.dghs.gov.bd/core/0.4.6/",
+      "status": "trial-use",
+      "sequence": "STU 1"
+    },
+    {
       "version": "0.4.5",
       "date": "2026-04-10",
       "desc": "minor bug fixes",
