@@ -18,5 +18,5 @@ Description: "Example for DMCH using the Facility Code 10000033"
 * address[0].country = "BD"
 
 // To include Division without a 'does not exist' error, use the extension syntax:
-* address[0].extension[0].url = "https://fhir.dghs.gov.bd/core/StructureDefinition/bd-division"
+* address[0].extension[0].url = "https://fhir.dghs.gov.bd/core/StructureDefinition/bd-divisions"
 * address[0].extension[0].valueCodeableConcept = https://fhir.dghs.gov.bd/core/CodeSystem/bd-geocodes#30 "Dhaka"

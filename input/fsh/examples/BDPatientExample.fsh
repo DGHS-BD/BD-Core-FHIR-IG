@@ -29,7 +29,7 @@ Description: "A minimal example for a patient satisfying name translations and a
 * address[0].extension[division].valueCodeableConcept = https://fhir.dghs.gov.bd/core/CodeSystem/bd-geocodes#30 "Dhaka"
 
 // Upazilla extension
-* address[0].extension[upazilla].valueCodeableConcept = https://fhir.dghs.gov.bd/core/CodeSystem/bd-geocodes#10040028 "Dhamrai"
+* address[0].extension[upazilla].valueCodeableConcept = https://fhir.dghs.gov.bd/core/CodeSystem/bd-geocodes#30260014 "Dhamrai"
 
 // Optional Religion Extension
 * extension[religion].valueCodeableConcept = https://fhir.dghs.gov.bd/core/CodeSystem/bd-religions#1 "Islam"
