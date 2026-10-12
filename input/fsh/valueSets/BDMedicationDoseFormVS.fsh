@@ -1,5 +1,5 @@
 ValueSet: BDMedicationDoseFormVS
-Id: bd-medication-dose-form
+Id: edqm-dose-forms
 Title: "Medication Dose Form Value Set"
 Description: """
 Value set containing pharmaceutical dose form concepts from the European
