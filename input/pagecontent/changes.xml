@@ -1,12 +1,128 @@
-<div xmlns="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://hl7.org/fhir ../../input-cache/schemas/R5/fhir-single.xsd">
-	<p>
-    This provides a list of changes to the MyIG specification since its initial release
+<div xmlns="http://www.w3.org/1999/xhtml">
+  <p>
+    This page lists the released versions of the Bangladesh Core FHIR
+    Implementation Guide with the description recorded for each release. The
+    <a href="history.html">version history</a> page links to every published
+    version.
   </p>
-  <a name="0.1.0"> </a>
-	<p>
-		<b>2099-01-01 v0.1.0 - My IG R1 (STU ballot 1) Ballot Candidate</b> based on FHIR R4
+  <a name="0.4.8"> </a>
+  <p>
+    <b>2026-10-12 v0.4.8</b> - based on FHIR R4
   </p>
   <ul>
-    <li>Initial version</li>
+    <li>Release 0.4.8</li>
   </ul>
+  <a name="0.4.7"> </a>
+  <p>
+    <b>2026-10-12 v0.4.7</b> - based on FHIR R4
+  </p>
+  <ul>
+    <li>minor bug fixes</li>
+  </ul>
+  <a name="0.4.6"> </a>
+  <p>
+    <b>2026-04-27 v0.4.6</b> - based on FHIR R4
+  </p>
+  <ul>
+    <li>minor bug fixes</li>
+  </ul>
+  <a name="0.4.5"> </a>
+  <p>
+    <b>2026-04-10 v0.4.5</b> - based on FHIR R4
+  </p>
+  <ul>
+    <li>minor bug fixes</li>
+  </ul>
+  <a name="0.4.4"> </a>
+  <p>
+    <b>2026-04-06 v0.4.4</b> - based on FHIR R4
+  </p>
+  <ul>
+    <li>minor bug fixes</li>
+  </ul>
+  <a name="0.4.3"> </a>
+  <p>
+    <b>2026-04-06 v0.4.3</b> - based on FHIR R4
+  </p>
+  <ul>
+    <li>minor bug fixes</li>
+  </ul>
+  <a name="0.4.2"> </a>
+  <p>
+    <b>2026-04-06 v0.4.2</b> - based on FHIR R4
+  </p>
+  <ul>
+    <li>Patient profile minor bug fixes</li>
+  </ul>
+  <a name="0.4.1"> </a>
+  <p>
+    <b>2026-04-06 v0.4.1</b> - based on FHIR R4
+  </p>
+  <ul>
+    <li>DGDA Drug and LOINC Integration with minor bug fixes</li>
+  </ul>
+  <a name="0.4.0"> </a>
+  <p>
+    <b>2026-04-06 v0.4.0</b> - based on FHIR R4
+  </p>
+  <ul>
+    <li>DGDA Drug and LOINC Integration</li>
+  </ul>
+  <a name="0.3.0"> </a>
+  <p>
+    <b>2026-03-08 v0.3.0</b> - based on FHIR R4
+  </p>
+  <ul>
+    <li>ICD-11 MMS integration and minor bug fixes</li>
+  </ul>
+  <a name="0.2.5"> </a>
+  <p>
+    <b>2025-10-06 v0.2.5</b> - based on FHIR R4
+  </p>
+  <ul>
+    <li>Minor bug fix release</li>
+  </ul>
+  <a name="0.2.4"> </a>
+  <p>
+    <b>2025-10-06 v0.2.4</b> - based on FHIR R4
+  </p>
+  <ul>
+    <li>Minor visual improvements</li>
+  </ul>
+  <a name="0.2.3"> </a>
+  <p>
+    <b>2025-10-06 v0.2.3</b> - based on FHIR R4
+  </p>
+  <ul>
+    <li>Minor documentation updates</li>
+  </ul>
+  <a name="0.2.2"> </a>
+  <p>
+    <b>2025-10-06 v0.2.2</b> - based on FHIR R4
+  </p>
+  <ul>
+    <li>Minor bug fix release</li>
+  </ul>
+  <a name="0.2.1"> </a>
+  <p>
+    <b>2025-10-06 v0.2.1</b> - based on FHIR R4
+  </p>
+  <ul>
+    <li>Second draft release of the Bangladesh Core FHIR IG</li>
+  </ul>
+  <a name="0.2.0"> </a>
+  <p>
+    <b>2025-10-02 v0.2.0</b> - first official draft release, based on FHIR R4
+  </p>
+  <ul>
+    <li>BD Patient profile with Bangladesh-specific identifier and address extensions</li>
+    <li>BD Practitioner profile</li>
+    <li>Identifier CodeSystem and ValueSet: National ID (NID), Birth Registration Number (BRN) and Unique Health ID (UHID)</li>
+    <li>Bangladesh Address profile with division, district, upazila and union levels</li>
+    <li>Initial examples for Patient and Practitioner</li>
+  </ul>
+  <p>
+    This was a pre-release draft; backward compatibility is not guaranteed
+    before 1.0.0.
+  </p>
 </div>

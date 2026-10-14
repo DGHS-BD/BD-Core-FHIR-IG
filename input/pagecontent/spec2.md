@@ -28,7 +28,7 @@ Linearization URIs are not used as code identifiers in this IG.
 Runtime code validation and lookup are delegated to the national
 OpenConceptLab (OCL) terminology server operated by DGHS/MoHFW:
 
-**Public FHIR R4 endpoint:** `https://tr.ocl.dghs.gov.bd`
+**Public FHIR R4 endpoint:** `https://tr.ocl.dghs.gov.bd/api/fhir`
 
 OCL hosts ICD-11 MMS version 2025-01 with 26,284 concepts in the
 following concept classes: Diagnosis (13,389), Finding (5,119) and
@@ -40,13 +40,14 @@ validated at the HIE boundary via the Bangladesh ICD-11 Cluster Validator
 
 #### Supported OCL Operations
 
-The following FHIR terminology operations are supported. The `system=`
-parameter must be used — `url=` is not supported by OCL.
+The following FHIR terminology operations are supported. CodeSystem
+`$validate-code` takes the code system as `url=`; CodeSystem `$lookup` takes
+it as `system=`. Using `system=` with `$validate-code` returns `false`.
 
 **CodeSystem $validate-code**
 ```
 GET https://tr.ocl.dghs.gov.bd/api/fhir/CodeSystem/$validate-code
-    ?system=http://id.who.int/icd/release/11/mms&code={code}
+    ?url=http://id.who.int/icd/release/11/mms&code={code}
 ```
 
 **CodeSystem $lookup**
@@ -65,8 +66,9 @@ GET https://tr.ocl.dghs.gov.bd/api/fhir/ValueSet/$validate-code
 #### Unsupported OCL Operations
 
 `$expand` is not supported — this is a known limitation of the national
-OCL instance. Build-time expansion is suppressed. Implementers SHALL NOT
-depend on `$expand` for ICD-11 ValueSets in this IG.
+OCL instance. The ICD-11 ValueSets in this IG are therefore declared as stubs
+over a CodeSystem with content `not-present`, so the IG contains no expansion.
+Implementers SHALL NOT depend on `$expand` for ICD-11 ValueSets in this IG.
 
 #### ICD-11 Docker Instance
 
@@ -81,7 +83,7 @@ the cluster validator.
 
 `Condition.code` is bound to the
 [Bangladesh ICD-11 MMS Condition ValueSet](ValueSet-bd-condition-icd11-diagnosis-valueset.html)
-at `preferred` strength. This ValueSet includes only Diagnosis (13,389)
+at `required` strength. This ValueSet includes only Diagnosis (13,389)
 and Finding (5,119) class concepts — 18,508 concepts total as of
 version 2025-01.
 
@@ -219,7 +221,7 @@ submissions containing postcoordinated ICD-11 expressions pass through it.
 **ICD-11-CONF-01:** ICD-11 MMS codes SHALL use system URI
 `http://id.who.int/icd/release/11/mms`. Stem code validation is available
 via OCL at:
-`https://tr.ocl.dghs.gov.bd/api/fhir/CodeSystem/$validate-code?system=http://id.who.int/icd/release/11/mms&code={code}`
+`https://tr.ocl.dghs.gov.bd/api/fhir/CodeSystem/$validate-code?url=http://id.who.int/icd/release/11/mms&code={code}`
 
 **ICD-11-CONF-02:** The `icd11-cluster-expression` extension SHALL only
 be present when the expression contains at least one postcoordination

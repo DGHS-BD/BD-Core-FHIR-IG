@@ -28,6 +28,12 @@ It ensures that health information systems can share and understand data consist
 
 ---
 
+## For maintainers
+
+Release, terminology-server and downstream-update procedures are documented in [`docs/`](docs/README.md). These documents are not part of the published IG.
+
+---
+
 ## Contributions
 
 Feedback and contributions are welcome. Issues can be raised through this repository to suggest improvements or alignments.  

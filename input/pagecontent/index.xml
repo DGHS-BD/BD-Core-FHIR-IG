@@ -35,6 +35,17 @@
     Developers are encouraged to validate their implementations against this sandbox before moving to production environments.
   </p>
   <hr/>
+
+  <h4>Implementation Assistant</h4>
+
+  <p>
+    The <a href="https://fhir.dghs.gov.bd/assistant/" target="_blank" rel="noopener noreferrer">Implementation Assistant</a>
+    (also in the menu above) helps implementers learn FHIR basics, find their way
+    around this guide, and check whether a pasted FHIR resource appears compatible
+    with the BD Core profiles. It is powered by a large language model and can make
+    mistakes, so always confirm its answers against this guide.
+  </p>
+  <hr/>
 	<a name="technical"> </a>
 	<h3>Technical Overview</h3>
 	<p>
@@ -47,7 +58,7 @@
   <ul>
     <li><a href="background.html">Background</a> - Context and rationale for the IG</li>
     <li><a href="spec.html">Detailed Specification</a> - Profiles, value sets, and conformance requirements</li>
-    <li><a href="fragments.html">Fragments</a> - Guidance about how to embed fragments in an IG</li>
+    <li><a href="spec2.html">ICD-11 Implementation</a> - ICD-11 coding, terminology infrastructure and conformance statements</li>
     <li><a href="downloads.html">Downloads</a> - Allows downloading a copy of this implementation guide and other useful information</li>
   </ul>
 </div>

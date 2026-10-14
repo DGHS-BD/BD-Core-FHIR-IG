@@ -49,7 +49,7 @@ SHOULD, SHOULD NOT, and MAY carry their standard normative meanings.
 ### Design Principles
 
 **1. National terminology over international defaults**
-Where international code systems are used (ICD-11, LOINC, SNOMED CT),
+Where international code systems are used (ICD-11, LOINC),
 they are bound through national infrastructure. The national OpenConceptLab
 (OCL) terminology server at `https://tr.ocl.dghs.gov.bd` is the single
 public-facing terminology resolution point. Vendors never interact with
@@ -89,14 +89,19 @@ The following national core profiles are defined in this IG:
 |---|---|---|
 | [BD Patient](StructureDefinition-bd-patient.html) | Patient | Citizen identity conforming to CCDS |
 | [BD Condition](StructureDefinition-bd-condition.html) | Condition | Clinical conditions coded with ICD-11 MMS |
-| [BD Observation](StructureDefinition-bd-observation.html) | Observation | Vital signs, laboratory results, clinical findings |
+| [BD Observation](StructureDefinition-bd-observation.html) | Observation | Base profile for observations; not used directly. Derived profiles cover laboratory panels and results (vital signs and examination profiles are planned) |
 | [BD Encounter](StructureDefinition-bd-encounter.html) | Encounter | Clinical visits and episodes of care |
 | [BD Medication](StructureDefinition-bd-medication.html) | Medication | Medication definitions |
-| [BD MedicationRequest](StructureDefinition-bd-medicationrequest.html) | MedicationRequest | Prescriptions and medication orders |
+| [BD MedicationRequest](StructureDefinition-bd-medication-request.html) | MedicationRequest | Prescriptions and medication orders |
 | [BD Immunization](StructureDefinition-bd-immunization.html) | Immunization | Vaccination records |
 | [BD Organization](StructureDefinition-bd-organization.html) | Organization | Health facilities and organisations |
 | [BD Practitioner](StructureDefinition-bd-practitioner.html) | Practitioner | Healthcare providers |
-| [BD Location](StructureDefinition-bd-location.html) | Location | Physical locations and administrative geography |
+| [BD Location](StructureDefinition-bd-location.html) | Location | Locations, such as the place of immunization |
+| [BD Address](StructureDefinition-bd-address.html) | Address | Bangladesh address structure (division, district, upazila) |
+| [BD RelatedPerson](StructureDefinition-bd-related-person.html) | RelatedPerson | Relatives and other persons related to a patient |
+| [BD Laboratory Panel Observation](StructureDefinition-bd-lab-panel-observation.html) | Observation | Laboratory panel (order level) grouping its results through `hasMember` |
+| [BD Laboratory Result Observation](StructureDefinition-bd-lab-result-observation.html) | Observation | Individual laboratory result, numeric or coded |
+| [BD Laboratory Report](StructureDefinition-bd-lab-report.html) | DiagnosticReport | Laboratory report referencing panels and results |
 
 ---
 
@@ -107,12 +112,15 @@ The following external code systems are used in this IG:
 | System | URI | Purpose |
 |---|---|---|
 | ICD-11 MMS | `http://id.who.int/icd/release/11/mms` | Condition coding |
-| LOINC | `http://loinc.org` | Observation coding |
+| LOINC | `http://loinc.org` | Laboratory test, panel and answer coding |
 | UCUM | `http://unitsofmeasure.org` | Observation units |
-| SNOMED CT | `http://snomed.info/sct` | Clinical terminology |
+| EDQM Standard Terms | `http://standardterms.edqm.eu` | Pharmaceutical dose forms |
+
+National code systems and value sets (for example the geographic codes and
+the DGDA drug registry) are listed in the [Artifact Index](artifacts.html).
 
 Runtime terminology resolution is provided by the national OCL terminology
-server. See the [ICD-11 Implementation](icd11.html) page for full details
+server. See the [ICD-11 Implementation](spec2.html) page for full details
 of ICD-11 integration, postcoordination conventions, and conformance
 requirements.
 
@@ -120,8 +128,9 @@ requirements.
 
 ### Known Gaps and Planned Work
 
-This IG is currently at version 0.2.5 with status `draft`. The following
-are known gaps to be addressed in future revisions:
+This IG is under active development; released versions are listed in the
+[version history](history.html). The following are known gaps to be
+addressed in future revisions:
 
 - **Must Support semantics** — the general meaning of Must Support is
   defined above; specific sender and receiver obligations will be refined

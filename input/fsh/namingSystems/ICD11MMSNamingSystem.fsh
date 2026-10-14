@@ -23,9 +23,9 @@ Linearization URIs are not used as code identifiers in this IG.
 National terminology resolver (OCL):
   https://tr.ocl.dghs.gov.bd
 
-Supported OCL operations (use system= parameter, not url=):
+Supported OCL operations ($validate-code takes url=, $lookup takes system=):
   - $validate-code: https://tr.ocl.dghs.gov.bd/api/fhir/CodeSystem/$validate-code
-      ?system=http://id.who.int/icd/release/11/mms&code={code}
+      ?url=http://id.who.int/icd/release/11/mms&code={code}
   - $lookup: https://tr.ocl.dghs.gov.bd/api/fhir/CodeSystem/$lookup
       ?system=http://id.who.int/icd/release/11/mms&code={code}
 

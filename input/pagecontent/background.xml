@@ -19,7 +19,7 @@
     <li>Patient identity management (UHID, NID, BRN)</li>
     <li>Health facility and organization registry</li>
     <li>Immunization, laboratory, and condition profiles</li>
-    <li>Terminology services (ICD-11, SNOMED subsets, local CodeSystems)</li>
+    <li>Terminology services (ICD-11 MMS, LOINC, EDQM dose forms, the DGDA drug registry, local CodeSystems)</li>
   </ul>
 
   <h3>National Digital Health Architecture</h3>
