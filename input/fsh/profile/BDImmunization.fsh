@@ -65,7 +65,5 @@ Description: "Bangladesh Immunization Profile"
 
 * reaction 0..*
 * reaction ^definition = "Adverse reaction following immunization"
-//TODO: change to BDObservation after creating the profile
-* reaction.detail only Reference(Observation)
-//TODO change to BDObservation after creating the profile
-* reasonReference only Reference(Condition or Observation or DiagnosticReport)
+* reaction.detail only Reference(BDObservationProfile)
+* reasonReference only Reference(Condition or BDObservationProfile or DiagnosticReport)

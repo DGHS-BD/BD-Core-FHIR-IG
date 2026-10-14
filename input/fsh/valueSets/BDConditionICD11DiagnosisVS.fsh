@@ -41,8 +41,7 @@ Confirmed behaviour:
   - Substance class (e.g. XM6RB2): rejected
 
 At the HAPI FHIR layer, enforcement is via RemoteTerminologyServiceValidationSupport
-configured to call OCL. HAPI FHIR deployment is a known gap to be closed
-before vendor onboarding.
+configured to call OCL, which is deployed.
 
 VERSION UPGRADES:
   Upgrading to a new ICD-11 MMS release requires re-running

@@ -14,13 +14,15 @@ Ingredient data is system-populated from OCL Has-active-ingredient mappings and
 is not required to be entered manually by clinicians.
 
 Combination drugs are supported via the repeating ingredient element.
-Unmatched ingredients (not yet mapped to ICD-11 substances) may be represented
-using ingredient.itemCodeableConcept.text without a coded value.
+Ingredients are derived from the DGDA drug concept in the national OCL
+terminology server through its Has-active-ingredient mappings to ICD-11 MMS
+substance codes (one mapping per ingredient). Newly registered drugs can take
+time to appear in the DGDA data, so the ingredient elements are Must Support:
+systems that hold ingredient data may populate them in the meantime.
 
 Dose form is optional and should be coded using EDQM Standard Terms when
-populated. Dose form is derivable from the DGDA drug concept via OCL lookup.
-A DGDA plain text dose form to EDQM code mapping is planned for a future
-IG version.
+populated. Dose form is derivable from the DGDA drug concept via OCL lookup, where DGDA
+dose forms are mapped to EDQM Standard Terms codes.
 """
 
 * code 1..1 MS
@@ -45,8 +47,8 @@ human readability in IPS documents and cross-border data exchange scenarios.
 The pharmaceutical dose form of the drug product. Optional in this profile
 as dose form is carried as plain text in the DGDA drug concept and is
 derivable via OCL lookup. When populated, EDQM Standard Terms codes served
-from the national OCL terminology server should be used.
-A DGDA dose form to EDQM mapping is planned for a future IG version.
+from the national OCL terminology server should be used. DGDA dose forms are
+mapped to EDQM Standard Terms in the national OCL terminology server.
 """
 
 * ingredient MS
@@ -55,7 +57,9 @@ A DGDA dose form to EDQM mapping is planned for a future IG version.
 Active pharmaceutical ingredients of the drug product, coded using ICD-11 MMS
 substance codes (XM-prefix). Populated automatically by clinical systems via
 OCL Has-active-ingredient mappings. Combination drugs will carry multiple
-ingredient entries. Unmatched ingredients may use text only without a coded value.
+ingredient entries. The ingredient elements are Must Support so that systems
+can supply ingredient data for drugs that are not yet mapped in the national
+terminology server.
 """
 * ingredient.item[x] only CodeableConcept
 * ingredient.itemCodeableConcept 1..1 MS
@@ -65,7 +69,6 @@ ingredient entries. Unmatched ingredients may use text only without a coded valu
 ICD-11 MMS substance code (XM-prefix) identifying the active ingredient.
 Source value set: https://fhir.dghs.gov.bd/core/ValueSet/icd11-substances-valueset
 served from the national OCL terminology server.
-For ingredients not yet mapped to ICD-11 substances, use text only.
 """
 * ingredient.strength 0..1
 * ingredient.strength ^short = "Strength of the ingredient (optional)"

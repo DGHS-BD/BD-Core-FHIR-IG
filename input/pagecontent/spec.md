@@ -77,7 +77,7 @@ citizen identity infrastructure.
 Must Support (MS) in this IG means that conformant systems SHALL be capable
 of populating the element if the data is held by the system, and SHALL be
 capable of processing it when received. Specific sender and receiver
-obligations are \[TODO: to be defined in a future revision\].
+obligations will be refined as vendors are onboarded.
 
 ---
 
@@ -123,13 +123,12 @@ requirements.
 This IG is currently at version 0.2.5 with status `draft`. The following
 are known gaps to be addressed in future revisions:
 
-- **Must Support semantics** — sender and receiver obligations not yet
-  formally defined
+- **Must Support semantics** — the general meaning of Must Support is
+  defined above; specific sender and receiver obligations will be refined
+  as vendors are onboarded
 - **Capability Statements** — no CapabilityStatement resources defined yet
 - **Search Parameters** — no defined search parameter requirements yet
 - **Transaction Patterns** — no defined FHIR transaction or message patterns yet
-- **HAPI FHIR deployment** — `RemoteTerminologyServiceValidationSupport`
-  configuration for OCL not yet deployed; this is a prerequisite for
-  runtime ICD-11 class restriction enforcement before vendor onboarding
-- **Must Support definitions per profile** — individual profile pages do
-  not yet carry explicit MS obligation tables
+- **Must Support definitions per profile** — Must Support elements are
+  flagged in each profile, but explicit per-profile MS obligation tables
+  are not yet provided; they will be added as vendors are onboarded

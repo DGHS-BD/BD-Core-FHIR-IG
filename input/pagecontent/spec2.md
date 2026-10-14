@@ -101,8 +101,7 @@ expression, not as standalone condition codes.
 Class restriction is enforced at runtime via OCL ValueSet `$validate-code`
 against the Bangladesh ICD-11 MMS Condition ValueSet. At the HAPI FHIR
 layer, enforcement is via `RemoteTerminologyServiceValidationSupport`
-configured to call OCL. HAPI FHIR deployment will be completed before
-vendor onboarding.
+configured to call OCL, which is deployed.
 
 The `coding[stem]` slice is open (`#open`) — additional local codings
 are permitted alongside the mandatory ICD-11 stem.

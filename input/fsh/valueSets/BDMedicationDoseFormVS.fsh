@@ -15,8 +15,8 @@ Concepts are loaded into the national OCL terminology server at
 https://tr.ocl.dghs.gov.bd under the MoHFW organisation as source EDQM-PDF.
 
 **Binding:** preferred on BDMedication.form — systems should use EDQM
-codes when populating dose form, but omission is permitted. A mapping from
-DGDA plain text dose forms to EDQM codes is planned for a future IG version.
+codes when populating dose form, but omission is permitted. DGDA plain text
+dose forms are mapped to EDQM codes in the national terminology server.
 
 **Code system canonical:** http://standardterms.edqm.eu
 **OCL source:** https://tr.ocl.dghs.gov.bd/#/orgs/MoHFW/sources/EDQM-PDF/
