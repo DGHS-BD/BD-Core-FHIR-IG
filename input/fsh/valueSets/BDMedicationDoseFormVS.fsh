@@ -18,12 +18,12 @@ https://tr.ocl.dghs.gov.bd under the MoHFW organisation as source EDQM-PDF.
 codes when populating dose form, but omission is permitted. A mapping from
 DGDA plain text dose forms to EDQM codes is planned for a future IG version.
 
-**Code system canonical:** https://standardterms.edqm.eu
+**Code system canonical:** http://standardterms.edqm.eu
 **OCL source:** https://tr.ocl.dghs.gov.bd/#/orgs/MoHFW/sources/EDQM-PDF/
 """
 
 * ^url = "https://fhir.dghs.gov.bd/core/ValueSet/edqm-dose-forms"
-* ^version = "1.0.0"
+* ^version = "2.0.0"
 * ^status = #active
 * ^experimental = false
 * ^publisher = "DGHS Health Informatics Unit"
@@ -33,4 +33,4 @@ DGDA plain text dose forms to EDQM codes is planned for a future IG version.
 * ^jurisdiction = urn:iso:std:iso:3166#BD "Bangladesh"
 * ^immutable = false
 
-* include codes from system https://standardterms.edqm.eu
+* include codes from system http://standardterms.edqm.eu
