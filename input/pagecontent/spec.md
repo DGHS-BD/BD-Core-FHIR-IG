@@ -1,5 +1,3 @@
-## Bangladesh Core FHIR Implementation Guide — General Specification
-
 ### Purpose and Scope
 
 This Implementation Guide (IG) defines the national FHIR R4 core profiles,

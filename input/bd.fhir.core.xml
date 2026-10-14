@@ -114,6 +114,10 @@
       <value value="Published by DGHS, MoHFW"/>
     </parameter>
     <parameter>
+      <code value="special-url"/>
+      <value value="http://id.who.int/icd/release/11/mms"/>
+    </parameter>
+    <parameter>
       <code value="find-other-resources"/>
       <value value="true"/>
     </parameter>

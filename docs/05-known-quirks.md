@@ -43,6 +43,32 @@ If the canonical is under the IG's own base URL the link checker expects an
 IG page. Bind to an IG-defined value set (or use a canonical outside the IG
 base) instead of suppressing.
 
+**`history.html` shows one "cannot be resolved" error per published version
+(and for `package-list.json`), and the QA header says `broken links = N`.**
+The version links are under the IG's own canonical, so the offline link
+checker expects those pages in the build output; the other versions live in
+their own folders on the IG server and are not in the build. The links work on
+the published site (check them with `curl -I`). These errors cannot be hidden
+with `ignoreWarnings.txt` (only warnings and hints can be suppressed), and
+keeping `package-list.json` in the build container does not change it. Guides
+that do not show this build the version table in the browser from
+`package-list.json`, so the static HTML contains no version links. Treat it as
+cosmetic; `err = 0` and the build passes.
+
+**QA says `err = 0` but `ERROR:` lines are still listed.**
+Newer publisher versions count unresolved links separately (`broken links`)
+from errors. Read both numbers.
+
+**A page fails with "more than one top level heading" (WCAG).**
+The publisher renders every page title as the page's `<h2>`. A markdown page
+under `input/pagecontent/` must not start with its own `##` heading; start at
+`###`.
+
+**"URL Mismatch" / "canonical URL does not match" for a resource whose canonical
+is outside the IG's base (for example WHO's ICD-11 system URI).**
+List the canonical in full as an IG `special-url` parameter in
+`input/bd.fhir.core.xml`. One entry per canonical; patterns are not supported.
+
 **Comparison pages (`comparison-vX/`) have no CSS and broken icons, and some
 links point at `file:///tmp/...`.**
 Publisher behaviour; cosmetic.

@@ -1,5 +1,3 @@
-## ICD-11 Implementation
-
 ### Overview
 
 The Bangladesh Core FHIR Implementation Guide uses ICD-11 Mortality and
