@@ -37,9 +37,12 @@ Coded results (Ord/Nom scale):
 * category ^definition = "Fixed to 'laboratory' for laboratory result observations"
 
 // ── Code ──────────────────────────────────────────────────────────────────
-// Bound to BD LOINC Lab Results ValueSet — leaf result codes only.
+// Extensible binding to the BD LOINC Lab Results ValueSet (LOINC filters).
+// The code SHALL carry a LOINC coding (bd-loinc-code); membership in the curated
+// national list is enforced at runtime on the national terminology server.
 * code 1..1 MS
-* code from https://fhir.dghs.gov.bd/core/ValueSet/loinc-lab-results (required)
+* code from BDLoincLabResultsVS (extensible)
+* code obeys bd-loinc-code
 * code ^definition = "LOINC result/component code for this individual laboratory result"
 * code ^comment = "E.g. 718-7 Hemoglobin, 2160-0 Creatinine"
 
@@ -68,7 +71,7 @@ Coded results (Ord/Nom scale):
 
 // Coded results (Ord/Nom scale) — bound to LOINC Answer Lists
 * valueCodeableConcept MS
-* valueCodeableConcept from https://fhir.dghs.gov.bd/core/ValueSet/loinc-answer-lists (required)
+* valueCodeableConcept from BDLoincAnswerListsVS (extensible)
 * valueCodeableConcept ^comment = "Use for ordinal or nominal (Ord/Nom scale) results."
 
 // ── hasMember ─────────────────────────────────────────────────────────────

@@ -34,9 +34,12 @@ FHIR hasMember pattern:
 * category ^definition = "Fixed to 'laboratory' for laboratory panel observations"
 
 // ── Code ──────────────────────────────────────────────────────────────────
-// Bound to BD LOINC Lab Panels ValueSet — orderable panel codes only.
+// Extensible binding to the BD LOINC Lab Panels ValueSet (LOINC filters).
+// The code SHALL carry a LOINC coding (bd-loinc-code); membership in the curated
+// national list is enforced at runtime on the national terminology server.
 * code 1..1 MS
-* code from https://fhir.dghs.gov.bd/core/ValueSet/loinc-lab-panels (required)
+* code from BDLoincLabPanelsVS (extensible)
+* code obeys bd-loinc-code
 * code ^definition = "LOINC panel/order code for this laboratory panel"
 * code ^comment = "E.g. 58410-2 CBC panel, 24323-8 Comprehensive metabolic panel"
 
