@@ -10,8 +10,8 @@ ValueSet: BDConditionICD11DiagnosisVS
 Id: bd-condition-icd11-diagnosis-valueset
 Title: "Bangladesh ICD-11 MMS Condition ValueSet (Diagnosis and Finding)"
 Description: """
-ICD-11 MMS concepts restricted to the Diagnosis (14,071) and Finding (5,590)
-concept classes, totalling 19,661 concepts as of version 2025-01.
+ICD-11 MMS concepts restricted to the Diagnosis (13,389) and Finding (5,119)
+concept classes, totalling 18,508 concepts as of version 2025-01.
 
 This ValueSet is the binding target for Condition.code in the BD-Core
 Condition profile. Substance, Organism, Device, Anatomy, and Misc class
@@ -25,8 +25,8 @@ no machine-executable filter for concept_class is available at the
 IG layer. The compose would be nominal only and is omitted to avoid
 misrepresenting machine-executable semantics.
 
-The ValueSet is hosted in OCL as a collection with 19,661 explicit
-concept references (Diagnosis and Finding classes only). Runtime
+The ValueSet is hosted in OCL as a collection of explicit concept
+references covering 18,508 concepts (Diagnosis and Finding classes only). Runtime
 enforcement is via OCL ValueSet $validate-code:
 
   GET https://tr.ocl.dghs.gov.bd/api/fhir/ValueSet/$validate-code

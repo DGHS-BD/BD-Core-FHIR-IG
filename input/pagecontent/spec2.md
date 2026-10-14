@@ -30,9 +30,9 @@ OpenConceptLab (OCL) terminology server operated by DGHS/MoHFW:
 
 **Public FHIR R4 endpoint:** `https://tr.ocl.dghs.gov.bd`
 
-OCL hosts ICD-11 MMS version 2025-01 with 36,941 concepts across the
-following concept classes: Diagnosis, Finding, Substance, Organism,
-Device, Anatomy, and Misc.
+OCL hosts ICD-11 MMS version 2025-01 with 26,284 concepts in the
+following concept classes: Diagnosis (13,389), Finding (5,119) and
+Substance (7,776).
 
 Vendors do not interact with OCL directly. All vendor submissions are
 validated at the HIE boundary via the Bangladesh ICD-11 Cluster Validator
@@ -68,12 +68,12 @@ GET https://tr.ocl.dghs.gov.bd/api/fhir/ValueSet/$validate-code
 OCL instance. Build-time expansion is suppressed. Implementers SHALL NOT
 depend on `$expand` for ICD-11 ValueSets in this IG.
 
-#### Local ICD-11 Docker Instance
+#### ICD-11 Docker Instance
 
-A local WHO ICD-11 Docker instance is maintained internally by DGHS at
-`https://icd11.dghs.gov.bd` running release 2025-01. This instance is
-internal only and is not exposed to vendors. It serves as the import
-source for OCL and as the backend for the cluster validator.
+A WHO ICD-11 Docker instance is maintained by DGHS at
+`https://icd11.dghs.gov.bd` running release 2025-01, and is publicly
+available. It serves as the import source for OCL and as the backend for
+the cluster validator.
 
 ---
 
@@ -81,8 +81,8 @@ source for OCL and as the backend for the cluster validator.
 
 `Condition.code` is bound to the
 [Bangladesh ICD-11 MMS Condition ValueSet](ValueSet-bd-condition-icd11-diagnosis-valueset.html)
-at `preferred` strength. This ValueSet includes only Diagnosis (14,071)
-and Finding (5,590) class concepts — 19,661 concepts total as of
+at `preferred` strength. This ValueSet includes only Diagnosis (13,389)
+and Finding (5,119) class concepts — 18,508 concepts total as of
 version 2025-01.
 
 `Condition.code` SHALL contain at least one coding conforming to the

@@ -31,8 +31,8 @@ Supported OCL operations (use system= parameter, not url=):
 
 $expand is not supported — known OCL limitation.
 
-Version 2025-01 is active in the national OCL instance with 36,941
-imported concepts. The OCL resolver is an internal national service;
+Version 2025-01 is active in the national OCL instance with 26,284
+imported concepts (Diagnosis, Finding and Substance classes). The OCL resolver is an internal national service;
 vendors do not interact with it directly. All vendor submissions are
 validated at the HIE boundary via the Bangladesh ICD-11 Cluster Validator
 at https://icd11.dghs.gov.bd/cluster/validate.

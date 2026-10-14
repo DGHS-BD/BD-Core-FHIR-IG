@@ -27,9 +27,9 @@ attempted at build time or by IG Publisher.
 Preferred code form: short stem codes (e.g. 1A00, NC72.Z).
 Linearization URIs are not used as code identifiers in this IG.
 
-Version 2025-01 is imported into OCL with 36,941 concepts across
-the following concept classes: Diagnosis, Finding, Substance, Organism,
-Device, Anatomy, Misc.
+Version 2025-01 is imported into OCL with 26,284 concepts in the
+following concept classes: Diagnosis (13,389), Finding (5,119) and
+Substance (7,776).
 """
 
 * ^url = "http://id.who.int/icd/release/11/mms"
@@ -43,5 +43,5 @@ Device, Anatomy, Misc.
 * ^jurisdiction = urn:iso:std:iso:3166#BD "Bangladesh"
 * ^copyright = "ICD-11 is copyright © World Health Organization. Used under licence."
 * ^content = #not-present
-* ^count = 36941
+* ^count = 26284
 * ^caseSensitive = true
