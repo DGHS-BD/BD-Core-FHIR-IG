@@ -9,7 +9,7 @@ Dose form coded using EDQM Standard Terms.
 """
 Usage: #example
 
-* code.coding[0].system = "https://dgda.gov.bd/drug-registry"
+* code.coding[0].system = "https://fhir.dghs.gov.bd/core/CodeSystem/dgda-drug-registry"
 * code.coding[0].code = #353-0026-039--marvelous-fe
 * code.coding[0].display = "Marvelous Fe"
 * code.text = "Marvelous Fe"
