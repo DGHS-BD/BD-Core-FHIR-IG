@@ -423,7 +423,11 @@ jobs:
               echo 'WARNING: /previous-packages not found - no previous version comparison'
             fi
             
-            _genonce.sh
+            # Publisher 2.3+ refuses to fetch from hosts that resolve to private
+            # addresses (SSRF protection). Inside the CI network fhir.dghs.gov.bd
+            # resolves to a private address, so the previous-version comparison and
+            # the package-list check failed. The IG content here is our own.
+            ./_genonce.sh -ssrf-protection-enabled false
             ")
 
           echo "Container ID: $CONTAINER_ID"

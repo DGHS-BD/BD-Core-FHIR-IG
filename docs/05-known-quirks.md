@@ -32,6 +32,18 @@ Validate with `xmllint --noout`.
 
 ## Publisher and QA
 
+**"Unable to compare with previous version ... Refusing to fetch from
+non-public address" and "Publication Request: Error fetching package-list".**
+Publisher 2.3 and later has SSRF protection on by default and refuses to fetch
+from any host that resolves to a private address. Inside the CI network the IG's
+own domain resolves to a private address, so the publisher cannot read the
+published `package-list.json`: the previous-version comparison page is not
+produced and the publication check wrongly believes the IG was never published.
+The build otherwise passes, so it is easy to miss; look at the "Quality Checks"
+table at the top of `qa.html`. The build step passes
+`-ssrf-protection-enabled false` to the publisher. Only do that where the IG
+content and its dependencies are trusted, as they are in this pipeline.
+
 **Large terminology checks time out.**
 Validating `CodeSystem.jurisdiction` against the HL7 jurisdiction value set
 and some very large value sets can exceed 60 s and are reported as errors.
