@@ -11,7 +11,7 @@ Derived profiles (v0.4.0):
   - bd-lab-panel-observation  : Laboratory panel/order (hasMember pattern)
   - bd-lab-result-observation : Laboratory leaf result (child of hasMember)
 
-Planned derived profiles (v0.5.0+):
+Planned derived profiles (future versions):
   - bd-vital-signs-observation
   - bd-exam-observation
 """

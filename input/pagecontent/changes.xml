@@ -5,6 +5,32 @@
     <a href="history.html">version history</a> page links to every published
     version.
   </p>
+  <a name="0.5.0"> </a>
+  <p>
+    <b>2026-10-15 v0.5.0</b> - based on FHIR R4
+  </p>
+  <p>
+    This release contains <b>breaking changes</b>.
+  </p>
+  <ul>
+    <li><b>DGDA drug registry:</b> the code system and value set canonicals moved to the DGHS namespace
+      (<code>https://fhir.dghs.gov.bd/core/CodeSystem/dgda-drug-registry</code> and
+      <code>https://fhir.dghs.gov.bd/core/ValueSet/dgda-registered-drugs</code>). The former
+      <code>dgda.gov.bd</code> identifiers are kept as legacy aliases in a NamingSystem; data coded with
+      them must be updated.</li>
+    <li><b>EDQM dose forms:</b> the code system URI is <code>http://standardterms.edqm.eu</code>; the value set
+      id is now <code>edqm-dose-forms</code> (canonical unchanged).</li>
+    <li><b>LOINC laboratory bindings:</b> <code>Observation.code</code> of the laboratory panel and result
+      profiles is bound at <i>extensible</i> strength to IG value sets defined with LOINC filters, and must
+      carry a LOINC coding (invariant <code>bd-loinc-code</code>). Coded results are bound at extensible
+      strength to the LOINC answer-list value set. Membership in the curated national lists is enforced by
+      the national terminology server.</li>
+    <li><b>Immunization:</b> <code>reaction.detail</code> and <code>reasonReference</code> target the BD
+      Observation profile.</li>
+    <li><b>Added:</b> examples for laboratory panels, results (numeric and coded) and the laboratory report;
+      NamingSystem for the DGDA drug registry; corrections to the ICD-11 concept counts and to the
+      narrative pages; link to the Implementation Assistant.</li>
+  </ul>
   <a name="0.4.8"> </a>
   <p>
     <b>2026-10-12 v0.4.8</b> - based on FHIR R4
