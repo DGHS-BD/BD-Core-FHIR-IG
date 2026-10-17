@@ -61,7 +61,7 @@ Description: "Bangladesh Immunization Profile"
 
 * performer 0..*
 * performer ^definition = "Individual who performed the immunization"
-* performer.actor only Reference(BDPractitioner)
+* performer.actor only Reference(BDPractitioner or BDPractitionerRole)
 
 * reaction 0..*
 * reaction ^definition = "Adverse reaction following immunization"

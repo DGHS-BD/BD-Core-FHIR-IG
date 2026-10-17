@@ -49,8 +49,9 @@ for inpatient and outpatient prescriptions where an encounter record exists.
 * authoredOn ^short = "Date and time the prescription was authored"
 
 * requester 1..1 MS
-* requester only Reference(BDPractitioner or BDOrganization)
-* requester ^short = "Practitioner or organisation that authored the prescription"
+* requester only Reference(BDPractitioner or BDPractitionerRole)
+* requester ^short = "Practitioner who authored the prescription"
+* requester ^definition = "The prescriber. Must reference a Practitioner or a PractitionerRole so that the prescriber can be verified against the national registries (see the Validation page). An Organization is not accepted."
 
 * reportedReference only Reference(BDPractitioner or BDOrganization or BDPatient)
 

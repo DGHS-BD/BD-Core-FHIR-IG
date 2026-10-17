@@ -1,13 +1,12 @@
 Instance: BDOrganizationExample
-InstanceOf: BDOrganization
+InstanceOf: BDFacility
 Usage: #example
-Title: "Example of a Bangladesh Organization"
-Description: "Example for DMCH using the Facility Code 10000033"
+Title: "Example of a Bangladesh Health Facility"
+Description: "Example for DMCH using the HRIS Facility Code 10000033"
 
-// Strictly following 'identifier 1..* MS' from your profile
-* identifier[0].value = "10000033"
-* identifier[0].system = "http://hrm.dghs.gov.bd/facilities/code" // Using a generic DGHS system
-* identifier[0].type = http://terminology.hl7.org/CodeSystem/v2-0203#FI "Facility ID"
+* identifier[facilityCode].system = $BD-FACILITY-CODE
+* identifier[facilityCode].value = "10000033"
+* identifier[facilityCode].type = http://terminology.hl7.org/CodeSystem/v2-0203#FI "Facility ID"
 
 * name = "Dhaka Medical College Hospital"
 

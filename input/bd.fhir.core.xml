@@ -88,6 +88,11 @@
         </page>
       </page>
       <page>
+        <nameUrl value="validation.html"/>
+        <title value="Facility, Practitioner and Sender Validation"/>
+        <generation value="markdown"/>
+      </page>
+      <page>
         <nameUrl value="downloads.html"/>
         <title value="Useful Downloads"/>
         <generation value="html"/>

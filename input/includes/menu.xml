@@ -22,6 +22,9 @@
       <li>
         <a href="spec2.html">ICD-11 Implementation</a>
       </li>
+      <li>
+        <a href="validation.html">Facility and Practitioner Validation</a>
+      </li>
     </ul>
   </li>
   <li><a href="artifacts.html">Artifact Index</a></li>

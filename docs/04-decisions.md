@@ -54,6 +54,54 @@ the IG build cheap while TR remains the authority.
 Results may legitimately use other systems (for example organisms), so the
 LOINC invariant applies to the test code only.
 
+## Facility and practitioner identity
+
+**Profiles check the shape of identifiers; the exchange checks existence.**
+No profile can say whether a facility or practitioner exists, and standard
+validators do not follow external references. Existence checks run at
+submission time in the interoperability layer and are described for vendors on
+the Validation page. Rule details that would help someone probe the registries
+live with the mediator, not in this repository.
+
+**`BDOrganization` stays loose; `BDFacility` carries the facility code.**
+Organizations also describe payers, referral destinations abroad and programme
+bodies, which have no facility code. The HRIS facility code is the only
+facility identifier slice: it is unique and stable, and DHIS2, OpenMRS and
+OpenSRP use the same code.
+
+**Identifier namespaces: HRIS on the HRIS host, councils in the DGHS namespace.**
+HRIS identifiers use `hris.mohfw.gov.bd` (the ministry-neutral name for the
+same application as `hrm.dghs.gov.bd`). BMDC and BNMC do not publish identifier
+URIs, so the IG defines theirs under `https://fhir.dghs.gov.bd/identifier/`,
+outside `/core/` so a change to the IG's URL cannot affect them. The strings
+are exact-match keys in vendor data: fix them and never repurpose a path.
+Earlier example URIs are kept as legacy aliases in the NamingSystems.
+
+**`BDPractitioner` uses open slicing with no "one of" invariant.**
+Slices exist for the HRIS provider ID, the BMDC registration and the BNMC
+registration. Open slicing lets other councils send identifiers without a
+profile change, so an invariant requiring a named identifier would contradict
+it. Which practitioners must be verified is a rule of the exchange, by role.
+
+**`name.text` is required on `BDPractitioner`.**
+In Bangladesh the official full name is used as a single string, not split into
+family and given names. The registry comparison needs a name to compare.
+
+**National ID is not collected in bundles.**
+An NID together with a registration number cannot be verified as a pair, so it
+proves nothing, and it would move national ID numbers through every vendor's
+bundles and logs. Revisit if an NID verification service appears.
+
+**Prescribers must reference a practitioner.**
+`MedicationRequest.requester` allows a `BDPractitioner` or `BDPractitionerRole`
+but not an organization; otherwise a prescription with an organization as
+requester would carry no practitioner to verify.
+
+**The sending facility is accountable.**
+Sending a practitioner is the facility's declaration that the person works
+there. Affiliation is recorded, not validated, because HRIS keeps no history and
+attachments and additional charge do not fit a one-post model.
+
 ## Process
 
 **`package-list.json` is managed by CI.**
