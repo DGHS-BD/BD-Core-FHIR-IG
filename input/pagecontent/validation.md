@@ -58,8 +58,8 @@ These elements must reference a Practitioner or a PractitionerRole (whose `pract
 
 | Sending facility | Verified in |
 |---|---|
-| Government | HRIS |
-| Non-government | HRIS, then BMDC (physicians) |
+| Government | HRIS provider ID first, then the registration held in HRIS is checked at BMDC. With no HRIS provider ID, the BMDC registration number you send is verified at BMDC alone |
+| Non-government | BMDC (physicians and dentists). If the practitioner sends an HRIS provider ID, it is checked in HRIS first and then verified as for a government facility |
 
 #### 4.3 Authors and procedure performers are verified when they can be
 
@@ -67,10 +67,10 @@ These elements must reference a Practitioner or a PractitionerRole (whose `pract
 
 #### 4.4 What verification checks
 
-- **Licence.** Whenever a BMDC registration number is verified, the licence must have been valid on the date of the encounter (BD-PRV-004). At a government facility, a practitioner who is found in HRIS is accepted on that match if BMDC cannot be reached.
+- **Licence.** Whenever a BMDC registration is verified, the licence must have been valid on the date of the encounter (BD-PRV-004). At a government facility the registration checked is the one held in HRIS for that provider; if you also send a BMDC number that differs, the practitioner is rejected (BD-PRV-002). A practitioner found in HRIS is accepted on that match if BMDC cannot be reached.
 - **Name.** `name.text` is compared with the registry record after normalising case, titles and punctuation. Spelling and transliteration differences are tolerated; a name that clearly does not match is rejected (BD-PRV-003). A stricter comparison will be introduced with advance notice (see Enforcement).
 - **Unverifiable.** A practitioner that cannot be verified, for any reason, is rejected with BD-PRV-002. The response does not say why. The reason may be a mistyped number or a registration that is not currently valid, and the exchange does not distinguish them.
-- **Registry unavailable.** If a registry needed to verify a prescriber, orderer or author is unavailable, nothing is accepted: the response is 503 with `Retry-After` (BD-PRV-005).
+- **Registry unavailable.** If a registry needed to verify a prescriber, orderer or author is unavailable and the practitioner has not already been identified in HRIS, nothing is accepted: the response is 503 with `Retry-After` (BD-PRV-005).
 
 #### 4.5 Everyone else
 
