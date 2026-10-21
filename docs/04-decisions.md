@@ -87,6 +87,13 @@ it. Which practitioners must be verified is a rule of the exchange, by role.
 In Bangladesh the official full name is used as a single string, not split into
 family and given names. The registry comparison needs a name to compare.
 
+**Staff without a licence number are identified by a facility staff ID.**
+Laboratory technologists and similar staff hold no number in any national
+register, so there is nothing to tell two of them apart or to avoid storing the
+same person twice. The facility staff ID is unique only within the facility that
+assigns it and is never verified against a registry; the person is accepted on
+the facility's attestation.
+
 **National ID is not collected in bundles.**
 An NID together with a registration number cannot be verified as a pair, so it
 proves nothing, and it would move national ID numbers through every vendor's

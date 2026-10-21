@@ -41,7 +41,7 @@ Rules follow the ownership recorded in HRIS, never `meta.profile` or anything el
 
 ### 4. Practitioners
 
-Practitioners use [BDPractitioner](StructureDefinition-bd-practitioner.html). Send the identifier you hold, using the namespaces defined there: the HRIS provider ID, the BMDC registration number or the BNMC registration number. Send the practitioner's official full name in `name.text`.
+Practitioners use [BDPractitioner](StructureDefinition-bd-practitioner.html). Send the identifier you hold, using the namespaces defined there: the HRIS provider ID, the BMDC registration number or the BNMC registration number. Staff who hold none of these (for example laboratory technologists) are identified by a facility staff ID that your facility assigns and that is unique within the facility. Send the practitioner's official full name in `name.text`.
 
 #### 4.1 Government facilities: provider information is required
 
